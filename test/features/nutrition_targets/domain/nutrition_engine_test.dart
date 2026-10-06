@@ -57,7 +57,10 @@ void main() {
   });
 
   test('weeklyAverageKcal follows the schedule', () {
-    expect(engine.weeklyAverageKcal(), closeTo((4 * 2450 + 3 * 2275) / 7, 1e-9));
+    expect(
+      engine.weeklyAverageKcal(),
+      closeTo((4 * 2450 + 3 * 2275) / 7, 1e-9),
+    );
   });
 
   group('checkMeal', () {
@@ -97,10 +100,20 @@ void main() {
 
     test('water 3400 ml is below on training day but within on rest day', () {
       const none = Nutrients.zero;
-      final train = engine.progress(monday,
-          consumed: none, waterMl: 3400, fruitPortions: 1, vegPortions: 2);
-      final rest = engine.progress(wednesday,
-          consumed: none, waterMl: 3400, fruitPortions: 1, vegPortions: 2);
+      final train = engine.progress(
+        monday,
+        consumed: none,
+        waterMl: 3400,
+        fruitPortions: 1,
+        vegPortions: 2,
+      );
+      final rest = engine.progress(
+        wednesday,
+        consumed: none,
+        waterMl: 3400,
+        fruitPortions: 1,
+        vegPortions: 2,
+      );
       expect(train.water, RangeStatus.below);
       expect(rest.water, RangeStatus.within);
     });

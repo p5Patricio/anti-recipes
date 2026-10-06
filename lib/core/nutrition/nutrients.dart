@@ -40,20 +40,20 @@ class Nutrients {
       per100.scale(grams / 100);
 
   Nutrients operator +(Nutrients other) => Nutrients(
-        kcal: kcal + other.kcal,
-        proteinG: proteinG + other.proteinG,
-        fatG: fatG + other.fatG,
-        carbsG: carbsG + other.carbsG,
-        fiberG: fiberG + other.fiberG,
-      );
+    kcal: kcal + other.kcal,
+    proteinG: proteinG + other.proteinG,
+    fatG: fatG + other.fatG,
+    carbsG: carbsG + other.carbsG,
+    fiberG: fiberG + other.fiberG,
+  );
 
   Nutrients scale(double factor) => Nutrients(
-        kcal: kcal * factor,
-        proteinG: proteinG * factor,
-        fatG: fatG * factor,
-        carbsG: carbsG * factor,
-        fiberG: fiberG * factor,
-      );
+    kcal: kcal * factor,
+    proteinG: proteinG * factor,
+    fatG: fatG * factor,
+    carbsG: carbsG * factor,
+    fiberG: fiberG * factor,
+  );
 
   @override
   bool operator ==(Object other) =>

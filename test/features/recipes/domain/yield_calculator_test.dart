@@ -24,10 +24,10 @@ void main() {
 
   test('multiple ingredients are summed', () {
     const rice = Nutrients(kcal: 360, proteinG: 7, carbsG: 78);
-    final y = YieldCalculator(
-      [RawIngredient(chicken, 500), const RawIngredient(rice, 200)],
-      1100,
-    );
+    final y = YieldCalculator([
+      RawIngredient(chicken, 500),
+      const RawIngredient(rice, 200),
+    ], 1100);
     expect(y.rawTotalG, 700);
     expect(y.totalNutrients.kcal, closeTo(600 + 720, 1e-9));
     expect(y.yieldFactor, closeTo(1100 / 700, 1e-9));

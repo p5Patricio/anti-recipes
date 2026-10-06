@@ -4,13 +4,25 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Nutrients', () {
-    const a = Nutrients(kcal: 100, proteinG: 10, fatG: 5, carbsG: 20, fiberG: 2);
+    const a = Nutrients(
+      kcal: 100,
+      proteinG: 10,
+      fatG: 5,
+      carbsG: 20,
+      fiberG: 2,
+    );
     const b = Nutrients(kcal: 50, proteinG: 5, fatG: 1, carbsG: 4, fiberG: 1);
 
     test('addition and scale', () {
       expect(
         a + b,
-        const Nutrients(kcal: 150, proteinG: 15, fatG: 6, carbsG: 24, fiberG: 3),
+        const Nutrients(
+          kcal: 150,
+          proteinG: 15,
+          fatG: 6,
+          carbsG: 24,
+          fiberG: 3,
+        ),
       );
       expect(a.scale(2).kcal, 200);
       expect(a + Nutrients.zero, a);
@@ -29,7 +41,16 @@ void main() {
     });
 
     test('equality and hashCode', () {
-      expect(a, const Nutrients(kcal: 100, proteinG: 10, fatG: 5, carbsG: 20, fiberG: 2));
+      expect(
+        a,
+        const Nutrients(
+          kcal: 100,
+          proteinG: 10,
+          fatG: 5,
+          carbsG: 20,
+          fiberG: 2,
+        ),
+      );
       expect(a.hashCode, a.scale(1).hashCode);
       expect(a == b, isFalse);
     });
