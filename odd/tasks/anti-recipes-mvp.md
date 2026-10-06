@@ -60,7 +60,7 @@ RDD: on (default).
 - [x] T6 Batch sessions, inventory and meal composer — route: delegated
 - [x] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
 - [x] T8 Batch planner + consolidated shopping list — route: delegated
-- [ ] T9 JSON export/import — route: delegated
+- [x] T9 JSON export/import — route: delegated
 
 ## Acceptance criteria
 - `flutter analyze` clean, `flutter test` green.
@@ -136,5 +136,15 @@ RDD: on (default).
   `flutter analyze`: no issues; `flutter test`: 195 passed (parent spot check). ~2300 authored
   lines -> size:exception recommended. RDD: medium, consent declined.
 
-## Next step
-Push feat/batch-planner, then T9 JSON export/import on feat/export-import.
+- feat/batch-planner pushed.
+- T9: commit 77bdd95 on feat/export-import. Versioned JSON backup (table-driven codec with
+  coverage guard against AppDatabase.allTables, atomic replace-all import with rollback,
+  BackupFileGateway abstraction over file_picker 13.1.0), Backup screen with privacy note and
+  confirm dialog, docs/backup-format.md, README section. Also fixed duplicate FAB hero tags in
+  the shell. `flutter analyze`: no issues; `flutter test`: 232 passed (parent spot check).
+  ~1700 authored lines -> size:exception recommended. RDD: medium, consent declined.
+  file_picker gateway has NOT run on a device yet.
+
+## Status
+All MVP tasks T0..T9 done. Next: install Android SDK + JDK, run on emulator/device, fix
+runtime issues; open PRs (stacked-to-main) when the user decides.
