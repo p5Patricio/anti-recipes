@@ -33,6 +33,7 @@ class PantryScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         key: const Key('log-batch'),
+        heroTag: 'pantry-fab',
         onPressed: () => _push(context, const LogBatchScreen()),
         icon: const Icon(Icons.add),
         label: const Text('Log batch cooked'),
