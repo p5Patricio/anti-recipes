@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/number_fields.dart';
 import '../targets_form_controllers.dart';
-import 'number_fields.dart';
+import 'range_fields.dart';
 
 class ProfileSection extends StatelessWidget {
   const ProfileSection({

@@ -180,6 +180,12 @@ class RecipesDao extends DatabaseAccessor<AppDatabase> with _$RecipesDaoMixin {
     return id;
   });
 
+  /// Updates only the expected cooked/raw ratio (e.g. after measuring a batch).
+  Future<int> updateExpectedYield(int recipeId, double factor) =>
+      (update(recipes)..where((r) => r.id.equals(recipeId))).write(
+        RecipesCompanion(expectedYieldFactor: Value(factor)),
+      );
+
   /// Fails with a foreign key error while a batch item still references it.
   Future<int> deleteRecipe(int id) =>
       (delete(recipes)..where((r) => r.id.equals(id))).go();

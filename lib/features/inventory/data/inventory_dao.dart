@@ -4,6 +4,7 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/date_utils.dart';
 import '../../../core/database/tables.dart';
 import '../../../core/nutrition/nutrients.dart';
+import '../../recipes/domain/recipe_kind.dart';
 import 'batch_nutrition.dart';
 
 part 'inventory_dao.g.dart';
@@ -19,6 +20,9 @@ class BatchItemDraft {
   final double cookedTotalG;
 }
 
+/// Fraction of the cooked total below which a batch item counts as low stock.
+const double lowStockFraction = 0.15;
+
 /// One cooked batch item with its live remaining quantity.
 class StockItem {
   const StockItem({
@@ -27,6 +31,7 @@ class StockItem {
     required this.cookedOn,
     required this.recipeId,
     required this.recipeName,
+    required this.recipeKind,
     required this.cookedTotalG,
     required this.consumedG,
     required this.nutrientsPerCookedGram,
@@ -37,11 +42,34 @@ class StockItem {
   final DateTime cookedOn;
   final int recipeId;
   final String recipeName;
+  final RecipeKind recipeKind;
   final double cookedTotalG;
   final double consumedG;
   final Nutrients nutrientsPerCookedGram;
 
   double get remainingG => cookedTotalG - consumedG;
+
+  /// 0..1, never negative even when meals were logged beyond the stock.
+  double get remainingFraction =>
+      cookedTotalG > 0 ? (remainingG / cookedTotalG).clamp(0.0, 1.0) : 0;
+
+  bool get isEmpty => remainingG <= 0;
+
+  bool get isLow => !isEmpty && remainingFraction < lowStockFraction;
+}
+
+/// One meal that consumed part of a batch item.
+class ConsumptionEntry {
+  const ConsumptionEntry({
+    required this.mealLogId,
+    required this.date,
+    required this.slot,
+    required this.grams,
+  });
+  final int mealLogId;
+  final DateTime date;
+  final int slot;
+  final double grams;
 }
 
 @DriftAccessor(
@@ -138,6 +166,7 @@ class InventoryDao extends DatabaseAccessor<AppDatabase>
           cookedOn: r.readTable(batchSessions).cookedOn,
           recipeId: r.readTable(recipes).id,
           recipeName: r.readTable(recipes).name,
+          recipeKind: r.readTable(recipes).kind,
           cookedTotalG: r.readTable(batchItems).cookedTotalG,
           consumedG: consumed[r.readTable(batchItems).id] ?? 0,
           nutrientsPerCookedGram:
@@ -145,4 +174,63 @@ class InventoryDao extends DatabaseAccessor<AppDatabase>
         ),
     ];
   }
+
+  /// Meals that consumed the batch item, newest first.
+  Future<List<ConsumptionEntry>> loadConsumption(int batchItemId) async {
+    final db = attachedDatabase;
+    final rows =
+        await (db.select(db.mealComponents).join([
+                innerJoin(
+                  db.mealLogs,
+                  db.mealLogs.id.equalsExp(db.mealComponents.mealLogId),
+                ),
+              ])
+              ..where(db.mealComponents.batchItemId.equals(batchItemId))
+              ..orderBy([
+                OrderingTerm.desc(db.mealLogs.date),
+                OrderingTerm.desc(db.mealLogs.slot),
+              ]))
+            .get();
+    return [
+      for (final r in rows)
+        ConsumptionEntry(
+          mealLogId: r.readTable(db.mealLogs).id,
+          date: r.readTable(db.mealLogs).date,
+          slot: r.readTable(db.mealLogs).slot,
+          grams: r.readTable(db.mealComponents).grams,
+        ),
+    ];
+  }
+
+  Future<bool> isBatchItemConsumed(int batchItemId) async {
+    final rows =
+        await (select(mealComponents)
+              ..where((c) => c.batchItemId.equals(batchItemId))
+              ..limit(1))
+            .get();
+    return rows.isNotEmpty;
+  }
+
+  /// Deletes a batch item that was never consumed; returns false (and changes
+  /// nothing) otherwise. A session left without items is removed with it.
+  Future<bool> deleteBatchItemIfUnused(int batchItemId) =>
+      transaction(() async {
+        if (await isBatchItemConsumed(batchItemId)) return false;
+        final item = await (select(
+          batchItems,
+        )..where((i) => i.id.equals(batchItemId))).getSingleOrNull();
+        if (item == null) return false;
+        await (delete(batchItems)..where((i) => i.id.equals(batchItemId))).go();
+        final siblings =
+            await (select(batchItems)
+                  ..where((i) => i.batchSessionId.equals(item.batchSessionId))
+                  ..limit(1))
+                .get();
+        if (siblings.isEmpty) {
+          await (delete(
+            batchSessions,
+          )..where((s) => s.id.equals(item.batchSessionId))).go();
+        }
+        return true;
+      });
 }
