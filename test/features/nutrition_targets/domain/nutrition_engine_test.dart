@@ -24,6 +24,53 @@ void main() {
     });
   });
 
+  group('validation', () {
+    final base = NutritionPlan.exampleDefaults();
+    NutritionPlan build({
+      double protein = 160,
+      double fat = 70,
+      int meals = 3,
+      Map<DayType, DayTypeTargets>? types,
+    }) => NutritionPlan(
+      proteinGPerDay: protein,
+      fatGPerDay: fat,
+      mealsPerDay: meals,
+      proteinPerMeal: Range(50, 55),
+      dayTypes: types ?? base.dayTypes,
+    );
+
+    test('plan rejects invalid meals, protein, fat and missing day types', () {
+      expect(() => build(meals: 0), throwsArgumentError);
+      expect(() => build(protein: 0), throwsArgumentError);
+      expect(() => build(fat: -1), throwsArgumentError);
+      expect(
+        () => build(types: {DayType.rest: base.targetsFor(DayType.rest)}),
+        throwsArgumentError,
+      );
+      expect(build, returnsNormally);
+    });
+
+    test('schedule requires all weekdays 1..7', () {
+      expect(
+        () => WeekSchedule({1: DayType.rest, 2: DayType.rest}),
+        throwsArgumentError,
+      );
+      expect(
+        () => WeekSchedule({
+          for (var i = 1; i <= 6; i++) i: DayType.rest,
+          8: DayType.rest,
+        }),
+        throwsArgumentError,
+      );
+    });
+
+    test('dayTypeFor uses the local calendar weekday', () {
+      final s = WeekSchedule.exampleDefaults();
+      final utcMonday = DateTime.utc(2026, 10, 5, 12);
+      expect(s.dayTypeFor(utcMonday), s.days[utcMonday.toLocal().weekday]);
+    });
+  });
+
   group('targetsFor', () {
     test('training day derives 295 g carbs at 2450 kcal, no warnings', () {
       final t = engine.targetsFor(monday);

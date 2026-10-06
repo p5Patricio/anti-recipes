@@ -61,7 +61,14 @@ void main() {
   });
 
   group('Range', () {
-    const r = Range(50, 55);
+    final r = Range(50, 55);
+
+    test('rejects min > max and NaN at runtime', () {
+      expect(() => Range(2, 1), throwsArgumentError);
+      expect(() => Range(double.nan, 1), throwsArgumentError);
+      expect(() => Range(1, double.nan), throwsArgumentError);
+      expect(Range(1, 1).midpoint, 1);
+    });
 
     test('contains, midpoint, clamp', () {
       expect(r.contains(50), isTrue);

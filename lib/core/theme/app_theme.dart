@@ -36,6 +36,10 @@ abstract final class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: AppColors.offWhite,
+        indicatorColor: AppColors.sage,
+      ),
       cardTheme: const CardThemeData(
         color: AppColors.surface,
         elevation: 0,

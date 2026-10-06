@@ -72,11 +72,7 @@ class NutritionEngine {
     final dayType = schedule.dayTypeFor(date);
     final ranges = plan.targetsFor(dayType);
     final kcal = ranges.kcal.midpoint;
-    final carbs =
-        (kcal -
-            plan.proteinGPerDay * kcalPerGramProtein -
-            plan.fatGPerDay * kcalPerGramFat) /
-        kcalPerGramCarbs;
+    final carbs = plan.derivedCarbsG(dayType);
     return DailyTargets(
       dayType: dayType,
       kcal: kcal,

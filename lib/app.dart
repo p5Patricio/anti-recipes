@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
-import 'features/meal_log/presentation/home_screen.dart';
+import 'app_shell.dart';
 
 class AntiRecipesApp extends StatelessWidget {
   const AntiRecipesApp({super.key});
@@ -12,7 +12,7 @@ class AntiRecipesApp extends StatelessWidget {
       title: 'anti-recipes',
       theme: AppTheme.light(),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const AppShell(),
     );
   }
 }
