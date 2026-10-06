@@ -55,7 +55,7 @@ RDD: on (default).
       issue templates, logo asset, theme tokens; create public GitHub repo and push — route: delegated
 - [x] T2 Nutrition engine domain + unit tests — route: delegated
 - [x] T3 drift database schema, DAOs, default seeds + tests — route: delegated
-- [ ] T4 Profile & targets onboarding/settings — route: delegated
+- [x] T4 Profile & targets onboarding/settings — route: delegated
 - [ ] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
 - [ ] T6 Batch sessions, inventory and meal composer — route: delegated
 - [ ] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
@@ -93,6 +93,13 @@ RDD: on (default).
   RDD: medium, consent declined by user → RDD-off path, writer self-verification + parent
   spot check.
 
+- feat/database pushed.
+- T4: commit a3adb54 on feat/profile-targets. App shell (NavigationBar: Today, Recipes,
+  Pantry, Plan, Settings), runtime validation for Range/WeekSchedule/NutritionPlan,
+  local-weekday dayTypeFor, targets settings screen. `flutter analyze`: no issues;
+  `flutter test`: 47 passed (parent spot check). ~1150 authored lines → over budget,
+  cohesive UI unit → size:exception recommended. RDD: medium, consent declined.
+  T2 follow-ups resolved.
+
 ## Next step
-Push feat/database, then T4 profile/targets on feat/profile-targets (include T2
-validation follow-ups).
+Push feat/profile-targets, then T5 recipes CRUD on feat/recipes.
