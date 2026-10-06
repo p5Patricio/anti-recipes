@@ -57,7 +57,7 @@ RDD: on (default).
 - [x] T3 drift database schema, DAOs, default seeds + tests — route: delegated
 - [x] T4 Profile & targets onboarding/settings — route: delegated
 - [x] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
-- [ ] T6 Batch sessions, inventory and meal composer — route: delegated
+- [x] T6 Batch sessions, inventory and meal composer — route: delegated
 - [ ] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
 - [ ] T8 Batch planner + consolidated shopping list — route: delegated
 - [ ] T9 JSON export/import — route: delegated
@@ -110,5 +110,13 @@ RDD: on (default).
   Follow-ups: move NumberField helpers from nutrition_targets/presentation to
   core/widgets; drift stream widget tests must unmount the tree inside the test body.
 
+- feat/recipes pushed.
+- T6: commit 3f6c786 on feat/inventory. Batch logging with yield deviation note, pantry stock
+  (low/empty chips), batch item detail with consumption history, meal composer (stock +
+  fresh ingredients, protein range status, suggestion, override confirm). NumberField moved
+  to core/widgets. `flutter analyze`: no issues; `flutter test`: 132 passed (parent spot
+  check). ~2700 authored lines -> size:exception recommended. RDD: medium, consent declined.
+  Composer not yet linked from Today (use openComposeMeal in T7).
+
 ## Next step
-Push feat/recipes, then T6 batch sessions, inventory and meal composer on feat/inventory.
+Push feat/inventory, then T7 daily dashboard on feat/daily-dashboard.
