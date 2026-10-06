@@ -28,6 +28,7 @@ part 'app_database.g.dart';
     MealLogs,
     MealComponents,
     HydrationLogs,
+    DayLogs,
   ],
   daos: [TargetsDao, RecipesDao, InventoryDao, MealLogDao],
 )
@@ -38,13 +39,16 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.open() : super(driftDatabase(name: 'anti_recipes'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
       await _seed();
+    },
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await m.createTable(dayLogs);
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

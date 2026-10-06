@@ -3,6 +3,7 @@ import 'package:anti_recipes/core/database/database_provider.dart';
 import 'package:anti_recipes/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 
 /// Widget test that unmounts the tree inside the test body, so drift's
@@ -15,18 +16,20 @@ void uiTest(String name, Future<void> Function(WidgetTester tester) body) {
   });
 }
 
-/// Mounts [home] on a tall phone-like surface backed by [db].
+/// Mounts [home] on a tall phone-like surface backed by [db]; [overrides]
+/// are applied on top of the database override.
 Future<void> pumpWithDb(
   WidgetTester tester,
   AppDatabase db,
-  Widget home,
-) async {
+  Widget home, {
+  List<Override> overrides = const [],
+}) async {
   tester.view.physicalSize = const Size(900, 1600);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [appDatabaseProvider.overrideWithValue(db)],
+      overrides: [appDatabaseProvider.overrideWithValue(db), ...overrides],
       child: MaterialApp(theme: AppTheme.light(), home: home),
     ),
   );

@@ -5302,6 +5302,276 @@ class HydrationLogsCompanion extends UpdateCompanion<HydrationLog> {
   }
 }
 
+class $DayLogsTable extends DayLogs with TableInfo<$DayLogsTable, DayLog> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DayLogsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fruitPortionsMeta = const VerificationMeta(
+    'fruitPortions',
+  );
+  @override
+  late final GeneratedColumn<int> fruitPortions = GeneratedColumn<int>(
+    'fruit_portions',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _vegPortionsMeta = const VerificationMeta(
+    'vegPortions',
+  );
+  @override
+  late final GeneratedColumn<int> vegPortions = GeneratedColumn<int>(
+    'veg_portions',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [date, fruitPortions, vegPortions];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'day_logs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DayLog> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('fruit_portions')) {
+      context.handle(
+        _fruitPortionsMeta,
+        fruitPortions.isAcceptableOrUnknown(
+          data['fruit_portions']!,
+          _fruitPortionsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('veg_portions')) {
+      context.handle(
+        _vegPortionsMeta,
+        vegPortions.isAcceptableOrUnknown(
+          data['veg_portions']!,
+          _vegPortionsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {date};
+  @override
+  DayLog map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DayLog(
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      fruitPortions: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fruit_portions'],
+      )!,
+      vegPortions: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}veg_portions'],
+      )!,
+    );
+  }
+
+  @override
+  $DayLogsTable createAlias(String alias) {
+    return $DayLogsTable(attachedDatabase, alias);
+  }
+}
+
+class DayLog extends DataClass implements Insertable<DayLog> {
+  /// Local midnight of the calendar day (see `dateOnly`).
+  final DateTime date;
+  final int fruitPortions;
+  final int vegPortions;
+  const DayLog({
+    required this.date,
+    required this.fruitPortions,
+    required this.vegPortions,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['date'] = Variable<DateTime>(date);
+    map['fruit_portions'] = Variable<int>(fruitPortions);
+    map['veg_portions'] = Variable<int>(vegPortions);
+    return map;
+  }
+
+  DayLogsCompanion toCompanion(bool nullToAbsent) {
+    return DayLogsCompanion(
+      date: Value(date),
+      fruitPortions: Value(fruitPortions),
+      vegPortions: Value(vegPortions),
+    );
+  }
+
+  factory DayLog.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DayLog(
+      date: serializer.fromJson<DateTime>(json['date']),
+      fruitPortions: serializer.fromJson<int>(json['fruitPortions']),
+      vegPortions: serializer.fromJson<int>(json['vegPortions']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'date': serializer.toJson<DateTime>(date),
+      'fruitPortions': serializer.toJson<int>(fruitPortions),
+      'vegPortions': serializer.toJson<int>(vegPortions),
+    };
+  }
+
+  DayLog copyWith({DateTime? date, int? fruitPortions, int? vegPortions}) =>
+      DayLog(
+        date: date ?? this.date,
+        fruitPortions: fruitPortions ?? this.fruitPortions,
+        vegPortions: vegPortions ?? this.vegPortions,
+      );
+  DayLog copyWithCompanion(DayLogsCompanion data) {
+    return DayLog(
+      date: data.date.present ? data.date.value : this.date,
+      fruitPortions: data.fruitPortions.present
+          ? data.fruitPortions.value
+          : this.fruitPortions,
+      vegPortions: data.vegPortions.present
+          ? data.vegPortions.value
+          : this.vegPortions,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DayLog(')
+          ..write('date: $date, ')
+          ..write('fruitPortions: $fruitPortions, ')
+          ..write('vegPortions: $vegPortions')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(date, fruitPortions, vegPortions);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DayLog &&
+          other.date == this.date &&
+          other.fruitPortions == this.fruitPortions &&
+          other.vegPortions == this.vegPortions);
+}
+
+class DayLogsCompanion extends UpdateCompanion<DayLog> {
+  final Value<DateTime> date;
+  final Value<int> fruitPortions;
+  final Value<int> vegPortions;
+  final Value<int> rowid;
+  const DayLogsCompanion({
+    this.date = const Value.absent(),
+    this.fruitPortions = const Value.absent(),
+    this.vegPortions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DayLogsCompanion.insert({
+    required DateTime date,
+    this.fruitPortions = const Value.absent(),
+    this.vegPortions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : date = Value(date);
+  static Insertable<DayLog> custom({
+    Expression<DateTime>? date,
+    Expression<int>? fruitPortions,
+    Expression<int>? vegPortions,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (date != null) 'date': date,
+      if (fruitPortions != null) 'fruit_portions': fruitPortions,
+      if (vegPortions != null) 'veg_portions': vegPortions,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DayLogsCompanion copyWith({
+    Value<DateTime>? date,
+    Value<int>? fruitPortions,
+    Value<int>? vegPortions,
+    Value<int>? rowid,
+  }) {
+    return DayLogsCompanion(
+      date: date ?? this.date,
+      fruitPortions: fruitPortions ?? this.fruitPortions,
+      vegPortions: vegPortions ?? this.vegPortions,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (fruitPortions.present) {
+      map['fruit_portions'] = Variable<int>(fruitPortions.value);
+    }
+    if (vegPortions.present) {
+      map['veg_portions'] = Variable<int>(vegPortions.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DayLogsCompanion(')
+          ..write('date: $date, ')
+          ..write('fruitPortions: $fruitPortions, ')
+          ..write('vegPortions: $vegPortions, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5322,6 +5592,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MealLogsTable mealLogs = $MealLogsTable(this);
   late final $MealComponentsTable mealComponents = $MealComponentsTable(this);
   late final $HydrationLogsTable hydrationLogs = $HydrationLogsTable(this);
+  late final $DayLogsTable dayLogs = $DayLogsTable(this);
   late final TargetsDao targetsDao = TargetsDao(this as AppDatabase);
   late final RecipesDao recipesDao = RecipesDao(this as AppDatabase);
   late final InventoryDao inventoryDao = InventoryDao(this as AppDatabase);
@@ -5345,6 +5616,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     mealLogs,
     mealComponents,
     hydrationLogs,
+    dayLogs,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -10531,6 +10803,173 @@ typedef $$HydrationLogsTableProcessedTableManager =
       HydrationLog,
       PrefetchHooks Function()
     >;
+typedef $$DayLogsTableCreateCompanionBuilder = DayLogsCompanion Function({
+  required DateTime date,
+  Value<int> fruitPortions,
+  Value<int> vegPortions,
+  Value<int> rowid,
+});
+typedef $$DayLogsTableUpdateCompanionBuilder = DayLogsCompanion Function({
+  Value<DateTime> date,
+  Value<int> fruitPortions,
+  Value<int> vegPortions,
+  Value<int> rowid,
+});
+
+class $$DayLogsTableFilterComposer
+    extends Composer<_$AppDatabase, $DayLogsTable> {
+  $$DayLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fruitPortions => $composableBuilder(
+    column: $table.fruitPortions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get vegPortions => $composableBuilder(
+    column: $table.vegPortions,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DayLogsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DayLogsTable> {
+  $$DayLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fruitPortions => $composableBuilder(
+    column: $table.fruitPortions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get vegPortions => $composableBuilder(
+    column: $table.vegPortions,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DayLogsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DayLogsTable> {
+  $$DayLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<int> get fruitPortions => $composableBuilder(
+    column: $table.fruitPortions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get vegPortions => $composableBuilder(
+    column: $table.vegPortions,
+    builder: (column) => column,
+  );
+}
+
+class $$DayLogsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DayLogsTable,
+          DayLog,
+          $$DayLogsTableFilterComposer,
+          $$DayLogsTableOrderingComposer,
+          $$DayLogsTableAnnotationComposer,
+          $$DayLogsTableCreateCompanionBuilder,
+          $$DayLogsTableUpdateCompanionBuilder,
+          (DayLog, BaseReferences<_$AppDatabase, $DayLogsTable, DayLog>),
+          DayLog,
+          PrefetchHooks Function()
+        > {
+  $$DayLogsTableTableManager(_$AppDatabase db, $DayLogsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DayLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DayLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DayLogsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<DateTime> date = const Value.absent(),
+                Value<int> fruitPortions = const Value.absent(),
+                Value<int> vegPortions = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DayLogsCompanion(
+                date: date,
+                fruitPortions: fruitPortions,
+                vegPortions: vegPortions,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required DateTime date,
+                Value<int> fruitPortions = const Value.absent(),
+                Value<int> vegPortions = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DayLogsCompanion.insert(
+                date: date,
+                fruitPortions: fruitPortions,
+                vegPortions: vegPortions,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DayLogsTable, DayLog>(table),
+                  BaseReferences<_$AppDatabase, $DayLogsTable, DayLog>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DayLogsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DayLogsTable,
+      DayLog,
+      $$DayLogsTableFilterComposer,
+      $$DayLogsTableOrderingComposer,
+      $$DayLogsTableAnnotationComposer,
+      $$DayLogsTableCreateCompanionBuilder,
+      $$DayLogsTableUpdateCompanionBuilder,
+      (DayLog, BaseReferences<_$AppDatabase, $DayLogsTable, DayLog>),
+      DayLog,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10563,4 +11002,6 @@ class $AppDatabaseManager {
       $$MealComponentsTableTableManager(_db, _db.mealComponents);
   $$HydrationLogsTableTableManager get hydrationLogs =>
       $$HydrationLogsTableTableManager(_db, _db.hydrationLogs);
+  $$DayLogsTableTableManager get dayLogs =>
+      $$DayLogsTableTableManager(_db, _db.dayLogs);
 }

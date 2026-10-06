@@ -27,7 +27,10 @@ void main() {
         findsOneWidget,
       );
     }
-    expect(find.text('Coming soon'), findsOneWidget);
+    // The Today tab is the real dashboard.
+    await tester.pumpAndSettle();
+    expect(find.text('Calories & macros'), findsOneWidget);
+    expect(find.text('Coming soon'), findsNothing);
 
     await tester.tap(
       find.descendant(
