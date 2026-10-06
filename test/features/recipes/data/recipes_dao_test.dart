@@ -131,6 +131,10 @@ void main() {
         expect(lines.single.recipeId, id);
         expect(lines.single.rawG, 500);
         expect(lines.single.per100.proteinG, 22.5);
+        expect(lines.single.ingredientName, 'Chicken breast');
+        expect(lines.single.category, 'protein');
+        expect(lines.single.servingG, isNull);
+        expect(lines.single.ingredientId, greaterThan(0));
       },
     );
   });

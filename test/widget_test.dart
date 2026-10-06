@@ -53,6 +53,18 @@ void main() {
     expect(find.text('Log batch cooked'), findsOneWidget);
     expect(find.byKey(const Key('compose-meal')), findsOneWidget);
 
+    // The Plan tab is the real batch planner.
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Plan'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Days to cover').hitTestable(), findsOneWidget);
+    expect(find.byKey(const Key('plan-days-3')).hitTestable(), findsOneWidget);
+    expect(find.text('Coming soon'), findsNothing);
+
     // Unmount so drift's stream-cleanup timers fire inside the test.
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 10));

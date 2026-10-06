@@ -58,10 +58,20 @@ class RecipeLine {
     required this.recipeId,
     required this.per100,
     required this.rawG,
+    required this.ingredientId,
+    required this.ingredientName,
+    required this.category,
+    this.servingG,
   });
   final int recipeId;
   final Nutrients per100;
   final double rawG;
+
+  /// Identity of the ingredient, for aggregating shopping lists.
+  final int ingredientId;
+  final String ingredientName;
+  final String category;
+  final double? servingG;
 }
 
 class RecipeDetail {
@@ -234,6 +244,10 @@ class RecipesDao extends DatabaseAccessor<AppDatabase> with _$RecipesDaoMixin {
               recipeId: r.read(recipeIngredients.recipeId)!,
               per100: r.readTable(ingredients).per100g,
               rawG: r.read(recipeIngredients.rawG)!,
+              ingredientId: r.readTable(ingredients).id,
+              ingredientName: r.readTable(ingredients).name,
+              category: r.readTable(ingredients).category,
+              servingG: r.readTable(ingredients).servingG,
             ),
         ],
       );
