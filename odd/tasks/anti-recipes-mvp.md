@@ -58,7 +58,7 @@ RDD: on (default).
 - [x] T4 Profile & targets onboarding/settings — route: delegated
 - [x] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
 - [x] T6 Batch sessions, inventory and meal composer — route: delegated
-- [ ] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
+- [x] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
 - [ ] T8 Batch planner + consolidated shopping list — route: delegated
 - [ ] T9 JSON export/import — route: delegated
 
@@ -118,5 +118,15 @@ RDD: on (default).
   check). ~2700 authored lines -> size:exception recommended. RDD: medium, consent declined.
   Composer not yet linked from Today (use openComposeMeal in T7).
 
+- feat/inventory pushed.
+- T7: commits 388884d (fix: drift shares streams by SQL text, so watchStock/watchDay/watchPlan
+  collapsed into one stream; each now has distinct SQL, regression test added; bug dated
+  from T3) + 7892d71 (Today dashboard: day header with day-type badge, macro bars, 3 meal slots
+  with composer entry, hydration quick add/undo, fruit/veg steppers, protein distribution;
+  DayLogs table, schemaVersion 2 with onUpgrade + migration test). `flutter analyze`: no
+  issues; `flutter test`: 157 passed (parent spot check). ~1780 authored lines ->
+  size:exception recommended. RDD: medium, consent declined.
+  Note: single-value targets (protein/fat/carbs) count as within at +-5%.
+
 ## Next step
-Push feat/inventory, then T7 daily dashboard on feat/daily-dashboard.
+Push feat/daily-dashboard, then T8 batch planner + shopping list on feat/batch-planner.
