@@ -52,3 +52,6 @@ app.*.map.json
 *.sqlite
 local_seed.json
 exports/
+
+# Local agent tooling
+.atl/
