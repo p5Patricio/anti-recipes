@@ -53,7 +53,7 @@ RDD: on (default).
 - [x] T0 Install Flutter SDK (C:\src\flutter) and add to user PATH — route: inline
 - [x] T1 Bootstrap: flutter create (android), deps, folder structure, README, .gitignore,
       issue templates, logo asset, theme tokens; create public GitHub repo and push — route: delegated
-- [ ] T2 Nutrition engine domain + unit tests — route: delegated
+- [x] T2 Nutrition engine domain + unit tests — route: delegated
 - [ ] T3 drift database schema, DAOs, default seeds + tests — route: delegated
 - [ ] T4 Profile & targets onboarding/settings — route: delegated
 - [ ] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
@@ -73,5 +73,15 @@ RDD: on (default).
   `flutter analyze`: no issues; `flutter test`: 1 passed. RDD: bootstrap is mostly
   generated scaffold, pushed as initial commit (no reviewed boundary yet; branch point = 4a87774).
 
+- T2: commits daea9c4 (engine) + .gitignore `.atl/` on feat/nutrition-engine.
+  `flutter analyze`: no issues; `flutter test`: 25 passed (parent spot check re-run).
+  RDD: medium, consent granted, lens review-reliability → approved and acknowledged
+  (lineage review-06f6055bb3735746). Reviewed boundary advances to T2 head.
+  Follow-ups (non-blocking WARNINGs, fold into T4 when plans load from user data):
+  runtime validation for NutritionPlan (mealsPerDay > 0, all DayTypes present),
+  WeekSchedule (all 7 weekdays) and Range (min <= max) instead of asserts; normalize
+  dates to local calendar day in dayTypeFor; surface rest-day carb warning sensibly in UI.
+
 ## Next step
-Confirm chain strategy, then T2 nutrition engine on a feature branch.
+Push feat/nutrition-engine and open PR #1 (stacked-to-main), then T3 database on
+feat/database stacked on feat/nutrition-engine.
