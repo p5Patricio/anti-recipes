@@ -75,19 +75,26 @@ flutter run
 
 ```
 lib/
-  main.dart, app.dart
+  main.dart, app.dart, app_shell.dart
   core/
-    database/        # drift database and migrations
+    database/        # drift tables, database, migrations
+    nutrition/       # shared value objects (pure Dart)
+    formatting/      # date and gram formatting
     theme/           # colors and ThemeData
+    widgets/         # shared form widgets
   features/
-    nutrition_targets/
-    recipes/
-    inventory/
-    batch_planner/
-    meal_log/
-    backup/          # JSON export/import
-    shopping/
+    nutrition_targets/   # plan, day types, engine, targets screen
+    recipes/             # recipes and ingredient library
+    inventory/           # batches and pantry stock
+    meal_log/            # Today dashboard and meal composer
+    batch_planner/       # reverse planner and shopping list
+    backup/              # JSON export/import
+    settings/
       domain/ data/ presentation/
 assets/branding/     # logo
-docs/
+docs/                # product, architecture, status, plan, guides
 ```
+
+## Documentation
+
+Start at [docs/README.md](docs/README.md). Contributors and AI agents should also read [AGENTS.md](AGENTS.md).
