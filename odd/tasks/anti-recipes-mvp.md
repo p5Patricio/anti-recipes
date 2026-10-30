@@ -41,15 +41,19 @@ Mode: off (no project/session configuration; user did not request it). Source: d
 Runner: `flutter test`. Domain logic still ships with unit tests.
 
 ## Delivery
-Strategy: ask-on-risk (default). Forecast: well above 400 authored lines in total;
-chain strategy to be confirmed before the first commit that crosses the budget.
+Strategy: ask-on-risk (default). Forecast: well above 400 authored lines in total.
+Chain strategy: stacked-to-main (user choice). One PR per task T2..T9, each branch
+stacked on the previous task branch, merged to main in order.
+Slices: T2 feat/nutrition-engine, T3 feat/database, T4 feat/profile-targets,
+T5 feat/recipes, T6 feat/inventory, T7 feat/daily-dashboard, T8 feat/batch-planner,
+T9 feat/export-import.
 RDD: on (default).
 
 ## Tasks
-- [ ] T0 Install Flutter SDK (C:\src\flutter) and add to user PATH — route: inline
-- [ ] T1 Bootstrap: flutter create (android), deps, folder structure, README, .gitignore,
+- [x] T0 Install Flutter SDK (C:\src\flutter) and add to user PATH — route: inline
+- [x] T1 Bootstrap: flutter create (android), deps, folder structure, README, .gitignore,
       issue templates, logo asset, theme tokens; create public GitHub repo and push — route: delegated
-- [ ] T2 Nutrition engine domain + unit tests — route: delegated
+- [x] T2 Nutrition engine domain + unit tests — route: delegated
 - [ ] T3 drift database schema, DAOs, default seeds + tests — route: delegated
 - [ ] T4 Profile & targets onboarding/settings — route: delegated
 - [ ] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
@@ -64,7 +68,20 @@ RDD: on (default).
 - A meal can be composed from batch stock in a few taps and updates inventory.
 
 ## Progress / Evidence
-- (none yet)
+- T0: Flutter 3.47.6 / Dart 3.13.5 installed at C:\src\flutter, user PATH updated.
+- T1: commit 4a87774 on main, pushed to https://github.com/p5Patricio/anti-recipes (public).
+  `flutter analyze`: no issues; `flutter test`: 1 passed. RDD: bootstrap is mostly
+  generated scaffold, pushed as initial commit (no reviewed boundary yet; branch point = 4a87774).
+
+- T2: commits daea9c4 (engine) + .gitignore `.atl/` on feat/nutrition-engine.
+  `flutter analyze`: no issues; `flutter test`: 25 passed (parent spot check re-run).
+  RDD: medium, consent granted, lens review-reliability → approved and acknowledged
+  (lineage review-06f6055bb3735746). Reviewed boundary advances to T2 head.
+  Follow-ups (non-blocking WARNINGs, fold into T4 when plans load from user data):
+  runtime validation for NutritionPlan (mealsPerDay > 0, all DayTypes present),
+  WeekSchedule (all 7 weekdays) and Range (min <= max) instead of asserts; normalize
+  dates to local calendar day in dayTypeFor; surface rest-day carb warning sensibly in UI.
 
 ## Next step
-T0: finish Flutter SDK install.
+Push feat/nutrition-engine and open PR #1 (stacked-to-main), then T3 database on
+feat/database stacked on feat/nutrition-engine.
