@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
+import '../../../core/widgets/number_fields.dart';
 import '../domain/day_type.dart';
 import '../domain/nutrition_engine.dart';
 import '../domain/nutrition_plan.dart';

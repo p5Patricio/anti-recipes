@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/database/app_database.dart';
-import '../../../nutrition_targets/presentation/widgets/number_fields.dart';
+import '../../../../core/widgets/number_fields.dart';
 
 /// Optional whole-number validator (empty is fine).
 String? optionalWholeNumber(String? value) {

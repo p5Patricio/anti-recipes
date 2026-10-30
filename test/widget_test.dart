@@ -39,6 +39,17 @@ void main() {
     expect(find.text('Nutrition targets'), findsOneWidget);
     expect(find.text('Coming soon').hitTestable(), findsNothing);
 
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NavigationBar),
+        matching: find.text('Pantry'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Your pantry is empty'), findsOneWidget);
+    expect(find.text('Log batch cooked'), findsOneWidget);
+    expect(find.byKey(const Key('compose-meal')), findsOneWidget);
+
     // Unmount so drift's stream-cleanup timers fire inside the test.
     await tester.pumpWidget(const SizedBox());
     await tester.pump(const Duration(milliseconds: 10));

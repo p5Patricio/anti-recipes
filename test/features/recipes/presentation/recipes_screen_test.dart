@@ -1,13 +1,13 @@
 import 'package:anti_recipes/core/database/app_database.dart';
-import 'package:anti_recipes/core/database/database_provider.dart';
-import 'package:anti_recipes/core/theme/app_theme.dart';
-import 'package:anti_recipes/features/recipes/data/recipes_dao.dart';
 import 'package:anti_recipes/features/recipes/domain/recipe_kind.dart';
 import 'package:anti_recipes/features/recipes/presentation/recipes_screen.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../../helpers/db_seed.dart' as seed;
+import '../../../helpers/db_seed.dart' show ingredientIdByName;
+import '../../../helpers/ui_helpers.dart';
 
 void main() {
   late AppDatabase db;
@@ -15,68 +15,16 @@ void main() {
   setUp(() => db = AppDatabase(NativeDatabase.memory()));
   tearDown(() => db.close());
 
-  /// Unmounts the tree inside the test so drift's stream-cleanup timers fire
-  /// before the framework's pending-timer invariant is checked.
-  void uiTest(String name, Future<void> Function(WidgetTester tester) body) {
-    testWidgets(name, (tester) async {
-      await body(tester);
-      await tester.pumpWidget(const SizedBox());
-      await tester.pump(const Duration(milliseconds: 10));
-    });
-  }
+  Future<void> pumpScreen(WidgetTester tester) =>
+      pumpWithDb(tester, db, const RecipesScreen());
 
-  Future<void> pumpScreen(WidgetTester tester) async {
-    tester.view.physicalSize = const Size(900, 1600);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [appDatabaseProvider.overrideWithValue(db)],
-        child: MaterialApp(
-          theme: AppTheme.light(),
-          home: const RecipesScreen(),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-  }
-
-  Future<void> enter(WidgetTester tester, String key, String text) async {
-    final finder = find.byKey(Key(key));
-    await tester.ensureVisible(finder);
-    await tester.enterText(finder, text);
-    await tester.pump();
-  }
-
-  Future<void> tapKey(WidgetTester tester, String key) async {
-    final finder = find.byKey(Key(key));
-    await tester.ensureVisible(finder);
-    await tester.pumpAndSettle();
-    await tester.tap(finder);
-    await tester.pumpAndSettle();
-  }
-
-  Future<int> ingredientId(String name) async => (await (db.select(
-    db.ingredients,
-  )..where((i) => i.name.equals(name))).getSingle()).id;
+  Future<int> ingredientId(String name) => ingredientIdByName(db, name);
 
   Future<int> seedRecipe(
     String name, {
     RecipeKind kind = RecipeKind.proteinBase,
     double yieldFactor = 0.75,
-  }) async => db.recipesDao.saveRecipe(
-    RecipeDraft(
-      name: name,
-      kind: kind,
-      expectedYieldFactor: yieldFactor,
-      ingredients: [
-        RecipeIngredientDraft(
-          ingredientId: await ingredientId('Chicken breast'),
-          rawG: 400,
-        ),
-      ],
-    ),
-  );
+  }) => seed.seedRecipe(db, name, kind: kind, yieldFactor: yieldFactor);
 
   uiTest('empty state invites creating the first recipe', (tester) async {
     await pumpScreen(tester);
@@ -90,11 +38,11 @@ void main() {
     await pumpScreen(tester);
     await tapKey(tester, 'add-recipe');
 
-    await enter(tester, 'recipe-name', 'Lemon chicken');
+    await enterKey(tester, 'recipe-name', 'Lemon chicken');
     await tapKey(tester, 'recipe-kind');
     await tester.tap(find.text('Complete').last);
     await tester.pumpAndSettle();
-    await enter(tester, 'recipe-yield', '0.75');
+    await enterKey(tester, 'recipe-yield', '0.75');
 
     await tapKey(tester, 'add-ingredient-line');
     await tester.enterText(find.byKey(const Key('ingredient-search')), 'chick');
@@ -102,7 +50,7 @@ void main() {
     await tester.tap(find.text('Chicken breast'));
     await tester.pumpAndSettle();
     final chickenId = await ingredientId('Chicken breast');
-    await enter(tester, 'line-grams-$chickenId', '400');
+    await enterKey(tester, 'line-grams-$chickenId', '400');
 
     expect(find.text('Raw weight: 400 g'), findsOneWidget);
     expect(find.text('Expected cooked weight: 300 g'), findsOneWidget);
@@ -124,7 +72,7 @@ void main() {
   ) async {
     await pumpScreen(tester);
     await tapKey(tester, 'add-recipe');
-    await enter(tester, 'recipe-yield', '3.5');
+    await enterKey(tester, 'recipe-yield', '3.5');
     await tapKey(tester, 'save-recipe');
 
     expect(find.text('Enter a name'), findsOneWidget);
@@ -136,19 +84,19 @@ void main() {
   uiTest('steps can be reordered, tools selected and added', (tester) async {
     await pumpScreen(tester);
     await tapKey(tester, 'add-recipe');
-    await enter(tester, 'recipe-name', 'Sheet pan chicken');
+    await enterKey(tester, 'recipe-name', 'Sheet pan chicken');
     await tapKey(tester, 'add-ingredient-line');
     await tester.tap(find.text('Chicken breast'));
     await tester.pumpAndSettle();
     final chickenId = await ingredientId('Chicken breast');
-    await enter(tester, 'line-grams-$chickenId', '500');
+    await enterKey(tester, 'line-grams-$chickenId', '500');
 
     await tapKey(tester, 'add-step');
     await tapKey(tester, 'add-step');
-    await enter(tester, 'step-technique-0', 'Season');
-    await enter(tester, 'step-technique-1', 'Roast');
-    await enter(tester, 'step-temp-1', '200');
-    await enter(tester, 'step-minutes-1', '25');
+    await enterKey(tester, 'step-technique-0', 'Season');
+    await enterKey(tester, 'step-technique-1', 'Roast');
+    await enterKey(tester, 'step-temp-1', '200');
+    await enterKey(tester, 'step-minutes-1', '25');
     await tapKey(tester, 'step-down-0');
 
     final oven = (await db.select(db.tools).get()).firstWhere(
@@ -196,8 +144,8 @@ void main() {
     expect(find.text('400 g raw'), findsOneWidget);
 
     await tapKey(tester, 'edit-recipe');
-    await enter(tester, 'recipe-name', 'Smoked chicken');
-    await enter(tester, 'recipe-yield', '0.5');
+    await enterKey(tester, 'recipe-name', 'Smoked chicken');
+    await enterKey(tester, 'recipe-yield', '0.5');
     await tapKey(tester, 'save-recipe');
 
     expect(find.text('Smoked chicken'), findsWidgets);

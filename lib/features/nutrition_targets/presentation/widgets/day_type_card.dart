@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/day_type.dart';
 import '../targets_form_controllers.dart';
-import 'number_fields.dart';
+import 'range_fields.dart';
 
 String dayTypeLabel(DayType type) =>
     type == DayType.training ? 'Training day' : 'Rest day';

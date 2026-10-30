@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../../core/nutrition/range.dart';
+import '../../../core/widgets/number_fields.dart';
 import '../domain/day_type.dart';
 import '../domain/nutrition_plan.dart';
 
@@ -36,12 +37,6 @@ class RangeControllers {
     max.dispose();
   }
 }
-
-String formatNumber(double v) =>
-    v == v.roundToDouble() ? v.toInt().toString() : v.toString();
-
-double? parseNumber(String text) =>
-    double.tryParse(text.trim().replaceAll(',', '.'));
 
 /// Owns every text controller of the targets form and maps them to the domain.
 class TargetsFormControllers {
