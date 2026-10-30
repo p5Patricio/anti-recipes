@@ -23,22 +23,23 @@ class DayTypeTargets {
 /// Maps weekday (1 = Monday .. 7 = Sunday) to a [DayType].
 class WeekSchedule {
   WeekSchedule(Map<int, DayType> days)
-      : days = Map.unmodifiable(days),
-        assert(
-          days.length == 7 && List.generate(7, (i) => i + 1).every(days.containsKey),
-          'schedule must define weekdays 1..7',
-        );
+    : days = Map.unmodifiable(days),
+      assert(
+        days.length == 7 &&
+            List.generate(7, (i) => i + 1).every(days.containsKey),
+        'schedule must define weekdays 1..7',
+      );
 
   /// Mon, Tue, Thu, Fri training; Wed, Sat, Sun rest.
   factory WeekSchedule.exampleDefaults() => WeekSchedule({
-        DateTime.monday: DayType.training,
-        DateTime.tuesday: DayType.training,
-        DateTime.wednesday: DayType.rest,
-        DateTime.thursday: DayType.training,
-        DateTime.friday: DayType.training,
-        DateTime.saturday: DayType.rest,
-        DateTime.sunday: DayType.rest,
-      });
+    DateTime.monday: DayType.training,
+    DateTime.tuesday: DayType.training,
+    DateTime.wednesday: DayType.rest,
+    DateTime.thursday: DayType.training,
+    DateTime.friday: DayType.training,
+    DateTime.saturday: DayType.rest,
+    DateTime.sunday: DayType.rest,
+  });
 
   final Map<int, DayType> days;
 
@@ -56,29 +57,29 @@ class NutritionPlan {
 
   /// Example values only; real user data is never committed.
   factory NutritionPlan.exampleDefaults() => const NutritionPlan(
-        proteinGPerDay: 160,
-        fatGPerDay: 70,
-        mealsPerDay: 3,
-        proteinPerMeal: Range(50, 55),
-        dayTypes: {
-          DayType.training: DayTypeTargets(
-            kcal: Range(2400, 2500),
-            carbs: Range(270, 305),
-            fiber: Range(30, 35),
-            waterMl: Range(3500, 4250),
-            fruitPortions: Range(1, 3),
-            vegPortions: Range(2, 3),
-          ),
-          DayType.rest: DayTypeTargets(
-            kcal: Range(2230, 2320),
-            carbs: Range(270, 305),
-            fiber: Range(30, 35),
-            waterMl: Range(3000, 3500),
-            fruitPortions: Range(1, 3),
-            vegPortions: Range(2, 3),
-          ),
-        },
-      );
+    proteinGPerDay: 160,
+    fatGPerDay: 70,
+    mealsPerDay: 3,
+    proteinPerMeal: Range(50, 55),
+    dayTypes: {
+      DayType.training: DayTypeTargets(
+        kcal: Range(2400, 2500),
+        carbs: Range(270, 305),
+        fiber: Range(30, 35),
+        waterMl: Range(3500, 4250),
+        fruitPortions: Range(1, 3),
+        vegPortions: Range(2, 3),
+      ),
+      DayType.rest: DayTypeTargets(
+        kcal: Range(2230, 2320),
+        carbs: Range(270, 305),
+        fiber: Range(30, 35),
+        waterMl: Range(3000, 3500),
+        fruitPortions: Range(1, 3),
+        vegPortions: Range(2, 3),
+      ),
+    },
+  );
 
   final double proteinGPerDay;
   final double fatGPerDay;

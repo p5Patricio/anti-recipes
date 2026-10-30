@@ -11,7 +11,7 @@ class RawIngredient {
 /// Cooked-yield math for a batch: raw inputs, measured cooked total weight.
 class YieldCalculator {
   YieldCalculator(Iterable<RawIngredient> ingredients, this.cookedTotalG)
-      : ingredients = List.unmodifiable(ingredients) {
+    : ingredients = List.unmodifiable(ingredients) {
     if (this.ingredients.isEmpty) {
       throw ArgumentError('At least one ingredient is required');
     }
@@ -33,7 +33,8 @@ class YieldCalculator {
 
   /// Nutrients of the whole batch (cooking does not change totals).
   Nutrients get totalNutrients => Nutrients.sum(
-      ingredients.map((i) => Nutrients.fromPer100g(i.per100, i.rawGrams)));
+    ingredients.map((i) => Nutrients.fromPer100g(i.per100, i.rawGrams)),
+  );
 
   /// cooked / raw total weight (e.g. 0.75 when meat loses 25% water).
   double get yieldFactor => cookedTotalG / rawTotalG;

@@ -54,7 +54,7 @@ RDD: on (default).
 - [x] T1 Bootstrap: flutter create (android), deps, folder structure, README, .gitignore,
       issue templates, logo asset, theme tokens; create public GitHub repo and push — route: delegated
 - [x] T2 Nutrition engine domain + unit tests — route: delegated
-- [ ] T3 drift database schema, DAOs, default seeds + tests — route: delegated
+- [x] T3 drift database schema, DAOs, default seeds + tests — route: delegated
 - [ ] T4 Profile & targets onboarding/settings — route: delegated
 - [ ] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
 - [ ] T6 Batch sessions, inventory and meal composer — route: delegated
@@ -82,6 +82,17 @@ RDD: on (default).
   WeekSchedule (all 7 weekdays) and Range (min <= max) instead of asserts; normalize
   dates to local calendar day in dayTypeFor; surface rest-day carb warning sensibly in UI.
 
+- Delivery: user pushes-only policy — orchestrator pushes branches; PRs not opened.
+  feat/nutrition-engine pushed.
+- T3: commits e2e800d (dart format of T2 files, formatting only) + c7fddc3 (drift schema,
+  DAOs, seeds) on feat/database. `build_runner build`: ok; `flutter analyze`: no issues;
+  `flutter test`: 37 passed (parent spot check re-run). sqlite3 ^3.7.0 dev dep for
+  in-memory tests (bundled hooks work on Windows). ~1050 authored lines (~300 seed data,
+  ~305 tests) → exceeds the 400 budget; no cohesive split (schema + DAOs + tests are one
+  unit) → size:exception recommended for this slice.
+  RDD: medium, consent declined by user → RDD-off path, writer self-verification + parent
+  spot check.
+
 ## Next step
-Push feat/nutrition-engine and open PR #1 (stacked-to-main), then T3 database on
-feat/database stacked on feat/nutrition-engine.
+Push feat/database, then T4 profile/targets on feat/profile-targets (include T2
+validation follow-ups).

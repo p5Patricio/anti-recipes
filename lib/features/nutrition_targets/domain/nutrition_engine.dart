@@ -72,7 +72,8 @@ class NutritionEngine {
     final dayType = schedule.dayTypeFor(date);
     final ranges = plan.targetsFor(dayType);
     final kcal = ranges.kcal.midpoint;
-    final carbs = (kcal -
+    final carbs =
+        (kcal -
             plan.proteinGPerDay * kcalPerGramProtein -
             plan.fatGPerDay * kcalPerGramFat) /
         kcalPerGramCarbs;
@@ -93,8 +94,10 @@ class NutritionEngine {
 
   /// Mean of the kcal targets across the seven weekdays.
   double weeklyAverageKcal() {
-    final total = schedule.days.values
-        .fold<double>(0, (sum, t) => sum + plan.targetsFor(t).kcal.midpoint);
+    final total = schedule.days.values.fold<double>(
+      0,
+      (sum, t) => sum + plan.targetsFor(t).kcal.midpoint,
+    );
     return total / schedule.days.length;
   }
 
