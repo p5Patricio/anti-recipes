@@ -23,6 +23,7 @@ class IngredientLibraryScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Ingredients')),
       floatingActionButton: FloatingActionButton(
         key: const Key('add-ingredient'),
+        heroTag: 'ingredients-fab',
         tooltip: 'New ingredient',
         onPressed: () => _open(context),
         child: const Icon(Icons.add),

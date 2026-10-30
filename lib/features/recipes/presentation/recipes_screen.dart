@@ -43,6 +43,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         key: const Key('add-recipe'),
+        heroTag: 'recipes-fab',
         tooltip: 'New recipe',
         onPressed: () => _push(const RecipeEditorScreen()),
         child: const Icon(Icons.add),

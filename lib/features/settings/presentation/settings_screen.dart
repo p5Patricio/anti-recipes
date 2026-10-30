@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../backup/presentation/backup_screen.dart';
 import '../../nutrition_targets/presentation/nutrition_targets_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -22,6 +23,18 @@ class SettingsScreen extends StatelessWidget {
                 MaterialPageRoute<void>(
                   builder: (_) => const NutritionTargetsScreen(),
                 ),
+              ),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              key: const Key('backup-tile'),
+              leading: const Icon(Icons.save_alt_outlined),
+              title: const Text('Backup'),
+              subtitle: const Text('Export or restore all your data as JSON'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
               ),
             ),
           ),
