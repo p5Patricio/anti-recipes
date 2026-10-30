@@ -2,7 +2,15 @@ enum RangeStatus { below, within, above }
 
 /// Inclusive numeric range.
 class Range {
-  const Range(this.min, this.max) : assert(min <= max, 'min must be <= max');
+  /// Throws [ArgumentError] when a bound is NaN or [min] is greater than [max].
+  Range(this.min, this.max) {
+    if (min.isNaN || max.isNaN) {
+      throw ArgumentError('Range bounds must not be NaN');
+    }
+    if (min > max) {
+      throw ArgumentError('Range min ($min) must be <= max ($max)');
+    }
+  }
 
   final double min;
   final double max;
