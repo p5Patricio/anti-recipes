@@ -59,7 +59,7 @@ RDD: on (default).
 - [x] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
 - [x] T6 Batch sessions, inventory and meal composer — route: delegated
 - [x] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
-- [ ] T8 Batch planner + consolidated shopping list — route: delegated
+- [x] T8 Batch planner + consolidated shopping list — route: delegated
 - [ ] T9 JSON export/import — route: delegated
 
 ## Acceptance criteria
@@ -128,5 +128,13 @@ RDD: on (default).
   size:exception recommended. RDD: medium, consent declined.
   Note: single-value targets (protein/fat/carbs) count as within at +-5%.
 
+- feat/daily-dashboard pushed.
+- T8: commit 88b278d on feat/batch-planner. Pure-domain BatchPlanner (per-day targets summed,
+  2x2 protein/carb cross-contribution solve with clamping, yield-aware raw weights rounded up
+  to 5 g, fresh and leftover deductions), ShoppingList (aggregate by category, serving counts,
+  text export), Plan tab UI, shopping checklist, "Start cooking" opens prefilled LogBatchScreen.
+  `flutter analyze`: no issues; `flutter test`: 195 passed (parent spot check). ~2300 authored
+  lines -> size:exception recommended. RDD: medium, consent declined.
+
 ## Next step
-Push feat/daily-dashboard, then T8 batch planner + shopping list on feat/batch-planner.
+Push feat/batch-planner, then T9 JSON export/import on feat/export-import.

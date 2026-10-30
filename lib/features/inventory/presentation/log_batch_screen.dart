@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
+import '../../../core/database/date_utils.dart';
 import '../../../core/formatting/date_format.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/number_fields.dart';
@@ -13,10 +14,18 @@ import 'widgets/recipe_picker_sheet.dart';
 /// Highest yield factor the recipe editor accepts; mirrors its validation.
 const double _maxYieldFactor = 3;
 
+/// A recipe to add to the batch right away, with the raw weight to cook.
+class BatchPrefillItem {
+  const BatchPrefillItem({required this.recipeId, required this.rawTotalG});
+
+  final int recipeId;
+  final double rawTotalG;
+}
+
 class _ItemState {
-  _ItemState(this.summary)
+  _ItemState(this.summary, {double? rawTotalG})
     : raw = TextEditingController(
-        text: formatNumber(summary.nutrition.rawTotalG),
+        text: formatNumber(rawTotalG ?? summary.nutrition.rawTotalG),
       ),
       cooked = TextEditingController();
 
@@ -43,8 +52,20 @@ class _ItemState {
 }
 
 /// Records a cooking session: dates covered and the batch items produced.
+///
+/// A plan can open it prefilled ([prefillItems], [coversFrom], [coversTo]) so
+/// only the measured cooked weights remain to be entered.
 class LogBatchScreen extends ConsumerStatefulWidget {
-  const LogBatchScreen({super.key});
+  const LogBatchScreen({
+    super.key,
+    this.prefillItems = const [],
+    this.coversFrom,
+    this.coversTo,
+  });
+
+  final List<BatchPrefillItem> prefillItems;
+  final DateTime? coversFrom;
+  final DateTime? coversTo;
 
   @override
   ConsumerState<LogBatchScreen> createState() => _LogBatchScreenState();
@@ -63,14 +84,39 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
   late DateTime _coversTo;
   bool _itemsError = false;
 
+  /// Prefilled items waiting for the recipe list to load.
+  late List<BatchPrefillItem>? _pendingPrefill = widget.prefillItems.isEmpty
+      ? null
+      : widget.prefillItems;
+
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     _cookedOn = today;
-    _coversFrom = today;
-    _coversTo = today.add(const Duration(days: 3));
+    _coversFrom = widget.coversFrom == null
+        ? today
+        : dateOnly(widget.coversFrom!);
+    _coversTo = widget.coversTo == null
+        ? _coversFrom.add(const Duration(days: 3))
+        : dateOnly(widget.coversTo!);
+  }
+
+  /// Adds the prefilled items once their recipes are known; skips recipes
+  /// that no longer exist.
+  void _applyPrefill(List<RecipeSummary> summaries) {
+    final pending = _pendingPrefill;
+    if (pending == null) return;
+    _pendingPrefill = null;
+    for (final p in pending) {
+      final summary = summaries
+          .where((s) => s.recipe.id == p.recipeId)
+          .firstOrNull;
+      if (summary != null) {
+        _items.add(_ItemState(summary, rawTotalG: p.rawTotalG));
+      }
+    }
   }
 
   @override
@@ -174,7 +220,8 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     // Keeps the stream loaded so the picker sheet can read it synchronously.
-    ref.watch(recipeSummariesProvider);
+    final summaries = ref.watch(recipeSummariesProvider).value;
+    if (summaries != null) _applyPrefill(summaries);
     return Scaffold(
       appBar: AppBar(title: const Text('Log batch cooked')),
       body: Form(
