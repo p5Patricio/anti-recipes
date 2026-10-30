@@ -52,6 +52,18 @@ class RecipeDraft {
   final List<int> toolIds;
 }
 
+/// One raw ingredient line with its ingredient's nutrients per 100 g.
+class RecipeLine {
+  const RecipeLine({
+    required this.recipeId,
+    required this.per100,
+    required this.rawG,
+  });
+  final int recipeId;
+  final Nutrients per100;
+  final double rawG;
+}
+
 class RecipeDetail {
   const RecipeDetail({
     required this.recipe,
@@ -171,6 +183,54 @@ class RecipesDao extends DatabaseAccessor<AppDatabase> with _$RecipesDaoMixin {
   /// Fails with a foreign key error while a batch item still references it.
   Future<int> deleteRecipe(int id) =>
       (delete(recipes)..where((r) => r.id.equals(id))).go();
+
+  /// Whether a batch item references the recipe (so it cannot be deleted).
+  Future<bool> isRecipeInUse(int id) async {
+    final db = attachedDatabase;
+    final rows =
+        await (db.select(db.batchItems)
+              ..where((b) => b.recipeId.equals(id))
+              ..limit(1))
+            .get();
+    return rows.isNotEmpty;
+  }
+
+  /// Whether a recipe line or a logged meal uses the ingredient.
+  Future<bool> isIngredientInUse(int id) async {
+    final db = attachedDatabase;
+    final inRecipes =
+        await (select(recipeIngredients)
+              ..where((r) => r.ingredientId.equals(id))
+              ..limit(1))
+            .get();
+    if (inRecipes.isNotEmpty) return true;
+    final inMeals =
+        await (db.select(db.mealComponents)
+              ..where((m) => m.ingredientId.equals(id))
+              ..limit(1))
+            .get();
+    return inMeals.isNotEmpty;
+  }
+
+  /// Every ingredient line of every recipe, for list-level macro summaries.
+  Stream<List<RecipeLine>> watchRecipeLines() => select(recipeIngredients)
+      .join([
+        innerJoin(
+          ingredients,
+          ingredients.id.equalsExp(recipeIngredients.ingredientId),
+        ),
+      ])
+      .watch()
+      .map(
+        (rows) => [
+          for (final r in rows)
+            RecipeLine(
+              recipeId: r.read(recipeIngredients.recipeId)!,
+              per100: r.readTable(ingredients).per100g,
+              rawG: r.read(recipeIngredients.rawG)!,
+            ),
+        ],
+      );
 
   Future<RecipeDetail?> getRecipeDetail(int id) async {
     final recipe = await (select(

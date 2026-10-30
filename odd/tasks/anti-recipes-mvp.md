@@ -56,7 +56,7 @@ RDD: on (default).
 - [x] T2 Nutrition engine domain + unit tests — route: delegated
 - [x] T3 drift database schema, DAOs, default seeds + tests — route: delegated
 - [x] T4 Profile & targets onboarding/settings — route: delegated
-- [ ] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
+- [x] T5 Recipes CRUD (ingredients, tools, steps, yields) — route: delegated
 - [ ] T6 Batch sessions, inventory and meal composer — route: delegated
 - [ ] T7 Daily dashboard (meals, hydration, fiber, fruit/veg) — route: delegated
 - [ ] T8 Batch planner + consolidated shopping list — route: delegated
@@ -101,5 +101,14 @@ RDD: on (default).
   cohesive UI unit → size:exception recommended. RDD: medium, consent declined.
   T2 follow-ups resolved.
 
+- feat/profile-targets pushed.
+- T5: commit 7a0a699 on feat/recipes. Recipes list with kind filters and per-100 g
+  cooked macros, recipe editor (ingredients, tools, ordered steps, yield factor, live
+  summary), detail view, ingredient library with kcal-vs-macros warning, safe deletes.
+  `flutter analyze`: no issues; `flutter test`: 79 passed (parent spot check).
+  ~2350 authored lines → size:exception recommended. RDD: medium, consent declined.
+  Follow-ups: move NumberField helpers from nutrition_targets/presentation to
+  core/widgets; drift stream widget tests must unmount the tree inside the test body.
+
 ## Next step
-Push feat/profile-targets, then T5 recipes CRUD on feat/recipes.
+Push feat/recipes, then T6 batch sessions, inventory and meal composer on feat/inventory.
