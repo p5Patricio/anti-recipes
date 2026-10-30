@@ -12,20 +12,26 @@ import 'meal_log_providers.dart';
 
 const _slots = [1, 2, 3];
 
-/// Opens the composer for [date] (default today) on the first empty meal slot.
+/// Opens the composer for [date] (default today) on [slot], or on the first
+/// empty meal slot when none is given.
 Future<void> openComposeMeal(
   BuildContext context,
   WidgetRef ref, {
   DateTime? date,
+  int? slot,
 }) async {
   final day = dateOnly(date ?? DateTime.now());
   final navigator = Navigator.of(context);
-  final meals = await ref.read(mealLogDaoProvider).loadDay(day);
-  final taken = {for (final m in meals) m.slot};
-  final slot = _slots.firstWhere((s) => !taken.contains(s), orElse: () => 1);
+  var target = slot;
+  if (target == null) {
+    final meals = await ref.read(mealLogDaoProvider).loadDay(day);
+    final taken = {for (final m in meals) m.slot};
+    target = _slots.firstWhere((s) => !taken.contains(s), orElse: () => 1);
+  }
+  final opened = target;
   await navigator.push(
     MaterialPageRoute<void>(
-      builder: (_) => ComposeMealScreen(date: day, slot: slot),
+      builder: (_) => ComposeMealScreen(date: day, slot: opened),
     ),
   );
 }

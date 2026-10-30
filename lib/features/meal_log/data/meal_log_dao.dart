@@ -56,11 +56,27 @@ class MealView {
   Nutrients get nutrients => Nutrients.sum(components.map((c) => c.nutrients));
 }
 
+/// Fruit and vegetable portions logged for one day.
+class DayServings {
+  const DayServings({this.fruit = 0, this.veg = 0});
+
+  final int fruit;
+  final int veg;
+
+  @override
+  bool operator ==(Object other) =>
+      other is DayServings && other.fruit == fruit && other.veg == veg;
+
+  @override
+  int get hashCode => Object.hash(fruit, veg);
+}
+
 @DriftAccessor(
   tables: [
     MealLogs,
     MealComponents,
     HydrationLogs,
+    DayLogs,
     BatchItems,
     Recipes,
     RecipeIngredients,
@@ -113,7 +129,8 @@ class MealLogDao extends DatabaseAccessor<AppDatabase> with _$MealLogDaoMixin {
   )..where((m) => m.date.equals(dateOnly(date)) & m.slot.equals(slot))).go();
 
   Stream<List<MealView>> watchDay(DateTime date) => customSelect(
-    'SELECT 1',
+    // Drift shares streams by SQL text alone, so every watcher needs its own.
+    'SELECT 1 AS watch_day',
     readsFrom: {
       mealLogs,
       mealComponents,
@@ -222,4 +239,49 @@ class MealLogDao extends DatabaseAccessor<AppDatabase> with _$MealLogDaoMixin {
         .watchSingle()
         .map((row) => row.read(total) ?? 0);
   }
+
+  /// Removes the most recent hydration entry of [date]; returns the removed
+  /// amount in ml, or null when the day has none.
+  Future<int?> undoLastHydration(DateTime date) => transaction(() async {
+    final last =
+        await (select(hydrationLogs)
+              ..where((h) => h.date.equals(dateOnly(date)))
+              ..orderBy([(h) => OrderingTerm.desc(h.id)])
+              ..limit(1))
+            .getSingleOrNull();
+    if (last == null) return null;
+    await (delete(hydrationLogs)..where((h) => h.id.equals(last.id))).go();
+    return last.ml;
+  });
+
+  Stream<DayServings> watchServings(DateTime date) =>
+      (select(
+        dayLogs,
+      )..where((d) => d.date.equals(dateOnly(date)))).watchSingleOrNull().map(
+        (row) => row == null
+            ? const DayServings()
+            : DayServings(fruit: row.fruitPortions, veg: row.vegPortions),
+      );
+
+  /// Adds the (possibly negative) deltas to the day's portions, never going
+  /// below zero, creating the row on first use.
+  Future<void> adjustServings(
+    DateTime date, {
+    int fruitDelta = 0,
+    int vegDelta = 0,
+  }) => transaction(() async {
+    final day = dateOnly(date);
+    final row = await (select(
+      dayLogs,
+    )..where((d) => d.date.equals(day))).getSingleOrNull();
+    final fruit = ((row?.fruitPortions ?? 0) + fruitDelta).clamp(0, 999);
+    final veg = ((row?.vegPortions ?? 0) + vegDelta).clamp(0, 999);
+    await into(dayLogs).insertOnConflictUpdate(
+      DayLogsCompanion.insert(
+        date: day,
+        fruitPortions: Value(fruit),
+        vegPortions: Value(veg),
+      ),
+    );
+  });
 }

@@ -45,7 +45,8 @@ class TargetsDao extends DatabaseAccessor<AppDatabase> with _$TargetsDaoMixin {
 
   /// Re-emits whenever the profile or any day-type row changes.
   Stream<NutritionPlan?> watchPlan() => customSelect(
-    'SELECT 1',
+    // Drift shares streams by SQL text alone, so every watcher needs its own.
+    'SELECT 1 AS watch_plan',
     readsFrom: {userProfiles, dayTypeTargetRows},
   ).watch().asyncMap((_) => loadPlan());
 

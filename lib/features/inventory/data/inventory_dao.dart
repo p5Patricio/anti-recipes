@@ -116,7 +116,8 @@ class InventoryDao extends DatabaseAccessor<AppDatabase>
   /// Stock per batch item, newest batch first. `consumedG` and `remainingG`
   /// are always derived from logged meal components, never stored.
   Stream<List<StockItem>> watchStock() => customSelect(
-    'SELECT 1',
+    // Drift shares streams by SQL text alone, so every watcher needs its own.
+    'SELECT 1 AS watch_stock',
     readsFrom: {
       batchSessions,
       batchItems,

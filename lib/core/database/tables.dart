@@ -171,3 +171,15 @@ class HydrationLogs extends Table {
   IntColumn get ml => integer()();
   DateTimeColumn get loggedAt => dateTime().withDefault(currentDateAndTime)();
 }
+
+/// Per-day counters that are not tied to a logged meal (fruit and vegetable
+/// portions). A row exists only once the day was touched.
+class DayLogs extends Table {
+  /// Local midnight of the calendar day (see `dateOnly`).
+  DateTimeColumn get date => dateTime()();
+  IntColumn get fruitPortions => integer().withDefault(const Constant(0))();
+  IntColumn get vegPortions => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {date};
+}
