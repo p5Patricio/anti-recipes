@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n.dart';
 import '../theme/app_colors.dart';
 
 /// Clean placeholder for tabs whose feature is not built yet.
@@ -37,7 +38,7 @@ class ComingSoonView extends StatelessWidget {
               Text(title, style: text.headlineSmall),
               const SizedBox(height: 8),
               Text(
-                'Coming soon',
+                context.l10n.coreWidgetsComingSoon,
                 style: text.labelLarge?.copyWith(color: AppColors.inkRedLight),
               ),
               const SizedBox(height: 8),

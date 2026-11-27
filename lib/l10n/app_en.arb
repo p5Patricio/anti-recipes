@@ -9,5 +9,241 @@
   "settingsLanguageTitle": "Language",
   "settingsLanguageSystem": "System default",
   "settingsLanguageEnglish": "English",
-  "settingsLanguageSpanish": "Español"
+  "settingsLanguageSpanish": "Español",
+  "coreWidgetsComingSoon": "Coming soon",
+  "coreWidgetsEnterNumber": "Enter a number",
+  "coreWidgetsMustBeAboveZero": "Must be above 0",
+  "coreWidgetsMustBeZeroOrMore": "Must be 0 or more",
+  "recipesTitle": "Recipes",
+  "recipesIngredientsTooltip": "Ingredients",
+  "recipesNewRecipeTooltip": "New recipe",
+  "recipesFilterAll": "All",
+  "recipesLoadError": "Could not load recipes: {error}",
+  "@recipesLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesEmptyFilteredTitle": "Nothing in this group yet",
+  "recipesEmptyFilteredBody": "Pick another group or add a recipe of this kind.",
+  "recipesEmptyTitle": "No recipes yet",
+  "recipesEmptyBody": "Tap + to create your first recipe and start batch cooking.",
+  "recipesKindProteinBase": "Protein base",
+  "recipesKindCarbBase": "Carb base",
+  "recipesKindSauce": "Sauce",
+  "recipesKindVegetable": "Vegetable",
+  "recipesKindComplete": "Complete",
+  "recipesCardKindYield": "{kind} · yield {yieldFactor}",
+  "@recipesCardKindYield": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "yieldFactor": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesPer100Cooked": "Per 100 g cooked",
+  "recipesMacroLine": "{kcal} kcal · P {protein} · F {fat} · C {carbs} · Fiber {fiber}",
+  "@recipesMacroLine": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      },
+      "fiber": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryTitle": "Summary",
+  "recipesSummaryRawWeight": "Raw weight: {grams} g",
+  "@recipesSummaryRawWeight": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryCookedWeight": "Expected cooked weight: {grams} g",
+  "@recipesSummaryCookedWeight": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryTotal": "Total",
+  "recipesIngredientsTitle": "Ingredients",
+  "recipesNewIngredientTooltip": "New ingredient",
+  "recipesIngredientsLoadError": "Could not load ingredients: {error}",
+  "@recipesIngredientsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesIngredientsEmpty": "No ingredients yet. Tap + to add one.",
+  "recipesIngredientSubtitle": "{category} · {kcal} kcal · P {protein} · F {fat} · C {carbs} per 100 g raw",
+  "@recipesIngredientSubtitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesCategoryProtein": "protein",
+  "recipesCategoryCarb": "carb",
+  "recipesCategoryVegetable": "vegetable",
+  "recipesCategoryFruit": "fruit",
+  "recipesCategoryFat": "fat",
+  "recipesCategoryOther": "other",
+  "recipesEditIngredientTitle": "Edit ingredient",
+  "recipesNewIngredientTitle": "New ingredient",
+  "recipesDeleteTooltip": "Delete",
+  "recipesFieldName": "Name",
+  "recipesFieldCategory": "Category",
+  "recipesPer100Raw": "Per 100 g raw",
+  "recipesFieldCalories": "Calories",
+  "recipesFieldProtein": "Protein",
+  "recipesFieldFat": "Fat",
+  "recipesFieldCarbs": "Carbs",
+  "recipesFieldFiber": "Fiber",
+  "recipesEnergyWarning": "Calories differ from protein, fat and carbs by more than 15% (they add up to about {kcal} kcal). You can still save.",
+  "@recipesEnergyWarning": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesCountsAsFruit": "Counts as a fruit portion",
+  "recipesCountsAsVegetable": "Counts as a vegetable portion",
+  "recipesServingLabel": "Serving size (optional)",
+  "recipesSaveIngredient": "Save ingredient",
+  "recipesEnterName": "Enter a name",
+  "recipesIngredientNameTaken": "An ingredient with this name already exists",
+  "recipesSaveIngredientError": "Could not save ingredient: {error}",
+  "@recipesSaveIngredientError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteIngredientTitle": "Delete \"{name}\"?",
+  "@recipesDeleteIngredientTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteIngredientMessage": "The ingredient will be removed from your library.",
+  "recipesIngredientInUse": "This ingredient is used in a recipe or a logged meal, so it cannot be deleted.",
+  "recipesCancel": "Cancel",
+  "recipesDelete": "Delete",
+  "recipesNewRecipeTitle": "New recipe",
+  "recipesEditRecipeTitle": "Edit recipe",
+  "recipesLoadRecipeError": "Could not load recipe: {error}",
+  "@recipesLoadRecipeError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesRecipeMissing": "This recipe no longer exists.",
+  "recipesFieldKind": "Kind",
+  "recipesYieldLabel": "Expected yield factor (cooked / raw)",
+  "recipesYieldHelper": "Cooked weight divided by raw weight. Meat shrinks (about 0.75); rice and pasta absorb water (about 2.5).",
+  "recipesYieldRange": "Must be above 0 and at most 3",
+  "recipesLineRawLabel": "Raw",
+  "recipesRemoveIngredientTooltip": "Remove ingredient",
+  "recipesLinesError": "Add at least one ingredient",
+  "recipesAddIngredient": "Add ingredient",
+  "recipesSectionTools": "Tools",
+  "recipesAddTool": "Add tool",
+  "recipesSectionSteps": "Steps",
+  "recipesAddStep": "Add step",
+  "recipesFieldNotes": "Notes (optional)",
+  "recipesSaveRecipe": "Save recipe",
+  "recipesDeleteRecipe": "Delete recipe",
+  "recipesSaveRecipeError": "Could not save recipe: {error}",
+  "@recipesSaveRecipeError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteRecipeTitle": "Delete \"{name}\"?",
+  "@recipesDeleteRecipeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteRecipeMessage": "The recipe and its steps will be removed. This cannot be undone.",
+  "recipesRecipeInUse": "This recipe is used by a cooked batch, so it cannot be deleted.",
+  "recipesToolNameLabel": "Tool name",
+  "recipesAddConfirm": "Add",
+  "recipesDetailTitleFallback": "Recipe",
+  "recipesEditTooltip": "Edit",
+  "recipesRawGramsLine": "{grams} g raw",
+  "@recipesRawGramsLine": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesNoToolsSelected": "No tools selected.",
+  "recipesNoSteps": "No steps yet.",
+  "recipesSectionNotes": "Notes",
+  "recipesStepTitle": "Step {number}",
+  "@recipesStepTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesMoveUp": "Move up",
+  "recipesMoveDown": "Move down",
+  "recipesRemoveStep": "Remove step",
+  "recipesFieldTechnique": "Technique",
+  "recipesDescribeStep": "Describe the step",
+  "recipesFieldTemp": "Temp",
+  "recipesFieldTime": "Time",
+  "recipesFieldToolOptional": "Tool (optional)",
+  "recipesToolNone": "None",
+  "recipesWholeNumber": "Whole number",
+  "recipesSearchIngredients": "Search ingredients",
+  "recipesNoMatchingIngredients": "No matching ingredients"
 }

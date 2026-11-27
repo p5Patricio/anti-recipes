@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/ingredient_nutrients.dart';
+import '../../../core/l10n/l10n.dart';
 import '../data/recipes_dao.dart';
 import '../domain/recipe_nutrition.dart';
 import '../domain/yield_calculator.dart';
@@ -35,11 +36,9 @@ class RecipeDetailScreen extends ConsumerWidget {
     final dao = ref.read(recipesDaoProvider);
     final done = await confirmAndDelete(
       context,
-      title: 'Delete "${detail.recipe.name}"?',
-      message:
-          'The recipe and its steps will be removed. This cannot be undone.',
-      blockedMessage:
-          'This recipe is used by a cooked batch, so it cannot be deleted.',
+      title: context.l10n.recipesDeleteRecipeTitle(detail.recipe.name),
+      message: context.l10n.recipesDeleteRecipeMessage,
+      blockedMessage: context.l10n.recipesRecipeInUse,
       inUse: () => dao.isRecipeInUse(recipeId),
       delete: () => dao.deleteRecipe(recipeId),
     );
@@ -52,18 +51,20 @@ class RecipeDetailScreen extends ConsumerWidget {
     final data = detail.value;
     return Scaffold(
       appBar: AppBar(
-        title: Text(data?.recipe.name ?? 'Recipe'),
+        title: Text(
+          data?.recipe.name ?? context.l10n.recipesDetailTitleFallback,
+        ),
         actions: [
           if (data != null) ...[
             IconButton(
               key: const Key('edit-recipe'),
-              tooltip: 'Edit',
+              tooltip: context.l10n.recipesEditTooltip,
               icon: const Icon(Icons.edit_outlined),
               onPressed: () => _edit(context),
             ),
             IconButton(
               key: const Key('delete-recipe'),
-              tooltip: 'Delete',
+              tooltip: context.l10n.recipesDeleteTooltip,
               icon: const Icon(Icons.delete_outline),
               onPressed: () => _delete(context, ref, data),
             ),
@@ -72,9 +73,10 @@ class RecipeDetailScreen extends ConsumerWidget {
       ),
       body: detail.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Could not load recipe: $e')),
+        error: (e, _) =>
+            Center(child: Text(context.l10n.recipesLoadRecipeError('$e'))),
         data: (d) => d == null
-            ? const Center(child: Text('This recipe no longer exists.'))
+            ? Center(child: Text(context.l10n.recipesRecipeMissing))
             : _DetailBody(d),
       ),
     );
@@ -89,6 +91,7 @@ class _DetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final recipe = detail.recipe;
     // A step may use a tool that is not in the recipe's tool list.
     final toolNames = {
@@ -102,32 +105,35 @@ class _DetailBody extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          '${recipe.kind.label} · yield ${recipe.expectedYieldFactor.toStringAsFixed(2)}',
+          l10n.recipesCardKindYield(
+            recipe.kind.localizedLabel(l10n),
+            recipe.expectedYieldFactor.toStringAsFixed(2),
+          ),
           style: text.titleSmall,
         ),
         const SizedBox(height: 12),
         RecipeSummaryCard(nutrition),
         const SizedBox(height: 16),
-        Text('Ingredients', style: text.titleMedium),
+        Text(l10n.recipesIngredientsTitle, style: text.titleMedium),
         for (final l in detail.ingredients)
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
             title: Text(l.ingredient.name),
-            trailing: Text('${l.rawG.round()} g raw'),
+            trailing: Text(l10n.recipesRawGramsLine(l.rawG.round())),
           ),
         const SizedBox(height: 16),
-        Text('Tools', style: text.titleMedium),
+        Text(l10n.recipesSectionTools, style: text.titleMedium),
         if (detail.tools.isEmpty)
-          const Text('No tools selected.')
+          Text(l10n.recipesNoToolsSelected)
         else
           Wrap(
             spacing: 8,
             children: [for (final t in detail.tools) Chip(label: Text(t.name))],
           ),
         const SizedBox(height: 16),
-        Text('Steps', style: text.titleMedium),
-        if (detail.steps.isEmpty) const Text('No steps yet.'),
+        Text(l10n.recipesSectionSteps, style: text.titleMedium),
+        if (detail.steps.isEmpty) Text(l10n.recipesNoSteps),
         for (final (i, s) in detail.steps.indexed)
           ListTile(
             contentPadding: EdgeInsets.zero,
@@ -144,7 +150,7 @@ class _DetailBody extends ConsumerWidget {
           ),
         if (recipe.notes != null && recipe.notes!.isNotEmpty) ...[
           const SizedBox(height: 16),
-          Text('Notes', style: text.titleMedium),
+          Text(l10n.recipesSectionNotes, style: text.titleMedium),
           Text(recipe.notes!),
         ],
       ],

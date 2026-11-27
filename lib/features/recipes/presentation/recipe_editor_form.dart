@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/ingredient_nutrients.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/number_fields.dart';
 import '../data/recipes_dao.dart';
@@ -19,10 +20,10 @@ import 'widgets/step_editor_card.dart';
 
 const double _maxYieldFactor = 3;
 
-String? _yieldValidator(String? value) {
+String? _yieldValidator(AppLocalizations l10n, String? value) {
   final n = parseNumber(value ?? '');
-  if (n == null) return 'Enter a number';
-  if (n <= 0 || n > _maxYieldFactor) return 'Must be above 0 and at most 3';
+  if (n == null) return l10n.coreWidgetsEnterNumber;
+  if (n <= 0 || n > _maxYieldFactor) return l10n.recipesYieldRange;
   return null;
 }
 
@@ -171,6 +172,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+    final l10n = context.l10n;
     final valid = _formKey.currentState!.validate();
     setState(() => _linesError = _lines.isEmpty);
     if (!valid || _lines.isEmpty) return;
@@ -204,7 +206,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
       navigator.pop();
     } catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Could not save recipe: $e')),
+        SnackBar(content: Text(l10n.recipesSaveRecipeError('$e'))),
       );
     }
   }
@@ -215,11 +217,9 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
     final id = widget.initial!.recipe.id;
     final done = await confirmAndDelete(
       context,
-      title: 'Delete "${widget.initial!.recipe.name}"?',
-      message:
-          'The recipe and its steps will be removed. This cannot be undone.',
-      blockedMessage:
-          'This recipe is used by a cooked batch, so it cannot be deleted.',
+      title: context.l10n.recipesDeleteRecipeTitle(widget.initial!.recipe.name),
+      message: context.l10n.recipesDeleteRecipeMessage,
+      blockedMessage: context.l10n.recipesRecipeInUse,
       inUse: () => dao.isRecipeInUse(id),
       delete: () => dao.deleteRecipe(id),
     );
@@ -229,6 +229,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final tools = ref.watch(toolsProvider).value ?? const <Tool>[];
     // Keeps the stream loaded so the picker sheet can read it synchronously.
     ref.watch(ingredientsProvider);
@@ -245,18 +246,21 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
               key: const Key('recipe-name'),
               controller: _name,
               textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: l10n.recipesFieldName),
               validator: (v) =>
-                  (v ?? '').trim().isEmpty ? 'Enter a name' : null,
+                  (v ?? '').trim().isEmpty ? l10n.recipesEnterName : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<RecipeKind>(
               key: const Key('recipe-kind'),
               initialValue: _kind,
-              decoration: const InputDecoration(labelText: 'Kind'),
+              decoration: InputDecoration(labelText: l10n.recipesFieldKind),
               items: [
                 for (final k in RecipeKind.values)
-                  DropdownMenuItem(value: k, child: Text(k.label)),
+                  DropdownMenuItem(
+                    value: k,
+                    child: Text(k.localizedLabel(l10n)),
+                  ),
               ],
               onChanged: (k) => setState(() => _kind = k ?? _kind),
             ),
@@ -267,17 +271,15 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
-                labelText: 'Expected yield factor (cooked / raw)',
-                helperText:
-                    'Cooked weight divided by raw weight. Meat shrinks '
-                    '(about 0.75); rice and pasta absorb water (about 2.5).',
+              decoration: InputDecoration(
+                labelText: l10n.recipesYieldLabel,
+                helperText: l10n.recipesYieldHelper,
                 helperMaxLines: 3,
               ),
-              validator: _yieldValidator,
+              validator: (v) => _yieldValidator(l10n, v),
             ),
             const SizedBox(height: 20),
-            Text('Ingredients', style: text.titleMedium),
+            Text(l10n.recipesIngredientsTitle, style: text.titleMedium),
             const SizedBox(height: 8),
             for (final (i, l) in _lines.indexed)
               Padding(
@@ -298,14 +300,14 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
                       child: NumberField(
                         key: Key('line-grams-${l.ingredient.id}'),
                         controller: l.grams,
-                        label: 'Raw',
+                        label: l10n.recipesLineRawLabel,
                         suffix: 'g',
                         validator: numberValidator(positive: true),
                       ),
                     ),
                     IconButton(
                       key: Key('remove-line-${l.ingredient.id}'),
-                      tooltip: 'Remove ingredient',
+                      tooltip: l10n.recipesRemoveIngredientTooltip,
                       icon: const Icon(Icons.close),
                       onPressed: () => _removeLine(i),
                     ),
@@ -316,7 +318,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  'Add at least one ingredient',
+                  l10n.recipesLinesError,
                   key: const Key('lines-error'),
                   style: text.bodySmall?.copyWith(color: AppColors.error),
                 ),
@@ -327,13 +329,13 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
                 key: const Key('add-ingredient-line'),
                 onPressed: _addLine,
                 icon: const Icon(Icons.add),
-                label: const Text('Add ingredient'),
+                label: Text(l10n.recipesAddIngredient),
               ),
             ),
             const SizedBox(height: 16),
             RecipeSummaryCard(_nutrition()),
             const SizedBox(height: 20),
-            Text('Tools', style: text.titleMedium),
+            Text(l10n.recipesSectionTools, style: text.titleMedium),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -350,13 +352,13 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
                 ActionChip(
                   key: const Key('add-tool'),
                   avatar: const Icon(Icons.add, size: 18),
-                  label: const Text('Add tool'),
+                  label: Text(l10n.recipesAddTool),
                   onPressed: () => _addTool(tools),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Text('Steps', style: text.titleMedium),
+            Text(l10n.recipesSectionSteps, style: text.titleMedium),
             const SizedBox(height: 8),
             for (final (i, s) in _steps.indexed)
               StepEditorCard(
@@ -380,7 +382,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
                 key: const Key('add-step'),
                 onPressed: () => setState(() => _steps.add(_StepState())),
                 icon: const Icon(Icons.add),
-                label: const Text('Add step'),
+                label: Text(l10n.recipesAddStep),
               ),
             ),
             const SizedBox(height: 20),
@@ -389,13 +391,13 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
               controller: _notes,
               minLines: 2,
               maxLines: 5,
-              decoration: const InputDecoration(labelText: 'Notes (optional)'),
+              decoration: InputDecoration(labelText: l10n.recipesFieldNotes),
             ),
             const SizedBox(height: 20),
             FilledButton(
               key: const Key('save-recipe'),
               onPressed: _save,
-              child: const Text('Save recipe'),
+              child: Text(l10n.recipesSaveRecipe),
             ),
             if (widget.initial != null) ...[
               const SizedBox(height: 8),
@@ -403,7 +405,7 @@ class _RecipeEditorFormState extends ConsumerState<RecipeEditorForm> {
                 key: const Key('delete-recipe-editor'),
                 onPressed: _delete,
                 style: TextButton.styleFrom(foregroundColor: AppColors.error),
-                child: const Text('Delete recipe'),
+                child: Text(l10n.recipesDeleteRecipe),
               ),
             ],
           ],
@@ -437,24 +439,26 @@ class _AddToolDialogState extends State<_AddToolDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add tool'),
+      title: Text(context.l10n.recipesAddTool),
       content: TextField(
         key: const Key('new-tool-name'),
         controller: _controller,
         autofocus: true,
         textCapitalization: TextCapitalization.sentences,
-        decoration: const InputDecoration(labelText: 'Tool name'),
+        decoration: InputDecoration(
+          labelText: context.l10n.recipesToolNameLabel,
+        ),
         onSubmitted: (_) => _submit(),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.recipesCancel),
         ),
         FilledButton(
           key: const Key('confirm-add-tool'),
           onPressed: _submit,
-          child: const Text('Add'),
+          child: Text(context.l10n.recipesAddConfirm),
         ),
       ],
     );
