@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/formatting/date_format.dart';
 import '../../../../core/formatting/grams_format.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/nutrients.dart';
 import '../../../../core/nutrition/range.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../meal_log/presentation/widgets/day_header.dart';
 import '../../../meal_log/presentation/widgets/status_style.dart';
 import '../../../recipes/presentation/widgets/macro_line.dart';
+import '../../../inventory/presentation/localized_dates.dart';
 import '../../domain/batch_plan.dart';
 import 'role_picker_card.dart';
-
-String _need(double kcal, double protein, double carbs) =>
-    '${kcal.round()} kcal · P ${protein.round()} g · C ${carbs.round()} g';
 
 /// What one day asks for against what the plan puts on the plate.
 class DayNeedCard extends StatelessWidget {
@@ -34,6 +32,7 @@ class DayNeedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
@@ -44,20 +43,31 @@ class DayNeedCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(weekdayDate(need.date), style: text.titleSmall),
+                  child: Text(
+                    localizedWeekdayDate(context, need.date),
+                    style: text.titleSmall,
+                  ),
                 ),
                 DayTypeBadge(need.dayType),
               ],
             ),
             const SizedBox(height: 6),
             Text(
-              'Need ${_need(need.kcal, need.proteinG, need.carbsG)}',
+              l10n.plannerNeed(
+                need.kcal.round(),
+                need.proteinG.round(),
+                need.carbsG.round(),
+              ),
               key: Key('day-need-${need.date.day}'),
               style: text.bodyMedium,
             ),
             if (hasCoverage)
               Text(
-                'Covered ${_need(covered.kcal, covered.proteinG, covered.carbsG)}',
+                l10n.plannerCovered(
+                  covered.kcal.round(),
+                  covered.proteinG.round(),
+                  covered.carbsG.round(),
+                ),
                 key: Key('day-covered-${need.date.day}'),
                 style: text.bodyMedium,
               ),
@@ -77,6 +87,7 @@ class PlannedRecipeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final role = planned.role.name;
     return Card(
       key: Key('plan-recipe-$role'),
@@ -87,37 +98,41 @@ class PlannedRecipeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(planned.recipe.name, style: text.titleMedium),
-            Text(planned.role.label, style: text.bodySmall),
+            Text(planned.role.label(l10n), style: text.bodySmall),
             const SizedBox(height: 8),
             if (!planned.isNeeded)
               Text(
-                'Nothing to cook: the rest of the plan already covers it.',
+                l10n.plannerNothingToCook,
                 key: Key('not-needed-$role'),
                 style: text.bodyMedium,
               )
             else ...[
               Text(
-                'Raw ${formatGrams(planned.rawG)} g · cooked '
-                '${formatGrams(planned.cookedG)} g '
-                '(yield ${planned.recipe.yieldFactor.toStringAsFixed(2)})',
+                l10n.plannerRawCooked(
+                  formatGrams(planned.rawG),
+                  formatGrams(planned.cookedG),
+                  planned.recipe.yieldFactor.toStringAsFixed(2),
+                ),
                 key: Key('raw-cooked-$role'),
                 style: text.titleSmall,
               ),
               const SizedBox(height: 6),
               for (final l in planned.lines)
                 Text(
-                  '${formatGrams(l.rawG)} g ${l.name}',
+                  l10n.plannerIngredientLine(formatGrams(l.rawG), l.name),
                   key: Key('line-$role-${l.ingredientId}'),
                   style: text.bodyMedium,
                 ),
               const SizedBox(height: 8),
               Text(
-                '${planned.portions} portions of '
-                '${planned.gramsPerPortion.round()} g cooked',
+                l10n.plannerPortions(
+                  planned.portions,
+                  planned.gramsPerPortion.round(),
+                ),
                 key: Key('portions-$role'),
                 style: text.bodyMedium,
               ),
-              Text('Per portion', style: text.labelSmall),
+              Text(l10n.plannerPerPortion, style: text.labelSmall),
               MacroLine(planned.perPortion, key: Key('per-portion-$role')),
             ],
           ],
@@ -137,16 +152,22 @@ class PlanTotalsCard extends StatelessWidget {
   static String signed(double v) => '${v >= 0 ? '+' : '-'}${v.abs().round()}';
 
   Widget _chip(
+    AppLocalizations l10n,
     String key,
-    String label,
+    String name,
     double residual,
     double target,
     RangeStatus status,
   ) {
     final percent = target > 0 ? residual / target * 100 : 0.0;
+    final label = l10n.plannerResidualChip(
+      name,
+      signed(residual),
+      signed(percent),
+    );
     return TintedChip(
       key: Key(key),
-      label: '$label ${signed(residual)} g (${signed(percent)}%)',
+      label: label,
       color: status == RangeStatus.within
           ? AppColors.statusWithin
           : AppColors.statusAbove,
@@ -156,6 +177,7 @@ class PlanTotalsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final t = plan.target;
     final c = plan.covered;
     return Card(
@@ -165,22 +187,22 @@ class PlanTotalsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Block totals', style: text.titleMedium),
+            Text(l10n.plannerBlockTotals, style: text.titleMedium),
             const SizedBox(height: 8),
             Text(
-              'Protein ${c.proteinG.round()} / ${t.proteinG.round()} g',
+              l10n.plannerTotalProtein(c.proteinG.round(), t.proteinG.round()),
               key: const Key('total-protein'),
             ),
             Text(
-              'Carbs ${c.carbsG.round()} / ${t.carbsG.round()} g',
+              l10n.plannerTotalCarbs(c.carbsG.round(), t.carbsG.round()),
               key: const Key('total-carbs'),
             ),
             Text(
-              'Calories ${c.kcal.round()} / ${t.kcal.round()} kcal',
+              l10n.plannerTotalCalories(c.kcal.round(), t.kcal.round()),
               key: const Key('total-kcal'),
             ),
             const SizedBox(height: 8),
-            Text('Per meal (${plan.mealCount} meals)', style: text.labelSmall),
+            Text(l10n.plannerPerMeal(plan.mealCount), style: text.labelSmall),
             MacroLine(plan.perMeal, key: const Key('per-meal')),
             const SizedBox(height: 12),
             Wrap(
@@ -188,15 +210,17 @@ class PlanTotalsCard extends StatelessWidget {
               runSpacing: 4,
               children: [
                 _chip(
+                  l10n,
                   'residual-protein',
-                  'Protein',
+                  l10n.plannerNutrientProtein,
                   plan.proteinResidualG,
                   t.proteinG,
                   plan.proteinStatus,
                 ),
                 _chip(
+                  l10n,
                   'residual-carbs',
-                  'Carbs',
+                  l10n.plannerNutrientCarbs,
                   plan.carbsResidualG,
                   t.carbsG,
                   plan.carbsStatus,

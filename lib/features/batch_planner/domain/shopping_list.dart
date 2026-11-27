@@ -1,4 +1,3 @@
-import '../../../core/formatting/grams_format.dart';
 import 'batch_plan.dart';
 
 /// One ingredient to buy, summed over every planned recipe and fresh addition.
@@ -24,15 +23,6 @@ class ShoppingItem {
     final s = servingG;
     if (s == null || !(s > 0)) return null;
     return (totalG / s - 1e-9).ceil();
-  }
-
-  /// "- [ ] 1,200 g Chicken breast", with the unit count when known.
-  String get checklistLine {
-    final count = servingCount;
-    final units = count == null
-        ? ''
-        : ' (about $count x ${formatGrams(servingG!)} g)';
-    return '- [ ] ${formatGrams(totalG)} g $name$units';
   }
 }
 
@@ -90,7 +80,8 @@ class ShoppingList {
 
   bool get isEmpty => items.isEmpty;
 
-  /// Items per category, categories in sorted order.
+  /// Items per category, categories in sorted order. The key is the raw
+  /// ingredient category (empty when none); presentation localizes it.
   Map<String, List<ShoppingItem>> get byCategory {
     final groups = <String, List<ShoppingItem>>{};
     for (final i in items) {
@@ -98,20 +89,4 @@ class ShoppingList {
     }
     return groups;
   }
-
-  /// Markdown-style checklist, one heading per category.
-  String toText({String? title}) {
-    final out = <String>[?title];
-    for (final entry in byCategory.entries) {
-      if (out.isNotEmpty) out.add('');
-      out.add(categoryLabel(entry.key));
-      out.addAll(entry.value.map((i) => i.checklistLine));
-    }
-    return out.join('\n');
-  }
 }
-
-/// "protein" -> "Protein".
-String categoryLabel(String category) => category.isEmpty
-    ? 'Other'
-    : category[0].toUpperCase() + category.substring(1);

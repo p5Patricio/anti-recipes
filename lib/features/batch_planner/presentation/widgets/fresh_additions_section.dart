@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import 'grams_per_meal_field.dart';
 
 /// One fresh ingredient row, ready to render.
@@ -34,14 +35,12 @@ class FreshAdditionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Fresh additions', style: text.titleMedium),
-        Text(
-          'Eaten as is next to the batch (fruit, raw vegetables).',
-          style: text.bodySmall,
-        ),
+        Text(l10n.plannerFreshTitle, style: text.titleMedium),
+        Text(l10n.plannerFreshSubtitle, style: text.bodySmall),
         const SizedBox(height: 8),
         for (final r in rows)
           Card(
@@ -70,7 +69,7 @@ class FreshAdditionsSection extends StatelessWidget {
                   ),
                   IconButton(
                     key: Key('remove-fresh-${r.ingredientId}'),
-                    tooltip: 'Remove',
+                    tooltip: l10n.plannerRemove,
                     icon: const Icon(Icons.close),
                     onPressed: () => onRemove(r.ingredientId),
                   ),
@@ -84,7 +83,7 @@ class FreshAdditionsSection extends StatelessWidget {
             key: const Key('add-fresh'),
             onPressed: onAdd,
             icon: const Icon(Icons.add),
-            label: const Text('Add fresh ingredient'),
+            label: Text(l10n.plannerAddFresh),
           ),
         ),
       ],

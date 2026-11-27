@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../batch_planner/presentation/plan_providers.dart';
 import '../../batch_planner/presentation/shopping_list_screen.dart';
+import '../../inventory/presentation/localized_dates.dart';
 import '../data/backup_schema.dart';
 import '../domain/backup_document.dart';
 import '../domain/backup_exception.dart';
+import 'backup_messages.dart';
 import 'backup_providers.dart';
 
 /// Export the whole database to a JSON file, or replace it from one.
@@ -19,6 +21,8 @@ class BackupScreen extends ConsumerStatefulWidget {
 
 class _BackupScreenState extends ConsumerState<BackupScreen> {
   bool _busy = false;
+
+  List<String> get _tableOrder => [for (final s in backupTables) s.name];
 
   void _snack(String message) =>
       ScaffoldMessenger.of(context)
@@ -35,16 +39,19 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             contents: document.encode(),
           );
       if (!mounted) return;
+      final l10n = context.l10n;
       _snack(
         saved == null
-            ? 'Export cancelled. No file was saved.'
-            : 'Backup saved (${document.totalRows} rows). '
-                  '${describeRowCounts(document.rowCounts)}',
+            ? l10n.backupExportCancelled
+            : l10n.backupSaved(
+                document.totalRows,
+                describeRowCounts(l10n, document.rowCounts, _tableOrder),
+              ),
       );
     } on BackupException catch (e) {
-      if (mounted) _snack(e.message);
+      if (mounted) _snack(backupErrorMessage(context.l10n, e));
     } catch (_) {
-      if (mounted) _snack('The backup could not be saved.');
+      if (mounted) _snack(context.l10n.backupSaveFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -69,27 +76,32 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       ref.invalidate(planSelectionProvider);
       ref.invalidate(shoppingCheckedProvider);
       if (!mounted) return;
+      final l10n = context.l10n;
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
           key: const Key('import-success'),
-          title: const Text('Backup restored'),
+          title: Text(l10n.backupRestoredTitle),
           content: Text(
-            '${result.totalRows} rows loaded. '
-            '${describeRowCounts(result.rowCounts)}',
+            l10n.backupRestoredBody(
+              result.totalRows,
+              describeRowCounts(l10n, result.rowCounts, _tableOrder),
+            ),
           ),
           actions: [
             FilledButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: Text(l10n.backupOk),
             ),
           ],
         ),
       );
     } on BackupException catch (e) {
-      await _showImportError(e.message);
+      if (mounted) await _showImportError(backupErrorMessage(context.l10n, e));
     } catch (_) {
-      await _showImportError('The backup could not be imported.');
+      if (mounted) {
+        await _showImportError(context.l10n.backupImportFailedGeneric);
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -97,16 +109,17 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
 
   Future<void> _showImportError(String message) async {
     if (!mounted) return;
+    final l10n = context.l10n;
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         key: const Key('import-error'),
-        title: const Text('Import failed'),
-        content: Text('$message\n\nYour current data was not changed.'),
+        title: Text(l10n.backupImportFailedTitle),
+        content: Text(l10n.backupImportFailedBody(message)),
         actions: [
           FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l10n.backupOk),
           ),
         ],
       ),
@@ -116,8 +129,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: const Text('Backup')),
+      appBar: AppBar(title: Text(l10n.backupTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -130,14 +144,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                 children: [
                   Icon(Icons.lock_open_outlined, color: scheme.secondary),
                   const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'A backup is a plain, unencrypted JSON file with all '
-                      'your data, including your body weight and daily '
-                      'targets, recipes, meals and hydration. Only share it '
-                      'with people and services you trust.',
-                    ),
-                  ),
+                  Expanded(child: Text(l10n.backupPrivacyNote)),
                 ],
               ),
             ),
@@ -147,19 +154,18 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
             key: const Key('export-backup'),
             onPressed: _busy ? null : _export,
             icon: const Icon(Icons.file_upload_outlined),
-            label: const Text('Export backup'),
+            label: Text(l10n.backupExport),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
             key: const Key('import-backup'),
             onPressed: _busy ? null : _import,
             icon: const Icon(Icons.file_download_outlined),
-            label: const Text('Import backup'),
+            label: Text(l10n.backupImport),
           ),
           const SizedBox(height: 8),
           Text(
-            'Importing erases everything currently in the app and replaces '
-            'it with the contents of the backup.',
+            l10n.backupImportWarning,
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
@@ -175,37 +181,38 @@ class _ConfirmImportDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final exported = document.exportedAt.toLocal();
     String two(int v) => v.toString().padLeft(2, '0');
     final stamp =
-        '${shortDate(exported)}, ${exported.year} '
+        '${localizedShortDate(context, exported)}, ${exported.year} '
         '${two(exported.hour)}:${two(exported.minute)}';
     return AlertDialog(
       key: const Key('confirm-import-dialog'),
-      title: const Text('Replace all data?'),
+      title: Text(l10n.backupConfirmTitle),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Backup exported on $stamp.'),
+            Text(l10n.backupExportedOn(stamp)),
             const SizedBox(height: 12),
-            const Text(
-              'Everything currently stored in the app will be erased and '
-              'replaced by:',
-            ),
+            Text(l10n.backupConfirmIntro),
             const SizedBox(height: 8),
             if (document.totalRows == 0)
-              const Text('Nothing: this backup is empty.')
+              Text(l10n.backupEmptyBackup)
             else
               for (final spec in backupTables)
                 if ((document.rowCounts[spec.name] ?? 0) > 0)
                   Text(
-                    '${spec.label}: ${document.rowCounts[spec.name]}',
+                    l10n.backupCountEntry(
+                      backupTableLabel(l10n, spec.name),
+                      document.rowCounts[spec.name]!,
+                    ),
                     key: Key('import-count-${spec.name}'),
                   ),
             const SizedBox(height: 12),
-            const Text('This cannot be undone.'),
+            Text(l10n.backupCannotUndo),
           ],
         ),
       ),
@@ -213,12 +220,12 @@ class _ConfirmImportDialog extends StatelessWidget {
         TextButton(
           key: const Key('cancel-import'),
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: Text(l10n.backupCancel),
         ),
         FilledButton(
           key: const Key('confirm-import'),
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Erase and import'),
+          child: Text(l10n.backupEraseAndImport),
         ),
       ],
     );

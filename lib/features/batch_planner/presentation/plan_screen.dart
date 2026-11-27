@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../inventory/data/inventory_dao.dart';
 import '../../inventory/presentation/inventory_providers.dart';
+import '../../inventory/presentation/localized_dates.dart';
 import '../../inventory/presentation/log_batch_screen.dart';
 import '../../inventory/presentation/widgets/recipe_picker_sheet.dart';
 import '../../recipes/presentation/recipes_providers.dart';
@@ -75,11 +76,15 @@ class PlanScreen extends ConsumerWidget {
       Navigator.of(context)
           .push(MaterialPageRoute<void>(builder: (_) => screen));
 
-  String _rangeTitle(BatchPlan plan) =>
-      '${weekdayDate(plan.days.first.date)} - ${weekdayDate(plan.days.last.date)}';
+  String _rangeTitle(BuildContext context, BatchPlan plan) =>
+      context.l10n.plannerDateRange(
+        localizedWeekdayDate(context, plan.days.first.date),
+        localizedWeekdayDate(context, plan.days.last.date),
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final selection = ref.watch(planSelectionProvider);
     final notifier = ref.read(planSelectionProvider.notifier);
     final plan = ref.watch(batchPlanProvider);
@@ -97,13 +102,13 @@ class PlanScreen extends ConsumerWidget {
     final dates = consecutiveDays(selection.from, selection.dayCount);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Plan')),
+      appBar: AppBar(title: Text(l10n.plannerTitle)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _section(context, 'Days to cover'),
+            _section(context, l10n.plannerSectionDays),
             DayRangeSelector(
               dates: dates,
               dayTypes: [
@@ -113,7 +118,7 @@ class PlanScreen extends ConsumerWidget {
               onPickFrom: () => _pickFrom(context, ref),
               onDayCount: notifier.setDayCount,
             ),
-            _section(context, 'Choose recipes'),
+            _section(context, l10n.plannerSectionRecipes),
             for (final role in PlanRole.values)
               RolePickerCard(
                 key: Key('role-card-${role.name}'),
@@ -151,7 +156,7 @@ class PlanScreen extends ConsumerWidget {
               selectedIds: selection.leftoverIds,
               onToggle: (id, use) => notifier.setLeftover(id, use: use),
             ),
-            _section(context, 'Results'),
+            _section(context, l10n.plannerSectionResults),
             ...plan.when(
               loading: () => const [
                 Padding(
@@ -159,7 +164,7 @@ class PlanScreen extends ConsumerWidget {
                   child: Center(child: CircularProgressIndicator()),
                 ),
               ],
-              error: (e, _) => [Text('Could not build the plan: $e')],
+              error: (e, _) => [Text(l10n.plannerBuildError('$e'))],
               data: (p) => p == null
                   ? const [_SetupTargetsHint()]
                   : _results(context, p),
@@ -191,11 +196,11 @@ class PlanScreen extends ConsumerWidget {
           hasCoverage: hasCoverage,
         ),
       if (p.recipes.isEmpty)
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Text(
-            'Choose a protein base and a carb base to see how much to cook.',
-            key: Key('choose-recipes-hint'),
+            context.l10n.plannerChooseRecipesHint,
+            key: const Key('choose-recipes-hint'),
           ),
         ),
       for (final r in p.recipes) PlannedRecipeCard(planned: r),
@@ -206,7 +211,7 @@ class PlanScreen extends ConsumerWidget {
           context,
           ShoppingListScreen(
             list: list,
-            title: 'Shopping list · ${_rangeTitle(p)}',
+            title: context.l10n.plannerShoppingTitle(_rangeTitle(context, p)),
           ),
         ),
         onStartCooking: cooking.isEmpty
@@ -240,35 +245,38 @@ class _PlanActions extends StatelessWidget {
   final VoidCallback? onStartCooking;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      FilledButton.icon(
-        key: const Key('shopping-list'),
-        onPressed: onShoppingList,
-        icon: const Icon(Icons.shopping_cart_outlined),
-        label: const Text('Shopping list'),
-      ),
-      const SizedBox(height: 8),
-      OutlinedButton.icon(
-        key: const Key('start-cooking'),
-        onPressed: onStartCooking,
-        icon: const Icon(Icons.soup_kitchen_outlined),
-        label: const Text('Start cooking'),
-      ),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FilledButton.icon(
+          key: const Key('shopping-list'),
+          onPressed: onShoppingList,
+          icon: const Icon(Icons.shopping_cart_outlined),
+          label: Text(l10n.plannerShoppingListButton),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          key: const Key('start-cooking'),
+          onPressed: onStartCooking,
+          icon: const Icon(Icons.soup_kitchen_outlined),
+          label: Text(l10n.plannerStartCooking),
+        ),
+      ],
+    );
+  }
 }
 
 class _SetupTargetsHint extends StatelessWidget {
   const _SetupTargetsHint();
 
   @override
-  Widget build(BuildContext context) => const Padding(
-    padding: EdgeInsets.all(24),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(24),
     child: Text(
-      'Set up your nutrition targets in Settings to plan a batch.',
-      key: Key('plan-setup-hint'),
+      context.l10n.plannerSetupTargetsHint,
+      key: const Key('plan-setup-hint'),
       textAlign: TextAlign.center,
     ),
   );

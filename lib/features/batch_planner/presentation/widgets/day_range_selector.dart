@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/formatting/date_format.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../meal_log/presentation/widgets/status_style.dart';
 import '../../../nutrition_targets/domain/day_type.dart';
+import '../../../inventory/presentation/localized_dates.dart';
 import '../../domain/plan_inputs.dart';
 
 /// Presentational: start date, number of days (1..7) and the covered days
@@ -27,6 +28,7 @@ class DayRangeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,11 +36,11 @@ class DayRangeSelector extends StatelessWidget {
           key: const Key('plan-from'),
           contentPadding: EdgeInsets.zero,
           leading: const Icon(Icons.event_outlined),
-          title: const Text('First day'),
-          trailing: Text(weekdayDate(dates.first)),
+          title: Text(l10n.plannerFirstDay),
+          trailing: Text(localizedWeekdayDate(context, dates.first)),
           onTap: onPickFrom,
         ),
-        Text('Number of days', style: text.labelLarge),
+        Text(l10n.plannerNumberOfDays, style: text.labelLarge),
         const SizedBox(height: 4),
         Wrap(
           spacing: 8,
@@ -61,8 +63,13 @@ class DayRangeSelector extends StatelessWidget {
               TintedChip(
                 key: Key('range-day-$i'),
                 label: dayTypes[i] == null
-                    ? weekdayDate(date)
-                    : '${weekdayDate(date)} · ${dayTypes[i]!.label}',
+                    ? localizedWeekdayDate(context, date)
+                    : l10n.plannerRangeDayWithType(
+                        localizedWeekdayDate(context, date),
+                        dayTypes[i] == DayType.training
+                            ? l10n.plannerDayTypeTraining
+                            : l10n.plannerDayTypeRest,
+                      ),
                 color: dayTypes[i] == DayType.training
                     ? AppColors.blossom
                     : AppColors.kraft,
@@ -72,8 +79,4 @@ class DayRangeSelector extends StatelessWidget {
       ],
     );
   }
-}
-
-extension on DayType {
-  String get label => this == DayType.training ? 'Training' : 'Rest';
 }

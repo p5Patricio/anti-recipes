@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../meal_log/presentation/compose_meal_screen.dart';
 import 'batch_item_detail_screen.dart';
@@ -19,13 +20,14 @@ class PantryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stock = ref.watch(stockProvider);
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pantry'),
+        title: Text(l10n.pantryTitle),
         actions: [
           IconButton(
             key: const Key('compose-meal'),
-            tooltip: 'Compose a meal',
+            tooltip: l10n.pantryComposeMeal,
             icon: const Icon(Icons.restaurant_outlined),
             onPressed: () => openComposeMeal(context, ref),
           ),
@@ -36,11 +38,11 @@ class PantryScreen extends ConsumerWidget {
         heroTag: 'pantry-fab',
         onPressed: () => _push(context, const LogBatchScreen()),
         icon: const Icon(Icons.add),
-        label: const Text('Log batch cooked'),
+        label: Text(l10n.pantryLogBatch),
       ),
       body: stock.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Could not load pantry: $e')),
+        error: (e, _) => Center(child: Text(l10n.pantryLoadError('$e'))),
         data: (items) {
           if (items.isEmpty) return const _EmptyState();
           return ListView.separated(
@@ -76,6 +78,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -88,10 +91,10 @@ class _EmptyState extends StatelessWidget {
               color: AppColors.blossom,
             ),
             const SizedBox(height: 12),
-            Text('Your pantry is empty', style: text.titleMedium),
+            Text(l10n.pantryEmptyTitle, style: text.titleMedium),
             const SizedBox(height: 8),
             Text(
-              'Log a cooked batch to track what is left and build meals from it.',
+              l10n.pantryEmptyBody,
               textAlign: TextAlign.center,
               style: text.bodyMedium,
             ),

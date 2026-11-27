@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../recipes/presentation/recipe_kind_label.dart';
 import '../../../recipes/presentation/recipes_providers.dart';
 
@@ -34,16 +35,16 @@ class _RecipePickerSheetState extends State<RecipePickerSheet> {
               child: TextField(
                 key: const Key('recipe-search'),
                 autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Search recipes',
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  labelText: context.l10n.pantrySearchRecipes,
+                  prefixIcon: const Icon(Icons.search),
                 ),
                 onChanged: (v) => setState(() => _query = v),
               ),
             ),
             Expanded(
               child: matches.isEmpty
-                  ? const Center(child: Text('No matching recipes'))
+                  ? Center(child: Text(context.l10n.pantryNoMatchingRecipes))
                   : ListView.builder(
                       itemCount: matches.length,
                       itemBuilder: (context, i) {

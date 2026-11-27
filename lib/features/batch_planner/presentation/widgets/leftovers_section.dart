@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/formatting/date_format.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../inventory/data/inventory_dao.dart';
+import '../../../inventory/presentation/localized_dates.dart';
 
 /// Presentational toggles for cooked pantry items that count toward the block.
 class LeftoversSection extends StatelessWidget {
@@ -20,20 +21,18 @@ class LeftoversSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Pantry leftovers', style: text.titleMedium),
-        Text(
-          'Cooked food you still have is deducted from what to cook.',
-          style: text.bodySmall,
-        ),
+        Text(l10n.plannerLeftoversTitle, style: text.titleMedium),
+        Text(l10n.plannerLeftoversSubtitle, style: text.bodySmall),
         const SizedBox(height: 4),
         if (items.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              'Nothing cooked is left in the pantry.',
+              l10n.plannerNoLeftovers,
               key: const Key('no-leftovers'),
               style: text.bodyMedium,
             ),
@@ -45,8 +44,10 @@ class LeftoversSection extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               title: Text(s.recipeName),
               subtitle: Text(
-                '${s.remainingG.round()} g left · cooked '
-                '${shortDate(s.cookedOn)}',
+                l10n.plannerLeftoverSubtitle(
+                  s.remainingG.round(),
+                  localizedShortDate(context, s.cookedOn),
+                ),
               ),
               value: selectedIds.contains(s.batchItemId),
               onChanged: (v) => onToggle(s.batchItemId, v),
