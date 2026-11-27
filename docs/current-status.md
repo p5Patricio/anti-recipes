@@ -1,6 +1,6 @@
 # Current status
 
-Snapshot: **2026-11-27**. `main` holds the MVP, CI, the follow-up work described under "Follow-up work (Milestone 1)" (pull request #10) and the visual rebrand described under "Branding and theme" (pull request #11).
+Snapshot: **2026-11-27**. `main` holds the MVP, CI, the follow-up work described under "Follow-up work (Milestone 1)" (pull request #10), the visual rebrand described under "Branding and theme" (pull request #11) and the English/Spanish localization described under "Localization".
 
 ## Summary
 
@@ -10,7 +10,7 @@ The MVP defined in [product-vision.md](product-vision.md) is **fully implemented
 |-------|--------|----------|
 | `dart format lib test` | No changes needed (138 files) | Yes, on 2026-11-26 with Milestone 1 applied |
 | `flutter analyze` | No issues | Yes, on 2026-11-26 with Milestone 1 applied |
-| `flutter test` | 264 tests passing | Yes, on 2026-11-26 with Milestone 1 applied |
+| `flutter test` | 277 tests passing | Yes, on 2026-11-27 with localization applied |
 | Debug APK build | Succeeds (first build about 6 minutes, includes Gradle and NDK downloads) | Yes |
 | Boot on Android 16 emulator | App starts and shows the Today dashboard in the dark theme; splash, app bar logo and launcher icon render correctly | Yes (screenshots, 2026-11-27) |
 | Manual walk-through of recipes, pantry, planner, backup | Not done | No |
@@ -67,9 +67,21 @@ Pull request #11 (branch `feat/duck-branding-dark-theme`) added:
 
 Not covered: the pull request had no native review (the owner did not request one), and contrast was not measured with a tool.
 
+## Localization
+
+The UI is available in English and Spanish.
+
+- **Mechanism:** Flutter `gen_l10n` with `lib/l10n/app_en.arb` (template) and `lib/l10n/app_es.arb`; widgets read strings through `context.l10n`. The generated Dart files are committed.
+- **Language choice:** follows the system language (English fallback). Settings has a Language tile (system default, English, Español); the override is stored in `app_settings` under `app_locale`, so no schema change was needed.
+- **Layering:** domain and data code carries no display text. Backup failures are a typed `BackupException` (`BackupFailure` enum plus parameters) and shopping-list export text moved to presentation; both are localized in presentation. `BackupException.message` no longer exists.
+- **Dates** use `intl` `DateFormat` with the current locale. Plural forms use ICU, which also fixes "1 portions" style output.
+- **Tests:** English assertions are unchanged; Spanish smoke tests exist for recipes, Today, targets, the planner and backup errors, plus ARB key parity and language switching/persistence tests.
+
+Not covered: user data (ingredient, recipe and tool names, including the seeded defaults stored in the database) stays as entered, so a Spanish user sees the seeded English names until they rename them. Number formatting keeps a dot as decimal separator in both languages. Spanish copy was written by an AI and has not been reviewed by a native speaker.
+
 ## Review status
 
-Native review (receipt-driven development) is enabled in this repository. T2 was reviewed and approved. For T3 to T9 the owner **declined review for each candidate**, so those slices were verified by tests, `flutter analyze` and a parent re-run only. Milestone 1 and the branding pull request have not gone through native review. Highest-value areas to review: the backup import (replaces all data), the batch planner math, and the schema migrations (v1 to v2 to v3).
+Native review (receipt-driven development) is enabled in this repository. T2 was reviewed and approved. For T3 to T9 the owner **declined review for each candidate**, so those slices were verified by tests, `flutter analyze` and a parent re-run only. Milestone 1, the branding pull request and the localization have not gone through native review. Highest-value areas to review: the backup import (replaces all data), the batch planner math, and the schema migrations (v1 to v2 to v3).
 
 ## Known limitations and technical debt
 

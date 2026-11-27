@@ -122,6 +122,6 @@ Validation thresholds worth knowing: yield factor must be above 0 and at most 3;
 - **Domain code:** plain unit tests with exact numbers (training day carbs 295 g at 2,450 kcal, rest day 251.25 g, planner Monday to Wednesday needs 480 g protein and 841.25 g carbs).
 - **Data layer:** in-memory `NativeDatabase` tests for DAOs, constraints, rollback and migration.
 - **Widgets:** screens mounted over an in-memory database through helpers in `test/helpers/`.
-- Current total: 264 tests, all passing, `flutter analyze` clean (as of the snapshot date in [current-status.md](current-status.md)).
+- Current total: 277 tests, all passing, `flutter analyze` clean (as of the snapshot date in [current-status.md](current-status.md)).
 
 Details and gotchas for writing tests are in [development-guide.md](development-guide.md).

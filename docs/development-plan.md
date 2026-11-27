@@ -67,7 +67,7 @@ Goal: the app feels finished and is pleasant on day one.
 - First-run onboarding that asks for weight and targets and explains the day-type cycle.
 - ~~Dark theme derived from the same tokens.~~ Done in pull request #11; an optional light variant and following the system theme remain open.
 - (Completed in Phase 1: Persist the planner selection and shopping ticks across restarts; remove the empty `shopping/` folder).
-- Optional: Spanish localization (UI copy is English today; the owner said English is fine).
+- ~~Spanish localization~~ Done: English and Spanish, system language with a manual override in Settings.
 
 Exit criteria: a fresh install reaches a configured, usable state without opening Settings first.
 

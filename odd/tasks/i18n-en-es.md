@@ -17,6 +17,8 @@ Objective: ship the app in English and Spanish. Branch: `feat/i18n-en-es`. Deliv
 - T3 batch_planner + inventory + backup + app shell (S1, S3, S4): delegated, own worktree.
 - T4 merge, regenerate ARB, verify on emulator in both languages (S1-S4): inline.
 
+Status 2026-11-27: T0-T4 done; 277 tests pass.
+
 ## Log
 
 - L1 (2026-11-27): "Muy bien ahora necesito que la app este disponible tanto en ingles como el español asi que hay que hacer la implementacion, usa subagentes para este cambio y sube todo a main cuando termines"

@@ -8,7 +8,7 @@ A local-first **Flutter (Android only)** app for modular batch cooking with calo
 
 ## Status in one paragraph
 
-The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10, and a visual rebrand (dark-first theme, duck logo, launcher icon and splash) by pull request #11. 264 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
+The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10, and a visual rebrand (dark-first theme, duck logo, launcher icon and splash) by pull request #11. The UI is available in English and Spanish (see "Localization" in docs/development-guide.md). 277 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
 
 ## Document map
 
@@ -47,12 +47,12 @@ Environment: Flutter 3.47.6 (`C:\src\flutter`), JDK 17, Android SDK `C:\Android\
 6. **Every drift `watch` trigger needs distinct SQL text** (for example `SELECT 1 AS watch_stock`). drift shares streams by SQL, and identical SQL silently freezes unrelated streams.
 7. **Forms load once and keep local state.** Do not make form fields depend on a live stream.
 8. **Schema changes** require: bump `schemaVersion`, `onUpgrade` step, regenerate, register the table in `lib/features/backup/data/backup_schema.dart`, extend `test/helpers/backup_fixtures.dart`, add a migration test, update docs. Checklist in [docs/development-guide.md](docs/development-guide.md).
-9. **Minimal dependencies.** Current runtime packages: `flutter_riverpod`, `drift`, `drift_flutter`, `file_picker`. Ask before adding another.
+9. **Minimal dependencies.** Current runtime packages: `flutter_riverpod`, `drift`, `drift_flutter`, `file_picker`, `intl` and `flutter_localizations` (SDK). Ask before adding another.
 10. **Platform code behind abstractions** (for example `BackupFileGateway`) so tests never touch plugins.
 
 ## Conventions
 
-- **Language of artifacts: English** (code, comments, UI copy, tests, docs, commit messages). The maintainer talks to you in Spanish; reply in the language of their message, but never put Spanish or slang into files unless explicitly asked.
+- **Language of artifacts: English** (code, comments, tests, docs, commit messages). User-visible text is the exception: it lives in `lib/l10n/app_en.arb` (source) and `lib/l10n/app_es.arb` (neutral Latin American Spanish) and is read through `context.l10n`; never hardcode UI strings in widgets, and add every new key to both files. The maintainer talks to you in Spanish; reply in the language of their message, but never put Spanish or slang into files unless explicitly asked.
 - **Commits:** Conventional Commits. **Never add `Co-Authored-By` or any AI attribution** to commits or PR text (the maintainer's global rule overrides tool defaults).
 - **Branches:** `feat/...`, `fix/...`, `docs/...`. Keep commits to one reviewable unit with its tests and docs; about 400 authored changed lines is a planning guide, never a reason to delete tests, comments or blank lines.
 - **Land work through pull requests into `main`** (CI runs `flutter analyze` and `flutter test`). Push branches when asked; open or merge a pull request only when the owner asks.
@@ -65,7 +65,7 @@ Never commit body weight, real nutrition targets, meal history, backups, `*.db`,
 
 ## Testing
 
-264 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
+277 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
 
 - Widget tests that mount drift streams must unmount the tree **inside the test body** (`await tester.pumpWidget(const SizedBox()); await tester.pump(const Duration(milliseconds: 10));`).
 - Never `await` a drift stream (`.first`) inside `testWidgets`; use `select(...).get()` or DAO `load*` methods.
