@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
+
 /// Asks for confirmation, then runs [delete] and reports the outcome.
 ///
 /// Returns true only when the delete went through. [inUse] is checked first so
@@ -22,12 +24,12 @@ Future<bool> confirmAndDelete(
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.recipesCancel),
         ),
         FilledButton(
           key: const Key('confirm-delete'),
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Delete'),
+          child: Text(context.l10n.recipesDelete),
         ),
       ],
     ),

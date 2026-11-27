@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/range.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/number_fields.dart';
@@ -39,9 +40,14 @@ class ProteinDistributionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Protein per meal', style: text.titleMedium),
             Text(
-              'Band ${formatNumber(band.min)}-${formatNumber(band.max)} g',
+              context.l10n.mealLogProteinPerMealTitle,
+              style: text.titleMedium,
+            ),
+            Text(
+              context.l10n.mealLogProteinBand(
+                '${formatNumber(band.min)}-${formatNumber(band.max)} g',
+              ),
               style: text.bodySmall,
             ),
             const SizedBox(height: 8),
@@ -50,7 +56,10 @@ class ProteinDistributionCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
-                    SizedBox(width: 56, child: Text('Meal ${s.slot}')),
+                    SizedBox(
+                      width: 56,
+                      child: Text(context.l10n.mealLogMealN(s.slot)),
+                    ),
                     Expanded(
                       child: _Bar(
                         key: Key('protein-bar-${s.slot}'),

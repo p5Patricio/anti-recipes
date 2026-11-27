@@ -6,6 +6,8 @@ import 'package:anti_recipes/features/backup/data/backup_schema.dart';
 import 'package:anti_recipes/features/backup/data/backup_service.dart';
 import 'package:anti_recipes/features/backup/domain/backup_document.dart';
 import 'package:anti_recipes/features/backup/domain/backup_exception.dart';
+import 'package:anti_recipes/features/backup/presentation/backup_messages.dart';
+import 'package:anti_recipes/l10n/app_localizations_en.dart';
 import 'package:anti_recipes/features/recipes/data/recipes_dao.dart';
 import 'package:anti_recipes/features/recipes/domain/recipe_kind.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
@@ -14,6 +16,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/backup_fixtures.dart';
 import '../../../helpers/db_seed.dart' show monday;
+
+/// The English text the user sees for [e].
+String englishMessage(BackupException e) =>
+    backupErrorMessage(AppLocalizationsEn(), e);
 
 void main() {
   // Two in-memory databases are used on purpose.
@@ -50,7 +56,7 @@ void main() {
     await expectLater(
       sourceService.importJson(jsonEncode(doc)),
       throwsA(
-        isA<BackupException>().having((e) => e.message, 'message', message),
+        isA<BackupException>().having(englishMessage, 'message', message),
       ),
     );
     expect(withoutTimestamp(await sourceService.exportJson()), before);
@@ -102,7 +108,7 @@ void main() {
       expect(
         () => BackupCodec(
           source,
-          specs: [...backupTables, const BackupTableSpec('ghost', 'Ghosts')],
+          specs: [...backupTables, const BackupTableSpec('ghost')],
         ),
         throwsStateError,
       );
@@ -152,11 +158,17 @@ void main() {
     );
 
     test('describes counts and builds the file name', () {
+      final l10n = AppLocalizationsEn();
+      final order = backupTables.map((s) => s.name);
       expect(
-        describeRowCounts({'recipes': 2, 'meal_logs': 1, 'tools': 0}),
+        describeRowCounts(l10n, {
+          'recipes': 2,
+          'meal_logs': 1,
+          'tools': 0,
+        }, order),
         'Recipes: 2, Meals: 1',
       );
-      expect(describeRowCounts({}), 'no data');
+      expect(describeRowCounts(l10n, {}, order), 'no data');
       expect(
         backupFileName(DateTime(2026, 3, 7, 9, 5)),
         'anti-recipes-backup-20260307-0905.json',
@@ -252,12 +264,42 @@ void main() {
       await expectRejected(doc, contains('allowed range'));
     });
 
+    test('rejections carry a typed reason, not text', () async {
+      final doc = await exported();
+      (rows(doc, 'recipes').first as Map)['flavor'] = 'sweet';
+      await expectLater(
+        sourceService.importJson(jsonEncode(doc)),
+        throwsA(
+          isA<BackupException>()
+              .having((e) => e.failure, 'failure', BackupFailure.unknownColumn)
+              .having((e) => e.table, 'table', 'recipes')
+              .having((e) => e.row, 'row', 1)
+              .having((e) => e.column, 'column', 'flavor'),
+        ),
+      );
+
+      doc['version'] = 2;
+      await expectLater(
+        sourceService.importJson(jsonEncode(doc)),
+        throwsA(
+          isA<BackupException>()
+              .having(
+                (e) => e.failure,
+                'failure',
+                BackupFailure.newerFormatVersion,
+              )
+              .having((e) => e.version, 'version', 2)
+              .having((e) => e.supportedVersion, 'supported', 1),
+        ),
+      );
+    });
+
     test('malformed JSON', () async {
       await expectLater(
         sourceService.importJson('{ not json'),
         throwsA(
           isA<BackupException>().having(
-            (e) => e.message,
+            englishMessage,
             'message',
             'This file is not valid JSON.',
           ),
@@ -277,7 +319,7 @@ void main() {
           sourceService.importJson(json),
           throwsA(
             isA<BackupException>().having(
-              (e) => e.message,
+              englishMessage,
               'message',
               contains('not an Anti-recipes backup'),
             ),

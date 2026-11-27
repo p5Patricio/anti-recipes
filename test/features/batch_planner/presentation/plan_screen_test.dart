@@ -1,5 +1,6 @@
 import 'package:anti_recipes/core/database/app_database.dart';
 import 'package:anti_recipes/core/database/database_provider.dart';
+import 'package:anti_recipes/core/l10n/l10n.dart';
 import 'package:anti_recipes/core/theme/app_colors.dart';
 import 'package:anti_recipes/features/batch_planner/presentation/plan_screen.dart';
 import 'package:anti_recipes/features/meal_log/presentation/today_providers.dart';
@@ -33,6 +34,34 @@ void main() {
     const PlanScreen(),
     overrides: [todayProvider.overrideWithValue(monday)],
   );
+
+  uiTest('the plan screen is shown in Spanish', (tester) async {
+    tester.view.physicalSize = const Size(900, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(db),
+          todayProvider.overrideWithValue(monday),
+        ],
+        child: MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const PlanScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Días a cubrir'), findsOneWidget);
+    expect(find.text('Base de proteína'), findsOneWidget);
+    expect(find.text('Sobras de la despensa'), findsOneWidget);
+    expect(find.text('Resultados'), findsOneWidget);
+    expect(find.textContaining('Entrenamiento'), findsWidgets);
+    expect(find.text('Days to cover'), findsNothing);
+  });
 
   Future<int> seedRecipeOf(
     String name,
@@ -371,7 +400,12 @@ void main() {
             appDatabaseProvider.overrideWithValue(db),
             todayProvider.overrideWithValue(monday),
           ],
-          child: const MaterialApp(home: PlanScreen()),
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const PlanScreen(),
+          ),
         ),
       );
       await tester.pumpAndSettle();

@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/nutrition/nutrients.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/number_fields.dart';
 import '../domain/energy_check.dart';
+import 'category_label.dart';
 import 'recipes_providers.dart';
 import 'widgets/confirm_delete.dart';
 
@@ -91,13 +93,13 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
 
   String? _nameValidator(String? value) {
     final name = (value ?? '').trim();
-    if (name.isEmpty) return 'Enter a name';
+    if (name.isEmpty) return context.l10n.recipesEnterName;
     final taken = (ref.read(ingredientsProvider).value ?? const []).any(
       (i) =>
           i.id != widget.ingredient?.id &&
           i.name.toLowerCase() == name.toLowerCase(),
     );
-    return taken ? 'An ingredient with this name already exists' : null;
+    return taken ? context.l10n.recipesIngredientNameTaken : null;
   }
 
   String? _servingValidator(String? value) => (value ?? '').trim().isEmpty
@@ -107,6 +109,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+    final l10n = context.l10n;
     if (!_formKey.currentState!.validate()) return;
     final serving = parseNumber(_serving.text);
     final companion = IngredientsCompanion(
@@ -127,7 +130,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
       navigator.pop();
     } catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Could not save ingredient: $e')),
+        SnackBar(content: Text(l10n.recipesSaveIngredientError('$e'))),
       );
     }
   }
@@ -138,11 +141,9 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
     final ingredient = widget.ingredient!;
     final done = await confirmAndDelete(
       context,
-      title: 'Delete "${ingredient.name}"?',
-      message: 'The ingredient will be removed from your library.',
-      blockedMessage:
-          'This ingredient is used in a recipe or a logged meal, so it '
-          'cannot be deleted.',
+      title: context.l10n.recipesDeleteIngredientTitle(ingredient.name),
+      message: context.l10n.recipesDeleteIngredientMessage,
+      blockedMessage: context.l10n.recipesIngredientInUse,
       inUse: () => dao.isIngredientInUse(ingredient.id),
       delete: () => dao.deleteIngredient(ingredient.id),
     );
@@ -151,6 +152,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final editing = widget.ingredient != null;
     final implied = _impliedKcalIfMismatch();
     final categories = {
@@ -159,12 +161,16 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
     }.toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(editing ? 'Edit ingredient' : 'New ingredient'),
+        title: Text(
+          editing
+              ? l10n.recipesEditIngredientTitle
+              : l10n.recipesNewIngredientTitle,
+        ),
         actions: [
           if (editing)
             IconButton(
               key: const Key('delete-ingredient'),
-              tooltip: 'Delete',
+              tooltip: l10n.recipesDeleteTooltip,
               icon: const Icon(Icons.delete_outline),
               onPressed: _delete,
             ),
@@ -182,38 +188,51 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
                 key: const Key('ingredient-name'),
                 controller: _name,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: l10n.recipesFieldName),
                 validator: _nameValidator,
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
                 key: const Key('ingredient-category'),
                 initialValue: _category,
-                decoration: const InputDecoration(labelText: 'Category'),
+                decoration: InputDecoration(
+                  labelText: l10n.recipesFieldCategory,
+                ),
                 items: [
                   for (final c in categories)
-                    DropdownMenuItem(value: c, child: Text(_capitalize(c))),
+                    DropdownMenuItem(
+                      value: c,
+                      child: Text(_capitalize(categoryLabel(l10n, c))),
+                    ),
                 ],
                 onChanged: (c) => setState(() => _category = c ?? _category),
               ),
               const SizedBox(height: 16),
               Text(
-                'Per 100 g raw',
+                l10n.recipesPer100Raw,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              _field('ingredient-kcal', _kcal, 'Calories', 'kcal'),
-              _field('ingredient-protein', _protein, 'Protein', 'g'),
-              _field('ingredient-fat', _fat, 'Fat', 'g'),
-              _field('ingredient-carbs', _carbs, 'Carbs', 'g'),
-              _field('ingredient-fiber', _fiber, 'Fiber', 'g'),
+              _field(
+                'ingredient-kcal',
+                _kcal,
+                l10n.recipesFieldCalories,
+                'kcal',
+              ),
+              _field(
+                'ingredient-protein',
+                _protein,
+                l10n.recipesFieldProtein,
+                'g',
+              ),
+              _field('ingredient-fat', _fat, l10n.recipesFieldFat, 'g'),
+              _field('ingredient-carbs', _carbs, l10n.recipesFieldCarbs, 'g'),
+              _field('ingredient-fiber', _fiber, l10n.recipesFieldFiber, 'g'),
               if (implied != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    'Calories differ from protein, fat and carbs by more than '
-                    '15% (they add up to about ${implied.round()} kcal). '
-                    'You can still save.',
+                    l10n.recipesEnergyWarning(implied.round()),
                     key: const Key('energy-warning'),
                     style: Theme.of(context).textTheme.bodySmall
                         ?.copyWith(color: AppColors.warning),
@@ -222,14 +241,14 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
               SwitchListTile(
                 key: const Key('ingredient-is-fruit'),
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Counts as a fruit portion'),
+                title: Text(l10n.recipesCountsAsFruit),
                 value: _isFruit,
                 onChanged: (v) => setState(() => _isFruit = v),
               ),
               SwitchListTile(
                 key: const Key('ingredient-is-vegetable'),
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Counts as a vegetable portion'),
+                title: Text(l10n.recipesCountsAsVegetable),
                 value: _isVegetable,
                 onChanged: (v) => setState(() => _isVegetable = v),
               ),
@@ -237,7 +256,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
               NumberField(
                 key: const Key('ingredient-serving'),
                 controller: _serving,
-                label: 'Serving size (optional)',
+                label: l10n.recipesServingLabel,
                 suffix: 'g',
                 validator: _servingValidator,
               ),
@@ -245,7 +264,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
               FilledButton(
                 key: const Key('save-ingredient'),
                 onPressed: _save,
-                child: const Text('Save ingredient'),
+                child: Text(l10n.recipesSaveIngredient),
               ),
             ],
           ),

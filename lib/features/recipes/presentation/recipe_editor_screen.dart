@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
+import '../../../core/l10n/l10n.dart';
 import '../data/recipes_dao.dart';
 import 'recipe_editor_form.dart';
 
@@ -22,7 +23,11 @@ class RecipeEditorScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = recipeId;
-    final title = Text(id == null ? 'New recipe' : 'Edit recipe');
+    final title = Text(
+      id == null
+          ? context.l10n.recipesNewRecipeTitle
+          : context.l10n.recipesEditRecipeTitle,
+    );
     if (id == null) {
       return Scaffold(
         appBar: AppBar(title: title),
@@ -35,9 +40,10 @@ class RecipeEditorScreen extends ConsumerWidget {
           .watch(_editorDataProvider(id))
           .when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Could not load recipe: $e')),
+            error: (e, _) =>
+                Center(child: Text(context.l10n.recipesLoadRecipeError('$e'))),
             data: (detail) => detail == null
-                ? const Center(child: Text('This recipe no longer exists.'))
+                ? Center(child: Text(context.l10n.recipesRecipeMissing))
                 : RecipeEditorForm(initial: detail),
           ),
     );

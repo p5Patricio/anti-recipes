@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/nutrients.dart';
 import '../../domain/recipe_kind.dart';
 import '../recipe_kind_label.dart';
@@ -37,11 +38,14 @@ class RecipeCard extends StatelessWidget {
               Text(name, style: text.titleMedium),
               const SizedBox(height: 4),
               Text(
-                '${kind.label} · yield ${yieldFactor.toStringAsFixed(2)}',
+                context.l10n.recipesCardKindYield(
+                  kind.localizedLabel(context.l10n),
+                  yieldFactor.toStringAsFixed(2),
+                ),
                 style: text.bodySmall,
               ),
               const SizedBox(height: 8),
-              Text('Per 100 g cooked', style: text.labelSmall),
+              Text(context.l10n.recipesPer100Cooked, style: text.labelSmall),
               MacroLine(per100Cooked),
             ],
           ),

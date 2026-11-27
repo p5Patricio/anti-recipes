@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/l10n/l10n.dart';
+import '../category_label.dart';
 
 /// Searchable bottom sheet; pops with the chosen [Ingredient].
 class IngredientPickerSheet extends StatefulWidget {
@@ -42,16 +44,18 @@ class _IngredientPickerSheetState extends State<IngredientPickerSheet> {
               child: TextField(
                 key: const Key('ingredient-search'),
                 autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Search ingredients',
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  labelText: context.l10n.recipesSearchIngredients,
+                  prefixIcon: const Icon(Icons.search),
                 ),
                 onChanged: (v) => setState(() => _query = v),
               ),
             ),
             Expanded(
               child: matches.isEmpty
-                  ? const Center(child: Text('No matching ingredients'))
+                  ? Center(
+                      child: Text(context.l10n.recipesNoMatchingIngredients),
+                    )
                   : ListView.builder(
                       itemCount: matches.length,
                       itemBuilder: (context, i) {
@@ -59,7 +63,9 @@ class _IngredientPickerSheetState extends State<IngredientPickerSheet> {
                         return ListTile(
                           key: Key('pick-ingredient-${ingredient.id}'),
                           title: Text(ingredient.name),
-                          subtitle: Text(ingredient.category),
+                          subtitle: Text(
+                            categoryLabel(context.l10n, ingredient.category),
+                          ),
                           onTap: () => Navigator.pop(context, ingredient),
                         );
                       },

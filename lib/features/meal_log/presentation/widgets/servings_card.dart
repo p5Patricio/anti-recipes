@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/number_fields.dart';
 import '../../domain/day_summary.dart';
 import 'status_style.dart';
@@ -31,17 +32,17 @@ class ServingsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Fruit & vegetables', style: text.titleMedium),
+            Text(context.l10n.mealLogServingsTitle, style: text.titleMedium),
             const SizedBox(height: 8),
             _ServingRow(
               id: 'fruit',
-              label: 'Fruit',
+              label: context.l10n.mealLogFruit,
               progress: fruit,
               onStep: onFruit,
             ),
             _ServingRow(
               id: 'veg',
-              label: 'Vegetables',
+              label: context.l10n.mealLogVegetables,
               progress: veg,
               onStep: onVeg,
             ),
@@ -79,8 +80,9 @@ class _ServingRow extends StatelessWidget {
               children: [
                 Text(label, style: text.titleSmall),
                 Text(
-                  'Goal ${formatNumber(range.min)}-${formatNumber(range.max)} '
-                  'portions',
+                  context.l10n.mealLogPortionsGoal(
+                    '${formatNumber(range.min)}-${formatNumber(range.max)}',
+                  ),
                   style: text.bodySmall,
                 ),
               ],
@@ -89,7 +91,7 @@ class _ServingRow extends StatelessWidget {
           StatusChip(key: Key('$id-status'), status: progress.status),
           IconButton(
             key: Key('$id-minus'),
-            tooltip: 'Remove a portion of $label',
+            tooltip: context.l10n.mealLogRemovePortion(label),
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: progress.consumed > 0 ? () => onStep(-1) : null,
           ),
@@ -104,7 +106,7 @@ class _ServingRow extends StatelessWidget {
           ),
           IconButton(
             key: Key('$id-plus'),
-            tooltip: 'Add a portion of $label',
+            tooltip: context.l10n.mealLogAddPortion(label),
             icon: const Icon(Icons.add_circle_outline),
             onPressed: () => onStep(1),
           ),

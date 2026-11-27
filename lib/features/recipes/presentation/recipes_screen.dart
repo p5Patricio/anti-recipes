@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/recipe_kind.dart';
 import 'ingredient_library_screen.dart';
@@ -31,11 +32,11 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
     final summaries = ref.watch(recipeSummariesProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recipes'),
+        title: Text(context.l10n.recipesTitle),
         actions: [
           IconButton(
             key: const Key('open-ingredients'),
-            tooltip: 'Ingredients',
+            tooltip: context.l10n.recipesIngredientsTooltip,
             icon: const Icon(Icons.egg_alt_outlined),
             onPressed: () => _push(const IngredientLibraryScreen()),
           ),
@@ -44,7 +45,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
       floatingActionButton: FloatingActionButton(
         key: const Key('add-recipe'),
         heroTag: 'recipes-fab',
-        tooltip: 'New recipe',
+        tooltip: context.l10n.recipesNewRecipeTooltip,
         onPressed: () => _push(const RecipeEditorScreen()),
         child: const Icon(Icons.add),
       ),
@@ -55,8 +56,9 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
-                _chip('All', null),
-                for (final kind in RecipeKind.values) _chip(kind.label, kind),
+                _chip(context.l10n.recipesFilterAll, null),
+                for (final kind in RecipeKind.values)
+                  _chip(kind.localizedLabel(context.l10n), kind),
               ],
             ),
           ),
@@ -64,7 +66,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
             child: summaries.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) =>
-                  Center(child: Text('Could not load recipes: $e')),
+                  Center(child: Text(context.l10n.recipesLoadError('$e'))),
               data: (all) {
                 final shown = _filter == null
                     ? all
@@ -116,6 +118,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -129,12 +132,14 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              filtered ? 'Nothing in this group yet' : 'No recipes yet',
+              filtered
+                  ? l10n.recipesEmptyFilteredTitle
+                  : l10n.recipesEmptyTitle,
               style: text.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              filtered ? 'Pick another group or add a recipe of this kind.' : 'Tap + to create your first recipe and start batch cooking.',
+              filtered ? l10n.recipesEmptyFilteredBody : l10n.recipesEmptyBody,
               textAlign: TextAlign.center,
               style: text.bodyMedium,
             ),

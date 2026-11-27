@@ -88,4 +88,4 @@ The design system comes from the project logo: a duck wearing a chef hat, sittin
 | Blossom | `#F2A0B0` | Secondary highlight; "within target" status |
 | Kraft | `#C9A27A` | Tertiary; "below target" status |
 
-Full token list lives in `lib/core/theme/app_colors.dart`. Status chips always carry a text label because blossom and kraft are close in lightness. Cards use rounded corners with a thin outline that echoes the logo's thick contours. UI copy is in English.
+Full token list lives in `lib/core/theme/app_colors.dart`. Status chips always carry a text label because blossom and kraft are close in lightness. Cards use rounded corners with a thin outline that echoes the logo's thick contours. The UI ships in English and Spanish and follows the system language unless the user picks one in Settings.

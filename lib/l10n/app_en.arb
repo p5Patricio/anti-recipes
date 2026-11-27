@@ -1,0 +1,1392 @@
+{
+  "@@locale": "en",
+  "appTitle": "anti-recipes",
+  "settingsTitle": "Settings",
+  "settingsNutritionTargetsTitle": "Nutrition targets",
+  "settingsNutritionTargetsSubtitle": "Protein, fat, day types and weekly plan",
+  "settingsBackupTitle": "Backup",
+  "settingsBackupSubtitle": "Export or restore all your data as JSON",
+  "settingsLanguageTitle": "Language",
+  "settingsLanguageSystem": "System default",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageSpanish": "Español",
+  "coreWidgetsComingSoon": "Coming soon",
+  "coreWidgetsEnterNumber": "Enter a number",
+  "coreWidgetsMustBeAboveZero": "Must be above 0",
+  "coreWidgetsMustBeZeroOrMore": "Must be 0 or more",
+  "recipesTitle": "Recipes",
+  "recipesIngredientsTooltip": "Ingredients",
+  "recipesNewRecipeTooltip": "New recipe",
+  "recipesFilterAll": "All",
+  "recipesLoadError": "Could not load recipes: {error}",
+  "@recipesLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesEmptyFilteredTitle": "Nothing in this group yet",
+  "recipesEmptyFilteredBody": "Pick another group or add a recipe of this kind.",
+  "recipesEmptyTitle": "No recipes yet",
+  "recipesEmptyBody": "Tap + to create your first recipe and start batch cooking.",
+  "recipesKindProteinBase": "Protein base",
+  "recipesKindCarbBase": "Carb base",
+  "recipesKindSauce": "Sauce",
+  "recipesKindVegetable": "Vegetable",
+  "recipesKindComplete": "Complete",
+  "recipesCardKindYield": "{kind} · yield {yieldFactor}",
+  "@recipesCardKindYield": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      },
+      "yieldFactor": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesPer100Cooked": "Per 100 g cooked",
+  "recipesMacroLine": "{kcal} kcal · P {protein} · F {fat} · C {carbs} · Fiber {fiber}",
+  "@recipesMacroLine": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      },
+      "fiber": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryTitle": "Summary",
+  "recipesSummaryRawWeight": "Raw weight: {grams} g",
+  "@recipesSummaryRawWeight": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryCookedWeight": "Expected cooked weight: {grams} g",
+  "@recipesSummaryCookedWeight": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesSummaryTotal": "Total",
+  "recipesIngredientsTitle": "Ingredients",
+  "recipesNewIngredientTooltip": "New ingredient",
+  "recipesIngredientsLoadError": "Could not load ingredients: {error}",
+  "@recipesIngredientsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesIngredientsEmpty": "No ingredients yet. Tap + to add one.",
+  "recipesIngredientSubtitle": "{category} · {kcal} kcal · P {protein} · F {fat} · C {carbs} per 100 g raw",
+  "@recipesIngredientSubtitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesCategoryProtein": "protein",
+  "recipesCategoryCarb": "carb",
+  "recipesCategoryVegetable": "vegetable",
+  "recipesCategoryFruit": "fruit",
+  "recipesCategoryFat": "fat",
+  "recipesCategoryOther": "other",
+  "recipesEditIngredientTitle": "Edit ingredient",
+  "recipesNewIngredientTitle": "New ingredient",
+  "recipesDeleteTooltip": "Delete",
+  "recipesFieldName": "Name",
+  "recipesFieldCategory": "Category",
+  "recipesPer100Raw": "Per 100 g raw",
+  "recipesFieldCalories": "Calories",
+  "recipesFieldProtein": "Protein",
+  "recipesFieldFat": "Fat",
+  "recipesFieldCarbs": "Carbs",
+  "recipesFieldFiber": "Fiber",
+  "recipesEnergyWarning": "Calories differ from protein, fat and carbs by more than 15% (they add up to about {kcal} kcal). You can still save.",
+  "@recipesEnergyWarning": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesCountsAsFruit": "Counts as a fruit portion",
+  "recipesCountsAsVegetable": "Counts as a vegetable portion",
+  "recipesServingLabel": "Serving size (optional)",
+  "recipesSaveIngredient": "Save ingredient",
+  "recipesEnterName": "Enter a name",
+  "recipesIngredientNameTaken": "An ingredient with this name already exists",
+  "recipesSaveIngredientError": "Could not save ingredient: {error}",
+  "@recipesSaveIngredientError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteIngredientTitle": "Delete \"{name}\"?",
+  "@recipesDeleteIngredientTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteIngredientMessage": "The ingredient will be removed from your library.",
+  "recipesIngredientInUse": "This ingredient is used in a recipe or a logged meal, so it cannot be deleted.",
+  "recipesCancel": "Cancel",
+  "recipesDelete": "Delete",
+  "recipesNewRecipeTitle": "New recipe",
+  "recipesEditRecipeTitle": "Edit recipe",
+  "recipesLoadRecipeError": "Could not load recipe: {error}",
+  "@recipesLoadRecipeError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesRecipeMissing": "This recipe no longer exists.",
+  "recipesFieldKind": "Kind",
+  "recipesYieldLabel": "Expected yield factor (cooked / raw)",
+  "recipesYieldHelper": "Cooked weight divided by raw weight. Meat shrinks (about 0.75); rice and pasta absorb water (about 2.5).",
+  "recipesYieldRange": "Must be above 0 and at most 3",
+  "recipesLineRawLabel": "Raw",
+  "recipesRemoveIngredientTooltip": "Remove ingredient",
+  "recipesLinesError": "Add at least one ingredient",
+  "recipesAddIngredient": "Add ingredient",
+  "recipesSectionTools": "Tools",
+  "recipesAddTool": "Add tool",
+  "recipesSectionSteps": "Steps",
+  "recipesAddStep": "Add step",
+  "recipesFieldNotes": "Notes (optional)",
+  "recipesSaveRecipe": "Save recipe",
+  "recipesDeleteRecipe": "Delete recipe",
+  "recipesSaveRecipeError": "Could not save recipe: {error}",
+  "@recipesSaveRecipeError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteRecipeTitle": "Delete \"{name}\"?",
+  "@recipesDeleteRecipeTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recipesDeleteRecipeMessage": "The recipe and its steps will be removed. This cannot be undone.",
+  "recipesRecipeInUse": "This recipe is used by a cooked batch, so it cannot be deleted.",
+  "recipesToolNameLabel": "Tool name",
+  "recipesAddConfirm": "Add",
+  "recipesDetailTitleFallback": "Recipe",
+  "recipesEditTooltip": "Edit",
+  "recipesRawGramsLine": "{grams} g raw",
+  "@recipesRawGramsLine": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesNoToolsSelected": "No tools selected.",
+  "recipesNoSteps": "No steps yet.",
+  "recipesSectionNotes": "Notes",
+  "recipesStepTitle": "Step {number}",
+  "@recipesStepTitle": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "recipesMoveUp": "Move up",
+  "recipesMoveDown": "Move down",
+  "recipesRemoveStep": "Remove step",
+  "recipesFieldTechnique": "Technique",
+  "recipesDescribeStep": "Describe the step",
+  "recipesFieldTemp": "Temp",
+  "recipesFieldTime": "Time",
+  "recipesFieldToolOptional": "Tool (optional)",
+  "recipesToolNone": "None",
+  "recipesWholeNumber": "Whole number",
+  "recipesSearchIngredients": "Search ingredients",
+  "recipesNoMatchingIngredients": "No matching ingredients",
+  "mealLogToday": "Today",
+  "mealLogLoadDayError": "Could not load the day: {error}",
+  "@mealLogLoadDayError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDeleteMealTitle": "Delete meal {slot}?",
+  "@mealLogDeleteMealTitle": {
+    "placeholders": {
+      "slot": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogDeleteMealMessage": "This removes the meal from {date} and gives its pantry stock back.",
+  "@mealLogDeleteMealMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDeleteMealFailed": "Could not delete the meal.",
+  "mealLogSetupTargetsHint": "Set up your nutrition targets in Settings to see your daily progress.",
+  "mealLogStatusOnTarget": "On target",
+  "mealLogStatusBelow": "Below",
+  "mealLogStatusAbove": "Above",
+  "mealLogCaloriesStatus": "{status, select, within{Calories · On target} below{Calories · Below} above{Calories · Above} other{Calories}}",
+  "@mealLogCaloriesStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogFiberStatus": "{status, select, within{Fiber · On target} below{Fiber · Below} above{Fiber · Above} other{Fiber}}",
+  "@mealLogFiberStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogPreviousDay": "Previous day",
+  "mealLogNextDay": "Next day",
+  "mealLogTrainingDay": "Training day",
+  "mealLogRestDay": "Rest day",
+  "mealLogHydrationTitle": "Hydration",
+  "mealLogWater": "Water",
+  "mealLogGoalRange": "Goal {range}",
+  "@mealLogGoalRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogCustom": "Custom",
+  "mealLogUndoLast": "Undo last",
+  "mealLogMacrosTitle": "Calories & macros",
+  "mealLogCalories": "Calories",
+  "mealLogProtein": "Protein",
+  "mealLogFat": "Fat",
+  "mealLogCarbs": "Carbs",
+  "mealLogFiber": "Fiber",
+  "mealLogRemaining": "{state, select, left{{amount} {unit} left} over{{amount} {unit} over} other{{amount} {unit}}}",
+  "@mealLogRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRangeWithRemaining": "{state, select, left{Range {range} · {amount} {unit} left} over{Range {range} · {amount} {unit} over} other{Range {range}}}",
+  "@mealLogRangeWithRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogConfiguredWithRemaining": "{state, select, left{Configured {range} · {amount} {unit} left} over{Configured {range} · {amount} {unit} over} other{Configured {range}}}",
+  "@mealLogConfiguredWithRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRangeOnly": "Range {range}",
+  "@mealLogRangeOnly": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogCarbsDerivedInfo": "Carbs target {grams} g is derived from calories and sits outside the configured range.",
+  "@mealLogCarbsDerivedInfo": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogMealN": "Meal {slot}",
+  "@mealLogMealN": {
+    "placeholders": {
+      "slot": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogEditMeal": "Edit meal",
+  "mealLogDeleteMeal": "Delete meal",
+  "mealLogComposeMeal": "Compose meal",
+  "mealLogSlotTotals": "{kcal} kcal · P {protein} · F {fat} · C {carbs}",
+  "@mealLogSlotTotals": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogSlotProteinOnTarget": "Protein {grams} g · on target",
+  "@mealLogSlotProteinOnTarget": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogSlotProteinBelow": "Protein {grams} g · below {range}",
+  "@mealLogSlotProteinBelow": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogSlotProteinAbove": "Protein {grams} g · above {range}",
+  "@mealLogSlotProteinAbove": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinOnTarget": "Protein on target ({range})",
+  "@mealLogMealProteinOnTarget": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinBelow": "Protein {grams} g below {range}",
+  "@mealLogMealProteinBelow": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinAbove": "Protein {grams} g above {range}",
+  "@mealLogMealProteinAbove": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDayRemaining": "{dayType, select, training{Left today after this meal (training day): {kcal} kcal · {carbs} g carbs} rest{Left today after this meal (rest day): {kcal} kcal · {carbs} g carbs} other{Left today after this meal: {kcal} kcal · {carbs} g carbs}}",
+  "@mealLogDayRemaining": {
+    "placeholders": {
+      "dayType": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogPantryEmpty": "Nothing left in the pantry.",
+  "mealLogPantryItemSubtitle": "{grams} g left · cooked {date}",
+  "@mealLogPantryItemSubtitle": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogProteinPerMealTitle": "Protein per meal",
+  "mealLogProteinBand": "Band {range}",
+  "@mealLogProteinBand": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogServingsTitle": "Fruit & vegetables",
+  "mealLogFruit": "Fruit",
+  "mealLogVegetables": "Vegetables",
+  "mealLogPortionsGoal": "Goal {range} portions",
+  "@mealLogPortionsGoal": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRemovePortion": "Remove a portion of {label}",
+  "@mealLogRemovePortion": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogAddPortion": "Add a portion of {label}",
+  "@mealLogAddPortion": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogAddWaterTitle": "Add water",
+  "mealLogAmount": "Amount",
+  "mealLogAtMostMl": "At most {max} ml",
+  "@mealLogAtMostMl": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogCancel": "Cancel",
+  "mealLogAdd": "Add",
+  "mealLogRemove": "Remove",
+  "mealLogAllRemaining": "All remaining",
+  "mealLogComposerLoadError": "Could not load the composer: {error}",
+  "@mealLogComposerLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogComposeSetupHint": "Set up your nutrition targets in Settings to compose meals.",
+  "mealLogNoProteinToSuggest": "This item has no protein to suggest from.",
+  "mealLogOnlyLeftBelowTarget": "Only {grams} g left, so protein stays below the target.",
+  "@mealLogOnlyLeftBelowTarget": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogNotEnoughTitle": "Not enough in the pantry",
+  "mealLogNotEnoughMessage": "You entered more than what is left of {names}. Saving will leave the stock below zero.",
+  "@mealLogNotEnoughMessage": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogSaveAnyway": "Save anyway",
+  "mealLogSaveError": "Could not save meal: {error}",
+  "@mealLogSaveError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogFromPantry": "From pantry · {grams} g available",
+  "@mealLogFromPantry": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogFreshIngredient": "Fresh ingredient",
+  "mealLogOnlyLeftInPantry": "Only {grams} g left in the pantry.",
+  "@mealLogOnlyLeftInPantry": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogAddAtLeastOne": "Add at least one component",
+  "mealLogAddFromPantry": "Add from pantry",
+  "mealLogAddFresh": "Add fresh ingredient",
+  "mealLogSuggestProtein": "Suggest to reach protein target",
+  "mealLogSuggestHint": "Add a protein-base item from the pantry to get a suggestion.",
+  "mealLogSaveMeal": "Save meal",
+  "targetsTitle": "Nutrition targets",
+  "targetsLoadError": "Could not load targets: {error}",
+  "@targetsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintProteinPerKg": "Protein: {value} g/kg",
+  "@targetsHintProteinPerKg": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintFatPerKg": "Fat: {value} g/kg",
+  "@targetsHintFatPerKg": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintProteinPerMeal": "Protein per meal target: {value} g",
+  "@targetsHintProteinPerMeal": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsInvalidIncomplete": "Invalid input: Fill in all fields",
+  "targetsInvalidMeals": "Invalid input: Meals per day must be a whole number",
+  "targetsInvalidValues": "Invalid input: check the values and try again",
+  "targetsSaved": "Nutrition targets saved",
+  "targetsResetTitle": "Reset to example defaults?",
+  "targetsResetMessage": "This replaces the values in the form. Nothing changes until you save.",
+  "targetsCancel": "Cancel",
+  "targetsReset": "Reset",
+  "targetsSave": "Save",
+  "targetsResetToDefaults": "Reset to example defaults",
+  "targetsProfile": "Profile",
+  "targetsBodyWeight": "Body weight (optional)",
+  "targetsProtein": "Protein",
+  "targetsFat": "Fat",
+  "targetsMealsPerDay": "Meals per day",
+  "targetsProteinPerMeal": "Protein per meal",
+  "targetsFieldCalories": "Calories",
+  "targetsFieldCarbs": "Carbs",
+  "targetsFieldFiber": "Fiber",
+  "targetsFieldWater": "Water",
+  "targetsFieldFruit": "Fruit",
+  "targetsFieldVegetables": "Vegetables",
+  "targetsUnitPortions": "portions",
+  "targetsRangeMin": "{label} min",
+  "@targetsRangeMin": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsRangeMax": "{label} max",
+  "@targetsRangeMax": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsMustBeAtLeastMin": "Must be at least min",
+  "targetsTrainingDay": "Training day",
+  "targetsRestDay": "Rest day",
+  "targetsDerivedCarbsNone": "Derived carbs: -",
+  "targetsDerivedCarbs": "Derived carbs at mid calories: {grams} g",
+  "@targetsDerivedCarbs": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "targetsCarbsOutsideRange": "Derived carbs are outside the configured range",
+  "targetsCarbsExplain": "Carbs are derived from calories left after protein and fat.",
+  "targetsWeeklySchedule": "Weekly schedule",
+  "targetsScheduleHint": "Selected chips are training days; the rest are rest days.",
+  "targetsScheduleTraining": "Training",
+  "targetsScheduleRest": "Rest",
+  "targetsWeeklyAverageNone": "Weekly average: -",
+  "targetsWeeklyAverage": "Weekly average: {kcal} kcal/day",
+  "@targetsWeeklyAverage": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      }
+    }
+  },
+  "shellTabToday": "Today",
+  "shellTabRecipes": "Recipes",
+  "shellTabPantry": "Pantry",
+  "shellTabPlan": "Plan",
+  "shellTabSettings": "Settings",
+  "plannerTitle": "Plan",
+  "plannerSectionDays": "Days to cover",
+  "plannerSectionRecipes": "Choose recipes",
+  "plannerSectionResults": "Results",
+  "plannerBuildError": "Could not build the plan: {error}",
+  "@plannerBuildError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerChooseRecipesHint": "Choose a protein base and a carb base to see how much to cook.",
+  "plannerShoppingListButton": "Shopping list",
+  "plannerStartCooking": "Start cooking",
+  "plannerSetupTargetsHint": "Set up your nutrition targets in Settings to plan a batch.",
+  "plannerShoppingTitle": "Shopping list · {range}",
+  "@plannerShoppingTitle": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerDateRange": "{from} - {to}",
+  "@plannerDateRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerFirstDay": "First day",
+  "plannerNumberOfDays": "Number of days",
+  "plannerDayTypeTraining": "Training",
+  "plannerDayTypeRest": "Rest",
+  "plannerRangeDayWithType": "{date} · {type}",
+  "@plannerRangeDayWithType": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerFreshTitle": "Fresh additions",
+  "plannerFreshSubtitle": "Eaten as is next to the batch (fruit, raw vegetables).",
+  "plannerRemove": "Remove",
+  "plannerAddFresh": "Add fresh ingredient",
+  "plannerGramsPerMeal": "Grams per meal",
+  "plannerCookedGramsPerMeal": "Cooked grams per meal",
+  "plannerLeftoversTitle": "Pantry leftovers",
+  "plannerLeftoversSubtitle": "Cooked food you still have is deducted from what to cook.",
+  "plannerNoLeftovers": "Nothing cooked is left in the pantry.",
+  "plannerLeftoverSubtitle": "{grams} g left · cooked {date}",
+  "@plannerLeftoverSubtitle": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerNeed": "Need {kcal} kcal · P {protein} g · C {carbs} g",
+  "@plannerNeed": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerCovered": "Covered {kcal} kcal · P {protein} g · C {carbs} g",
+  "@plannerCovered": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerRoleProteinBase": "Protein base",
+  "plannerRoleCarbBase": "Carb base",
+  "plannerRoleVegetable": "Vegetable (optional)",
+  "plannerRoleSauce": "Sauce (optional)",
+  "plannerRoleProteinBaseHint": "Sized to reach the protein target",
+  "plannerRoleCarbBaseHint": "Sized to reach the carb target",
+  "plannerRoleSideHint": "Fixed cooked grams per meal",
+  "plannerChoose": "Choose",
+  "plannerChange": "Change",
+  "plannerNothingToCook": "Nothing to cook: the rest of the plan already covers it.",
+  "plannerRawCooked": "Raw {raw} g · cooked {cooked} g (yield {factor})",
+  "@plannerRawCooked": {
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      },
+      "cooked": {
+        "type": "String"
+      },
+      "factor": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerIngredientLine": "{grams} g {name}",
+  "@plannerIngredientLine": {
+    "placeholders": {
+      "grams": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerPortions": "{count, plural, =1{{count} portion of {grams} g cooked} other{{count} portions of {grams} g cooked}}",
+  "@plannerPortions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerPerPortion": "Per portion",
+  "plannerBlockTotals": "Block totals",
+  "plannerTotalProtein": "Protein {covered} / {target} g",
+  "@plannerTotalProtein": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerTotalCarbs": "Carbs {covered} / {target} g",
+  "@plannerTotalCarbs": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerTotalCalories": "Calories {covered} / {target} kcal",
+  "@plannerTotalCalories": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerPerMeal": "{count, plural, =1{Per meal ({count} meal)} other{Per meal ({count} meals)}}",
+  "@plannerPerMeal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerNutrientProtein": "Protein",
+  "plannerNutrientCarbs": "Carbs",
+  "plannerResidualChip": "{label} {grams} g ({percent}%)",
+  "@plannerResidualChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "grams": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerUncheckAll": "Uncheck all",
+  "plannerShoppingEmpty": "Nothing to buy yet. Choose recipes in the plan first.",
+  "plannerShoppingProgress": "{done} of {total} checked",
+  "@plannerShoppingProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "plannerCopyAsText": "Copy as text",
+  "plannerShoppingCopied": "Shopping list copied",
+  "plannerAboutServings": "About {count} x {grams} g",
+  "@plannerAboutServings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "grams": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerChecklistLine": "- [ ] {grams} g {name}",
+  "@plannerChecklistLine": {
+    "placeholders": {
+      "grams": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerChecklistLineWithUnits": "- [ ] {grams} g {name} (about {count} x {serving} g)",
+  "@plannerChecklistLineWithUnits": {
+    "placeholders": {
+      "grams": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "serving": {
+        "type": "String"
+      }
+    }
+  },
+  "plannerCategoryProtein": "Protein",
+  "plannerCategoryCarb": "Carb",
+  "plannerCategoryVegetable": "Vegetable",
+  "plannerCategoryFruit": "Fruit",
+  "plannerCategoryFat": "Fat",
+  "plannerCategoryOther": "Other",
+  "pantryTitle": "Pantry",
+  "pantryComposeMeal": "Compose a meal",
+  "pantryLogBatch": "Log batch cooked",
+  "pantryLoadError": "Could not load pantry: {error}",
+  "@pantryLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryEmptyTitle": "Your pantry is empty",
+  "pantryEmptyBody": "Log a cooked batch to track what is left and build meals from it.",
+  "pantryStatusEmpty": "Empty",
+  "pantryStatusLow": "Low",
+  "pantryCooked": "Cooked {date}",
+  "@pantryCooked": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryGramsLeft": "{left} g left of {total} g",
+  "@pantryGramsLeft": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "pantryPer100Cooked": "Per 100 g cooked",
+  "pantryPerTypicalPortion": "Per typical {grams} g portion",
+  "@pantryPerTypicalPortion": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "pantryConsumptionHistory": "Consumption history",
+  "pantryHistoryError": "Could not load history: {error}",
+  "@pantryHistoryError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryNotUsed": "Not used in any meal yet.",
+  "pantryHistoryEntry": "{date} · Meal {slot}",
+  "@pantryHistoryEntry": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "slot": {
+        "type": "int"
+      }
+    }
+  },
+  "pantryDeleteTitle": "Delete \"{name}\"?",
+  "@pantryDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryDeleteMessage": "This batch item will be removed from your pantry.",
+  "pantryDeleteBlocked": "This batch item was used in a meal, so it cannot be deleted.",
+  "pantryBatchItemTitle": "Batch item",
+  "pantryDelete": "Delete",
+  "pantryItemGone": "This batch item no longer exists.",
+  "pantrySearchRecipes": "Search recipes",
+  "pantryNoMatchingRecipes": "No matching recipes",
+  "pantryCookedOn": "Cooked on",
+  "pantryCoversFrom": "Covers from",
+  "pantryCoversTo": "Covers to",
+  "pantryDatesError": "The end date must not be before the start date.",
+  "pantryBatchItems": "Batch items",
+  "pantryAddAtLeastOne": "Add at least one batch item",
+  "pantryAddRecipe": "Add recipe",
+  "pantrySaveBatch": "Save batch",
+  "pantrySaveError": "Could not save batch: {error}",
+  "@pantrySaveError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryRemove": "Remove",
+  "pantryRawTotal": "Raw total",
+  "pantryCookedTotal": "Cooked total",
+  "pantryYieldExpects": "Recipe expects yield {factor} (about {grams} g cooked)",
+  "@pantryYieldExpects": {
+    "placeholders": {
+      "factor": {
+        "type": "String"
+      },
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "pantryYieldMeasured": "Yield {measured} (recipe expects {expected})",
+  "@pantryYieldMeasured": {
+    "placeholders": {
+      "measured": {
+        "type": "String"
+      },
+      "expected": {
+        "type": "String"
+      }
+    }
+  },
+  "pantryYieldDeviation": "Measured yield is {percent}% away from the recipe. Weigh again if that looks wrong.",
+  "@pantryYieldDeviation": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "pantryUpdateYield": "Update recipe yield to this value",
+  "backupTitle": "Backup",
+  "backupPrivacyNote": "A backup is a plain, unencrypted JSON file with all your data, including your body weight and daily targets, recipes, meals and hydration. Only share it with people and services you trust.",
+  "backupExport": "Export backup",
+  "backupImport": "Import backup",
+  "backupImportWarning": "Importing erases everything currently in the app and replaces it with the contents of the backup.",
+  "backupExportCancelled": "Export cancelled. No file was saved.",
+  "backupSaved": "Backup saved ({rows, plural, =1{1 row} other{{rows} rows}}). {counts}",
+  "@backupSaved": {
+    "placeholders": {
+      "rows": {
+        "type": "int"
+      },
+      "counts": {
+        "type": "String"
+      }
+    }
+  },
+  "backupSaveFailed": "The backup could not be saved.",
+  "backupRestoredTitle": "Backup restored",
+  "backupRestoredBody": "{rows, plural, =1{1 row loaded.} other{{rows} rows loaded.}} {counts}",
+  "@backupRestoredBody": {
+    "placeholders": {
+      "rows": {
+        "type": "int"
+      },
+      "counts": {
+        "type": "String"
+      }
+    }
+  },
+  "backupImportFailedTitle": "Import failed",
+  "backupImportFailedBody": "{message}\n\nYour current data was not changed.",
+  "@backupImportFailedBody": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "backupImportFailedGeneric": "The backup could not be imported.",
+  "backupOk": "OK",
+  "backupCancel": "Cancel",
+  "backupConfirmTitle": "Replace all data?",
+  "backupExportedOn": "Backup exported on {stamp}.",
+  "@backupExportedOn": {
+    "placeholders": {
+      "stamp": {
+        "type": "String"
+      }
+    }
+  },
+  "backupConfirmIntro": "Everything currently stored in the app will be erased and replaced by:",
+  "backupEmptyBackup": "Nothing: this backup is empty.",
+  "backupCannotUndo": "This cannot be undone.",
+  "backupEraseAndImport": "Erase and import",
+  "backupNoData": "no data",
+  "backupCountEntry": "{label}: {count}",
+  "@backupCountEntry": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDialogSaveTitle": "Save backup",
+  "backupDialogPickTitle": "Choose a backup",
+  "backupTableUserProfiles": "Profile",
+  "backupTableDayTypeTargetRows": "Day-type targets",
+  "backupTableWeekScheduleEntries": "Week schedule days",
+  "backupTableIngredients": "Ingredients",
+  "backupTableTools": "Tools",
+  "backupTableRecipes": "Recipes",
+  "backupTableRecipeIngredients": "Recipe ingredient lines",
+  "backupTableRecipeSteps": "Recipe steps",
+  "backupTableRecipeTools": "Recipe tools",
+  "backupTableBatchSessions": "Batch sessions",
+  "backupTableBatchItems": "Batch items",
+  "backupTableMealLogs": "Meals",
+  "backupTableMealComponents": "Meal components",
+  "backupTableHydrationLogs": "Hydration entries",
+  "backupTableDayLogs": "Fruit and vegetable days",
+  "backupTableAppSettings": "App settings",
+  "backupErrorNotValidJson": "This file is not valid JSON.",
+  "backupErrorNotABackup": "This file is not an Anti-recipes backup.",
+  "backupErrorInvalidFormatVersion": "Invalid backup format version {version}.",
+  "@backupErrorInvalidFormatVersion": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "backupErrorNewerFormatVersion": "This backup uses file format {version}, which is newer than this app understands (format {supported}). Update the app and try again.",
+  "@backupErrorNewerFormatVersion": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      },
+      "supported": {
+        "type": "int"
+      }
+    }
+  },
+  "backupErrorInvalidSchemaVersion": "Invalid database version {version}.",
+  "@backupErrorInvalidSchemaVersion": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      }
+    }
+  },
+  "backupErrorNewerSchemaVersion": "This backup was made by a newer version of the app (database version {version}; this app supports up to {supported}). Update the app and try again.",
+  "@backupErrorNewerSchemaVersion": {
+    "placeholders": {
+      "version": {
+        "type": "int"
+      },
+      "supported": {
+        "type": "int"
+      }
+    }
+  },
+  "backupErrorNoExportDate": "The backup has no valid export date.",
+  "backupErrorNoDataSection": "The backup has no data section.",
+  "backupErrorUnknownTable": "The backup contains an unknown table \"{table}\".",
+  "@backupErrorUnknownTable": {
+    "placeholders": {
+      "table": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMissingTable": "The backup is missing the \"{table}\" table.",
+  "@backupErrorMissingTable": {
+    "placeholders": {
+      "table": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorTableNotList": "\"{table}\" must be a list of rows.",
+  "@backupErrorTableNotList": {
+    "placeholders": {
+      "table": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorRowNotObject": "{label} row {row} is not an object.",
+  "@backupErrorRowNotObject": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      }
+    }
+  },
+  "backupErrorUnknownColumn": "{label} row {row} has an unknown column \"{column}\".",
+  "@backupErrorUnknownColumn": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMissingColumn": "{label} row {row} is missing \"{column}\".",
+  "@backupErrorMissingColumn": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMustBeDate": "{label} row {row}, \"{column}\" must be an ISO 8601 date.",
+  "@backupErrorMustBeDate": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMustBeBool": "{label} row {row}, \"{column}\" must be true or false.",
+  "@backupErrorMustBeBool": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMustBeText": "{label} row {row}, \"{column}\" must be text.",
+  "@backupErrorMustBeText": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMustBeWholeNumber": "{label} row {row}, \"{column}\" must be a whole number.",
+  "@backupErrorMustBeWholeNumber": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMustBeNumber": "{label} row {row}, \"{column}\" must be a number.",
+  "@backupErrorMustBeNumber": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnknownValue": "{label} row {row}, \"{column}\" has an unknown value \"{value}\".",
+  "@backupErrorUnknownValue": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "row": {
+        "type": "int"
+      },
+      "column": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorMissingEnvelopeField": "The backup has no valid \"{field}\".",
+  "@backupErrorMissingEnvelopeField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorRestoreForeignKey": "The backup could not be restored because a row refers to data that is not in the backup.",
+  "backupErrorRestoreDuplicate": "The backup could not be restored because it contains duplicate entries.",
+  "backupErrorRestoreOutOfRange": "The backup could not be restored because a value is outside its allowed range.",
+  "backupErrorRestoreMissingValue": "The backup could not be restored because a required value is missing.",
+  "backupErrorRestoreUnexpected": "The backup could not be restored because of an unexpected error.",
+  "backupErrorNotTextFile": "This file is not a text file.",
+  "backupErrorUnreadable": "The file could not be read."
+}

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/nutrients.dart';
 import '../../../../core/nutrition/range.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/number_fields.dart';
+import '../../../nutrition_targets/domain/day_type.dart';
 import '../../../recipes/presentation/widgets/macro_line.dart';
 
 /// Presentational live totals of the meal under composition.
@@ -17,7 +19,7 @@ class MealTotalsCard extends StatelessWidget {
     required this.proteinRange,
     required this.proteinStatus,
     required this.proteinOutsideG,
-    required this.dayTypeLabel,
+    required this.dayType,
     required this.remainingKcal,
     required this.remainingCarbsG,
   });
@@ -28,23 +30,29 @@ class MealTotalsCard extends StatelessWidget {
 
   /// Negative below the range, positive above it, zero within.
   final double proteinOutsideG;
-  final String dayTypeLabel;
+  final DayType dayType;
   final double remainingKcal;
   final double remainingCarbsG;
 
-  String get _proteinText {
+  String _proteinText(AppLocalizations l10n) {
     final range =
         '${formatNumber(proteinRange.min)}-${formatNumber(proteinRange.max)} g';
     return switch (proteinStatus) {
-      RangeStatus.within => 'Protein on target ($range)',
-      RangeStatus.below =>
-        'Protein ${proteinOutsideG.abs().round()} g below $range',
-      RangeStatus.above => 'Protein ${proteinOutsideG.round()} g above $range',
+      RangeStatus.within => l10n.mealLogMealProteinOnTarget(range),
+      RangeStatus.below => l10n.mealLogMealProteinBelow(
+        proteinOutsideG.abs().round(),
+        range,
+      ),
+      RangeStatus.above => l10n.mealLogMealProteinAbove(
+        proteinOutsideG.round(),
+        range,
+      ),
     };
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     final color = proteinStatus == RangeStatus.within
         ? AppColors.statusWithin
@@ -67,14 +75,17 @@ class MealTotalsCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                _proteinText,
+                _proteinText(l10n),
                 style: text.labelLarge?.copyWith(color: AppColors.cream),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Left today after this meal ($dayTypeLabel day): '
-              '${remainingKcal.round()} kcal · ${remainingCarbsG.round()} g carbs',
+              l10n.mealLogDayRemaining(
+                dayType.name,
+                remainingKcal.round(),
+                remainingCarbsG.round(),
+              ),
               key: const Key('day-remaining'),
               style: text.bodySmall,
             ),

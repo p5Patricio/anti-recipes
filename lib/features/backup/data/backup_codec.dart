@@ -93,32 +93,38 @@ class BackupCodec {
     try {
       root = jsonDecode(json);
     } on FormatException catch (e) {
-      throw BackupException('This file is not valid JSON.', cause: e);
+      throw BackupException(BackupFailure.notValidJson, cause: e);
     }
     if (root is! Map<String, dynamic> ||
         root['format'] != BackupDocument.formatName) {
-      throw const BackupException('This file is not an Anti-recipes backup.');
+      throw const BackupException(BackupFailure.notABackup);
     }
     final version = _requireInt(root, 'version');
     if (version < 1) {
-      throw BackupException('Invalid backup format version $version.');
+      throw BackupException(
+        BackupFailure.invalidFormatVersion,
+        version: version,
+      );
     }
     if (version > BackupDocument.formatVersion) {
       throw BackupException(
-        'This backup uses file format $version, which is newer than this '
-        'app understands (format ${BackupDocument.formatVersion}). '
-        'Update the app and try again.',
+        BackupFailure.newerFormatVersion,
+        version: version,
+        supportedVersion: BackupDocument.formatVersion,
       );
     }
     final schemaVersion = _requireInt(root, 'schemaVersion');
     if (schemaVersion < 1) {
-      throw BackupException('Invalid database version $schemaVersion.');
+      throw BackupException(
+        BackupFailure.invalidSchemaVersion,
+        version: schemaVersion,
+      );
     }
     if (schemaVersion > _db.schemaVersion) {
       throw BackupException(
-        'This backup was made by a newer version of the app (database '
-        'version $schemaVersion; this app supports up to '
-        '${_db.schemaVersion}). Update the app and try again.',
+        BackupFailure.newerSchemaVersion,
+        version: schemaVersion,
+        supportedVersion: _db.schemaVersion,
       );
     }
     final exportedRaw = root['exportedAt'];
@@ -126,17 +132,17 @@ class BackupCodec {
         ? DateTime.tryParse(exportedRaw)
         : null;
     if (exportedAt == null) {
-      throw const BackupException('The backup has no valid export date.');
+      throw const BackupException(BackupFailure.noExportDate);
     }
     final data = root['data'];
     if (data is! Map<String, dynamic>) {
-      throw const BackupException('The backup has no data section.');
+      throw const BackupException(BackupFailure.noDataSection);
     }
 
     final known = specs.map((s) => s.name).toSet();
     for (final key in data.keys) {
       if (!known.contains(key)) {
-        throw BackupException('The backup contains an unknown table "$key".');
+        throw BackupException(BackupFailure.unknownTable, table: key);
       }
     }
 
@@ -148,18 +154,20 @@ class BackupCodec {
           tables[spec.name] = const [];
           continue;
         }
-        throw BackupException(
-          'The backup is missing the "${spec.name}" table.',
-        );
+        throw BackupException(BackupFailure.missingTable, table: spec.name);
       }
       if (raw is! List) {
-        throw BackupException('"${spec.name}" must be a list of rows.');
+        throw BackupException(BackupFailure.tableNotList, table: spec.name);
       }
       final rows = <Map<String, Object?>>[];
       for (var i = 0; i < raw.length; i++) {
         final row = raw[i];
         if (row is! Map<String, dynamic>) {
-          throw BackupException('${spec.label} row ${i + 1} is not an object.');
+          throw BackupException(
+            BackupFailure.rowNotObject,
+            table: spec.name,
+            row: i + 1,
+          );
         }
         // Validate every cell now so a bad file is rejected before any write.
         insertValues(spec, row, i);
@@ -183,10 +191,14 @@ class BackupCodec {
   ) {
     final table = tableFor(spec);
     final columns = {for (final c in table.$columns) c.$name: c};
-    String where() => '${spec.label} row ${index + 1}';
     for (final key in row.keys) {
       if (!columns.containsKey(key)) {
-        throw BackupException('${where()} has an unknown column "$key".');
+        throw BackupException(
+          BackupFailure.unknownColumn,
+          table: spec.name,
+          row: index + 1,
+          column: key,
+        );
       }
     }
     final values = <String, Expression>{};
@@ -196,12 +208,17 @@ class BackupCodec {
         if (row.containsKey(c.$name) && c.$nullable) {
           values[c.$name] = const Constant<Object>(null);
         } else if (c.requiredDuringInsert) {
-          throw BackupException('${where()} is missing "${c.$name}".');
+          throw BackupException(
+            BackupFailure.missingColumn,
+            table: spec.name,
+            row: index + 1,
+            column: c.$name,
+          );
         }
         // Otherwise the database default or autoincrement supplies it.
         continue;
       }
-      values[c.$name] = _decodeCell(c, raw, '${where()}, "${c.$name}"');
+      values[c.$name] = _decodeCell(c, raw, spec.name, index + 1);
     }
     return values;
   }
@@ -209,27 +226,34 @@ class BackupCodec {
   Expression<Object> _decodeCell(
     GeneratedColumn<Object> column,
     Object raw,
-    String where,
+    String table,
+    int row,
   ) {
-    BackupException bad(String expected) =>
-        BackupException('$where must be $expected.');
+    BackupException bad(BackupFailure failure) =>
+        BackupException(failure, table: table, row: row, column: column.$name);
     final type = column.type;
     if (type == DriftSqlType.dateTime) {
       final parsed = raw is String ? DateTime.tryParse(raw) : null;
-      if (parsed == null) throw bad('an ISO 8601 date');
+      if (parsed == null) throw bad(BackupFailure.mustBeDate);
       return Variable<DateTime>(parsed);
     }
     if (type == DriftSqlType.bool) {
-      if (raw is! bool) throw bad('true or false');
+      if (raw is! bool) throw bad(BackupFailure.mustBeBool);
       return Variable<bool>(raw);
     }
     if (type == DriftSqlType.string) {
-      if (raw is! String) throw bad('text');
+      if (raw is! String) throw bad(BackupFailure.mustBeText);
       if (column is GeneratedColumnWithTypeConverter) {
         try {
           column.converter.fromSql(raw);
         } catch (_) {
-          throw BackupException('$where has an unknown value "$raw".');
+          throw BackupException(
+            BackupFailure.unknownValue,
+            table: table,
+            row: row,
+            column: column.$name,
+            value: raw.toString(),
+          );
         }
       }
       return Variable<String>(raw);
@@ -239,19 +263,21 @@ class BackupCodec {
       if (raw is double && raw == raw.truncateToDouble()) {
         return Variable<int>(raw.toInt());
       }
-      throw bad('a whole number');
+      throw bad(BackupFailure.mustBeWholeNumber);
     }
     if (type == DriftSqlType.double) {
-      if (raw is! num) throw bad('a number');
+      if (raw is! num) throw bad(BackupFailure.mustBeNumber);
       return Variable<double>(raw.toDouble());
     }
-    throw StateError('Unsupported column type $type for $where');
+    throw StateError(
+      'Unsupported column type $type for $table.${column.$name}',
+    );
   }
 
   int _requireInt(Map<String, dynamic> root, String key) {
     final v = root[key];
     if (v is! int) {
-      throw BackupException('The backup has no valid "$key".');
+      throw BackupException(BackupFailure.missingEnvelopeField, field: key);
     }
     return v;
   }

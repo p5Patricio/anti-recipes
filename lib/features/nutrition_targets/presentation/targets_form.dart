@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/widgets/number_fields.dart';
 import '../domain/day_type.dart';
 import '../domain/nutrition_engine.dart';
@@ -48,32 +49,44 @@ class _TargetsFormState extends ConsumerState<TargetsForm> {
 
   void _refresh() => setState(() {});
 
-  List<String> _hints() {
+  List<String> _hints(AppLocalizations l10n) {
     final weight = _c.weightKg;
     final protein = parseNumber(_c.protein.text);
     final fat = parseNumber(_c.fat.text);
     final meals = int.tryParse(_c.meals.text.trim());
     return [
       if (weight != null && weight > 0 && protein != null)
-        'Protein: ${(protein / weight).toStringAsFixed(2)} g/kg',
+        l10n.targetsHintProteinPerKg((protein / weight).toStringAsFixed(2)),
       if (weight != null && weight > 0 && fat != null)
-        'Fat: ${(fat / weight).toStringAsFixed(2)} g/kg',
+        l10n.targetsHintFatPerKg((fat / weight).toStringAsFixed(2)),
       if (protein != null && meals != null && meals > 0)
-        'Protein per meal target: ${(protein / meals).toStringAsFixed(1)} g',
+        l10n.targetsHintProteinPerMeal((protein / meals).toStringAsFixed(1)),
     ];
   }
 
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     if (!_formKey.currentState!.validate()) return;
     final NutritionPlan plan;
     final WeekSchedule schedule;
     try {
       plan = _c.read();
       schedule = WeekSchedule(_days);
-    } on ArgumentError catch (e) {
+    } on TargetsInputException catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Invalid input: ${e.message}')),
+        SnackBar(
+          content: Text(switch (e.error) {
+            TargetsInputError.incomplete => l10n.targetsInvalidIncomplete,
+            TargetsInputError.mealsNotInteger => l10n.targetsInvalidMeals,
+            TargetsInputError.invalid => l10n.targetsInvalidValues,
+          }),
+        ),
+      );
+      return;
+    } on ArgumentError {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.targetsInvalidValues)),
       );
       return;
     }
@@ -81,27 +94,23 @@ class _TargetsFormState extends ConsumerState<TargetsForm> {
     await dao.savePlan(plan);
     await dao.saveSchedule(schedule);
     await dao.saveBodyWeightKg(_c.weightKg);
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Nutrition targets saved')),
-    );
+    messenger.showSnackBar(SnackBar(content: Text(l10n.targetsSaved)));
   }
 
   Future<void> _reset() async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Reset to example defaults?'),
-        content: const Text(
-          'This replaces the values in the form. Nothing changes until you save.',
-        ),
+        title: Text(context.l10n.targetsResetTitle),
+        content: Text(context.l10n.targetsResetMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.targetsCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Reset'),
+            child: Text(context.l10n.targetsReset),
           ),
         ],
       ),
@@ -127,7 +136,7 @@ class _TargetsFormState extends ConsumerState<TargetsForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ProfileSection(controllers: _c, hints: _hints()),
+            ProfileSection(controllers: _c, hints: _hints(context.l10n)),
             for (final type in DayType.values) ...[
               const SizedBox(height: 12),
               DayTypeCard(
@@ -157,13 +166,13 @@ class _TargetsFormState extends ConsumerState<TargetsForm> {
             FilledButton(
               key: const Key('save-targets'),
               onPressed: _save,
-              child: const Text('Save'),
+              child: Text(context.l10n.targetsSave),
             ),
             const SizedBox(height: 8),
             TextButton(
               key: const Key('reset-targets'),
               onPressed: _reset,
-              child: const Text('Reset to example defaults'),
+              child: Text(context.l10n.targetsResetToDefaults),
             ),
           ],
         ),

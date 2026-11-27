@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/nutrients.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/number_fields.dart';
@@ -53,7 +54,7 @@ class MealLineCard extends StatelessWidget {
                 Expanded(child: Text(label, style: text.titleSmall)),
                 IconButton(
                   key: Key('remove-$idKey'),
-                  tooltip: 'Remove',
+                  tooltip: context.l10n.mealLogRemove,
                   icon: const Icon(Icons.close),
                   onPressed: onRemove,
                 ),
@@ -64,7 +65,7 @@ class MealLineCard extends StatelessWidget {
             NumberField(
               key: Key('grams-$idKey'),
               controller: grams,
-              label: 'Amount',
+              label: context.l10n.mealLogAmount,
               suffix: 'g',
               validator: numberValidator(positive: true),
             ),
@@ -81,7 +82,7 @@ class MealLineCard extends StatelessWidget {
                     ),
                   ActionChip(
                     key: Key('chip-$idKey-all'),
-                    label: const Text('All remaining'),
+                    label: Text(context.l10n.mealLogAllRemaining),
                     onPressed: onAll,
                   ),
                 ],

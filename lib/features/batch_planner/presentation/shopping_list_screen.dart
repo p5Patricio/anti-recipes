@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
 import '../../../core/formatting/grams_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../domain/shopping_list.dart';
+import 'shopping_list_text.dart';
 
 Set<int> deserializeShoppingChecked(String? raw) {
   if (raw == null || raw.isEmpty) return {};
@@ -92,37 +94,39 @@ class ShoppingListScreen extends ConsumerWidget {
 
   Future<void> _copy(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
-    await Clipboard.setData(ClipboardData(text: list.toText(title: title)));
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Shopping list copied')),
+    final l10n = context.l10n;
+    await Clipboard.setData(
+      ClipboardData(text: shoppingListText(l10n, list, title: title)),
     );
+    messenger.showSnackBar(SnackBar(content: Text(l10n.plannerShoppingCopied)));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final checked = ref.watch(shoppingCheckedProvider);
     final notifier = ref.read(shoppingCheckedProvider.notifier);
     final done = list.items.where((i) => checked.contains(i.ingredientId));
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shopping list'),
+        title: Text(l10n.plannerShoppingListButton),
         actions: [
           IconButton(
             key: const Key('uncheck-all'),
-            tooltip: 'Uncheck all',
+            tooltip: l10n.plannerUncheckAll,
             icon: const Icon(Icons.remove_done_outlined),
             onPressed: notifier.clear,
           ),
         ],
       ),
       body: list.isEmpty
-          ? const Center(
+          ? Center(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Nothing to buy yet. Choose recipes in the plan first.',
-                  key: Key('shopping-empty'),
+                  l10n.plannerShoppingEmpty,
+                  key: const Key('shopping-empty'),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -132,7 +136,7 @@ class ShoppingListScreen extends ConsumerWidget {
               children: [
                 Text(title, style: text.bodyMedium),
                 Text(
-                  '${done.length} of ${list.items.length} checked',
+                  l10n.plannerShoppingProgress(done.length, list.items.length),
                   key: const Key('shopping-progress'),
                   style: text.bodySmall,
                 ),
@@ -140,7 +144,7 @@ class ShoppingListScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 16, bottom: 4),
                     child: Text(
-                      categoryLabel(entry.key),
+                      shoppingCategoryLabel(l10n, entry.key),
                       key: Key('shopping-category-${entry.key}'),
                       style: text.titleMedium,
                     ),
@@ -158,7 +162,7 @@ class ShoppingListScreen extends ConsumerWidget {
                   key: const Key('copy-shopping-list'),
                   onPressed: () => _copy(context),
                   icon: const Icon(Icons.copy_outlined),
-                  label: const Text('Copy as text'),
+                  label: Text(l10n.plannerCopyAsText),
                 ),
               ],
             ),
@@ -180,6 +184,7 @@ class _ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final count = item.servingCount;
+    final l10n = context.l10n;
     return CheckboxListTile(
       key: Key('shop-item-${item.ingredientId}'),
       contentPadding: EdgeInsets.zero,
@@ -187,14 +192,14 @@ class _ItemTile extends StatelessWidget {
       value: checked,
       onChanged: (v) => onChanged(v ?? false),
       title: Text(
-        '${formatGrams(item.totalG)} g ${item.name}',
+        l10n.plannerIngredientLine(formatGrams(item.totalG), item.name),
         style: checked
             ? const TextStyle(decoration: TextDecoration.lineThrough)
             : null,
       ),
       subtitle: count == null
           ? null
-          : Text('About $count x ${formatGrams(item.servingG!)} g'),
+          : Text(l10n.plannerAboutServings(count, formatGrams(item.servingG!))),
     );
   }
 }

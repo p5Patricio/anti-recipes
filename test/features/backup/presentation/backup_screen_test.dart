@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:anti_recipes/core/database/app_database.dart';
+import 'package:anti_recipes/core/database/database_provider.dart';
 import 'package:anti_recipes/app_shell.dart';
 import 'package:anti_recipes/features/backup/data/backup_service.dart';
 import 'package:anti_recipes/features/backup/domain/backup_exception.dart';
 import 'package:anti_recipes/features/backup/presentation/backup_providers.dart';
+import 'package:anti_recipes/core/l10n/l10n.dart';
 import 'package:anti_recipes/features/backup/presentation/backup_screen.dart';
 import 'package:anti_recipes/features/meal_log/presentation/today_providers.dart';
 import 'package:anti_recipes/features/settings/presentation/settings_screen.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/backup_fixtures.dart';
@@ -169,13 +172,46 @@ void main() {
   });
 
   uiTest('an unreadable file is reported from the gateway', (tester) async {
-    gateway.pickError = const BackupException('The file could not be read.');
+    gateway.pickError = const BackupException(BackupFailure.unreadable);
     await pumpBackup(tester);
 
     await tapKey(tester, 'import-backup');
 
     expect(find.text('Import failed'), findsOneWidget);
     expect(find.textContaining('The file could not be read.'), findsOneWidget);
+  });
+
+  uiTest('a rejected file is explained in Spanish', (tester) async {
+    gateway.pickResult = '{ not json';
+    tester.view.physicalSize = const Size(900, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(db),
+          backupFileGatewayProvider.overrideWithValue(gateway),
+        ],
+        child: MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const BackupScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Copia de seguridad'), findsOneWidget);
+    await tapKey(tester, 'import-backup');
+
+    expect(find.text('Error al importar'), findsOneWidget);
+    expect(find.textContaining('no es un JSON válido'), findsOneWidget);
+    expect(
+      find.textContaining('Tus datos actuales no se modificaron.'),
+      findsOneWidget,
+    );
+    expect(await recipeCount(), 0);
   });
 
   uiTest('Settings links to the backup screen', (tester) async {

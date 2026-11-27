@@ -66,27 +66,16 @@ class BackupService {
     } on BackupException {
       rethrow;
     } catch (e) {
-      throw BackupException(
-        'The backup could not be restored because ${_reason(e)}.',
-        cause: e,
-      );
+      throw BackupException(_failureFor(e), cause: e);
     }
   }
 
-  String _reason(Object error) {
+  BackupFailure _failureFor(Object error) {
     final text = error.toString().toUpperCase();
-    if (text.contains('FOREIGN KEY')) {
-      return 'a row refers to data that is not in the backup';
-    }
-    if (text.contains('UNIQUE')) {
-      return 'it contains duplicate entries';
-    }
-    if (text.contains('CHECK')) {
-      return 'a value is outside its allowed range';
-    }
-    if (text.contains('NOT NULL')) {
-      return 'a required value is missing';
-    }
-    return 'of an unexpected error';
+    if (text.contains('FOREIGN KEY')) return BackupFailure.restoreForeignKey;
+    if (text.contains('UNIQUE')) return BackupFailure.restoreDuplicate;
+    if (text.contains('CHECK')) return BackupFailure.restoreOutOfRange;
+    if (text.contains('NOT NULL')) return BackupFailure.restoreMissingValue;
+    return BackupFailure.restoreUnexpected;
   }
 }

@@ -28,7 +28,7 @@ flutter pub get
 dart run build_runner build -d      # regenerate drift code after changing tables or DAOs
 dart format lib test
 flutter analyze
-flutter test                        # all 264 tests
+flutter test                        # all 277 tests
 flutter test test/features/backup   # a subset
 ```
 
@@ -111,6 +111,18 @@ Create `lib/features/<name>/{domain,data,presentation}`. Put rules in `domain` (
 ### Add a stream-based screen
 
 Expose a DAO `watch*` method with its own distinct SQL, wrap it in a provider, and in widget tests use the unmount pattern above.
+
+## Localization
+
+The app ships in English and Spanish with Flutter `gen_l10n`.
+
+- Source of truth: `lib/l10n/app_en.arb` (template). `lib/l10n/app_es.arb` must have the same keys; `test/core/l10n_arb_parity_test.dart` enforces it.
+- Use strings through `context.l10n.<key>` (`lib/core/l10n/l10n.dart`). Never hardcode user-visible text in widgets, and never put display text in `domain/` or `data/`: return a code, enum or typed reason and localize it in presentation.
+- Key names are prefixed by area (`recipes...`, `mealLog...`, `planner...`). Use ICU placeholders and `plural`/`select` instead of concatenating fragments.
+- After editing an ARB file run `flutter gen-l10n` and commit the generated files in `lib/l10n/`.
+- Widget tests that build their own `MaterialApp` need `locale: const Locale('en')`, `localizationsDelegates: AppLocalizations.localizationsDelegates` and `supportedLocales: AppLocalizations.supportedLocales`; `pumpWithDb` already does this.
+- The language override is stored in `app_settings` under `app_locale` (`lib/core/l10n/locale_provider.dart`).
+- Spanish style: neutral Latin American Spanish, no regional slang.
 
 ## Quality bar before saying "done"
 

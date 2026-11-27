@@ -8,7 +8,15 @@ import '../domain/backup_file_gateway.dart';
 /// [BackupFileGateway] backed by the system pickers (Storage Access
 /// Framework on Android, so no storage permission is needed).
 class FilePickerBackupFileGateway implements BackupFileGateway {
-  const FilePickerBackupFileGateway();
+  /// The dialog titles come from the caller because they are user-facing and
+  /// must follow the app language; this class stays free of localization.
+  const FilePickerBackupFileGateway({
+    required this.saveDialogTitle,
+    required this.pickDialogTitle,
+  });
+
+  final String saveDialogTitle;
+  final String pickDialogTitle;
 
   @override
   Future<String?> saveBackup({
@@ -16,7 +24,7 @@ class FilePickerBackupFileGateway implements BackupFileGateway {
     required String contents,
   }) async {
     final uri = await FilePicker.saveFile(
-      dialogTitle: 'Save backup',
+      dialogTitle: saveDialogTitle,
       fileName: fileName,
       bytes: utf8.encode(contents),
       mimeType: 'application/json',
@@ -26,14 +34,14 @@ class FilePickerBackupFileGateway implements BackupFileGateway {
 
   @override
   Future<String?> pickBackup() async {
-    final file = await FilePicker.pickFile(dialogTitle: 'Choose a backup');
+    final file = await FilePicker.pickFile(dialogTitle: pickDialogTitle);
     if (file == null) return null;
     try {
       return utf8.decode(await file.readAsBytes());
     } on FormatException catch (e) {
-      throw BackupException('This file is not a text file.', cause: e);
+      throw BackupException(BackupFailure.notTextFile, cause: e);
     } catch (e) {
-      throw BackupException('The file could not be read.', cause: e);
+      throw BackupException(BackupFailure.unreadable, cause: e);
     }
   }
 }

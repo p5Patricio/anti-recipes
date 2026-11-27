@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/formatting/date_format.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../nutrition_targets/domain/day_type.dart';
+import 'localized_dates.dart';
 import 'status_style.dart';
 
 /// Presentational day selector: arrows, date, "Today" jump chip, day-type badge.
@@ -33,7 +34,7 @@ class DayHeader extends StatelessWidget {
       children: [
         IconButton(
           key: const Key('prev-day'),
-          tooltip: 'Previous day',
+          tooltip: context.l10n.mealLogPreviousDay,
           icon: const Icon(Icons.chevron_left),
           onPressed: onPrevious,
         ),
@@ -41,7 +42,7 @@ class DayHeader extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                weekdayDate(date),
+                localizedWeekdayDate(context, date),
                 key: const Key('today-date'),
                 style: text.titleMedium,
               ),
@@ -54,7 +55,7 @@ class DayHeader extends StatelessWidget {
                   if (!isToday)
                     ActionChip(
                       key: const Key('jump-today'),
-                      label: const Text('Today'),
+                      label: Text(context.l10n.mealLogToday),
                       onPressed: onToday,
                     ),
                 ],
@@ -64,7 +65,7 @@ class DayHeader extends StatelessWidget {
         ),
         IconButton(
           key: const Key('next-day'),
-          tooltip: 'Next day',
+          tooltip: context.l10n.mealLogNextDay,
           icon: const Icon(Icons.chevron_right),
           onPressed: onNext,
         ),
@@ -84,7 +85,9 @@ class DayTypeBadge extends StatelessWidget {
     final training = dayType == DayType.training;
     return TintedChip(
       key: const Key('day-type-badge'),
-      label: training ? 'Training day' : 'Rest day',
+      label: training
+          ? context.l10n.mealLogTrainingDay
+          : context.l10n.mealLogRestDay,
       color: training ? AppColors.blossom : AppColors.kraft,
     );
   }

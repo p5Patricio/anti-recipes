@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/date_utils.dart';
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/number_fields.dart';
 import '../../recipes/presentation/recipes_providers.dart';
 import '../data/inventory_dao.dart';
 import '../domain/yield_deviation.dart';
+import 'localized_dates.dart';
 import 'widgets/recipe_picker_sheet.dart';
 
 /// Highest yield factor the recipe editor accepts; mirrors its validation.
@@ -163,6 +164,7 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+    final l10n = context.l10n;
     final valid = _formKey.currentState!.validate();
     setState(() => _itemsError = _items.isEmpty);
     if (!valid || _items.isEmpty || !_datesValid) return;
@@ -194,7 +196,7 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
       navigator.pop(true);
     } catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Could not save batch: $e')),
+        SnackBar(content: Text(l10n.pantrySaveError('$e'))),
       );
     }
   }
@@ -209,7 +211,7 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
     contentPadding: EdgeInsets.zero,
     leading: const Icon(Icons.event_outlined),
     title: Text(label),
-    trailing: Text(weekdayDate(value)),
+    trailing: Text(localizedWeekdayDate(context, value)),
     onTap: () async {
       final picked = await _pickDate(value);
       if (picked != null) setState(() => onPicked(picked));
@@ -219,11 +221,12 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     // Keeps the stream loaded so the picker sheet can read it synchronously.
     final summaries = ref.watch(recipeSummariesProvider).value;
     if (summaries != null) _applyPrefill(summaries);
     return Scaffold(
-      appBar: AppBar(title: const Text('Log batch cooked')),
+      appBar: AppBar(title: Text(l10n.pantryLogBatch)),
       body: Form(
         key: _formKey,
         onChanged: () => setState(() {}),
@@ -234,30 +237,30 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
             children: [
               _dateTile(
                 'pick-cooked-on',
-                'Cooked on',
+                l10n.pantryCookedOn,
                 _cookedOn,
                 (d) => _cookedOn = d,
               ),
               _dateTile(
                 'pick-covers-from',
-                'Covers from',
+                l10n.pantryCoversFrom,
                 _coversFrom,
                 (d) => _coversFrom = d,
               ),
               _dateTile(
                 'pick-covers-to',
-                'Covers to',
+                l10n.pantryCoversTo,
                 _coversTo,
                 (d) => _coversTo = d,
               ),
               if (!_datesValid)
                 Text(
-                  'The end date must not be before the start date.',
+                  l10n.pantryDatesError,
                   key: const Key('dates-error'),
                   style: text.bodySmall?.copyWith(color: AppColors.error),
                 ),
               const SizedBox(height: 16),
-              Text('Batch items', style: text.titleMedium),
+              Text(l10n.pantryBatchItems, style: text.titleMedium),
               const SizedBox(height: 8),
               for (final (i, item) in _items.indexed)
                 _ItemCard(
@@ -271,7 +274,7 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    'Add at least one batch item',
+                    l10n.pantryAddAtLeastOne,
                     key: const Key('items-error'),
                     style: text.bodySmall?.copyWith(color: AppColors.error),
                   ),
@@ -282,14 +285,14 @@ class _LogBatchScreenState extends ConsumerState<LogBatchScreen> {
                   key: const Key('add-batch-item'),
                   onPressed: _addItem,
                   icon: const Icon(Icons.add),
-                  label: const Text('Add recipe'),
+                  label: Text(l10n.pantryAddRecipe),
                 ),
               ),
               const SizedBox(height: 24),
               FilledButton(
                 key: const Key('save-batch'),
                 onPressed: _save,
-                child: const Text('Save batch'),
+                child: Text(l10n.pantrySaveBatch),
               ),
             ],
           ),
@@ -316,6 +319,7 @@ class _ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final measured = item.measuredYield;
     final expected = item.expectedYield;
     final expectedCooked =
@@ -338,7 +342,7 @@ class _ItemCard extends StatelessWidget {
                 ),
                 IconButton(
                   key: Key('remove-batch-item-$index'),
-                  tooltip: 'Remove',
+                  tooltip: l10n.pantryRemove,
                   icon: const Icon(Icons.close),
                   onPressed: onRemove,
                 ),
@@ -352,7 +356,7 @@ class _ItemCard extends StatelessWidget {
                   child: NumberField(
                     key: Key('batch-raw-$index'),
                     controller: item.raw,
-                    label: 'Raw total',
+                    label: l10n.pantryRawTotal,
                     suffix: 'g',
                     validator: numberValidator(positive: true),
                   ),
@@ -362,7 +366,7 @@ class _ItemCard extends StatelessWidget {
                   child: NumberField(
                     key: Key('batch-cooked-$index'),
                     controller: item.cooked,
-                    label: 'Cooked total',
+                    label: l10n.pantryCookedTotal,
                     suffix: 'g',
                     validator: numberValidator(positive: true),
                   ),
@@ -372,18 +376,23 @@ class _ItemCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               measured == null
-                  ? 'Recipe expects yield ${expected.toStringAsFixed(2)} '
-                        '(about ${expectedCooked.round()} g cooked)'
-                  : 'Yield ${measured.toStringAsFixed(2)} '
-                        '(recipe expects ${expected.toStringAsFixed(2)})',
+                  ? l10n.pantryYieldExpects(
+                      expected.toStringAsFixed(2),
+                      expectedCooked.round(),
+                    )
+                  : l10n.pantryYieldMeasured(
+                      measured.toStringAsFixed(2),
+                      expected.toStringAsFixed(2),
+                    ),
               key: Key('yield-info-$index'),
               style: text.bodySmall,
             ),
             if (item.deviates) ...[
               const SizedBox(height: 4),
               Text(
-                'Measured yield is ${_deviationPercent(measured!, expected)}% '
-                'away from the recipe. Weigh again if that looks wrong.',
+                l10n.pantryYieldDeviation(
+                  _deviationPercent(measured!, expected),
+                ),
                 key: Key('yield-note-$index'),
                 style: text.bodySmall?.copyWith(color: AppColors.warning),
               ),
@@ -391,7 +400,7 @@ class _ItemCard extends StatelessWidget {
                 SwitchListTile(
                   key: Key('update-yield-$index'),
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Update recipe yield to this value'),
+                  title: Text(l10n.pantryUpdateYield),
                   value: item.updateYield,
                   onChanged: onUpdateYield,
                 ),
