@@ -245,5 +245,459 @@
   "recipesToolNone": "None",
   "recipesWholeNumber": "Whole number",
   "recipesSearchIngredients": "Search ingredients",
-  "recipesNoMatchingIngredients": "No matching ingredients"
+  "recipesNoMatchingIngredients": "No matching ingredients",
+  "mealLogToday": "Today",
+  "mealLogLoadDayError": "Could not load the day: {error}",
+  "@mealLogLoadDayError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDeleteMealTitle": "Delete meal {slot}?",
+  "@mealLogDeleteMealTitle": {
+    "placeholders": {
+      "slot": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogDeleteMealMessage": "This removes the meal from {date} and gives its pantry stock back.",
+  "@mealLogDeleteMealMessage": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDeleteMealFailed": "Could not delete the meal.",
+  "mealLogSetupTargetsHint": "Set up your nutrition targets in Settings to see your daily progress.",
+  "mealLogStatusOnTarget": "On target",
+  "mealLogStatusBelow": "Below",
+  "mealLogStatusAbove": "Above",
+  "mealLogCaloriesStatus": "{status, select, within{Calories · On target} below{Calories · Below} above{Calories · Above} other{Calories}}",
+  "@mealLogCaloriesStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogFiberStatus": "{status, select, within{Fiber · On target} below{Fiber · Below} above{Fiber · Above} other{Fiber}}",
+  "@mealLogFiberStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogPreviousDay": "Previous day",
+  "mealLogNextDay": "Next day",
+  "mealLogTrainingDay": "Training day",
+  "mealLogRestDay": "Rest day",
+  "mealLogHydrationTitle": "Hydration",
+  "mealLogWater": "Water",
+  "mealLogGoalRange": "Goal {range}",
+  "@mealLogGoalRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogCustom": "Custom",
+  "mealLogUndoLast": "Undo last",
+  "mealLogMacrosTitle": "Calories & macros",
+  "mealLogCalories": "Calories",
+  "mealLogProtein": "Protein",
+  "mealLogFat": "Fat",
+  "mealLogCarbs": "Carbs",
+  "mealLogFiber": "Fiber",
+  "mealLogRemaining": "{state, select, left{{amount} {unit} left} over{{amount} {unit} over} other{{amount} {unit}}}",
+  "@mealLogRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRangeWithRemaining": "{state, select, left{Range {range} · {amount} {unit} left} over{Range {range} · {amount} {unit} over} other{Range {range}}}",
+  "@mealLogRangeWithRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogConfiguredWithRemaining": "{state, select, left{Configured {range} · {amount} {unit} left} over{Configured {range} · {amount} {unit} over} other{Configured {range}}}",
+  "@mealLogConfiguredWithRemaining": {
+    "placeholders": {
+      "state": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRangeOnly": "Range {range}",
+  "@mealLogRangeOnly": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogCarbsDerivedInfo": "Carbs target {grams} g is derived from calories and sits outside the configured range.",
+  "@mealLogCarbsDerivedInfo": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogMealN": "Meal {slot}",
+  "@mealLogMealN": {
+    "placeholders": {
+      "slot": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogEditMeal": "Edit meal",
+  "mealLogDeleteMeal": "Delete meal",
+  "mealLogComposeMeal": "Compose meal",
+  "mealLogSlotTotals": "{kcal} kcal · P {protein} · F {fat} · C {carbs}",
+  "@mealLogSlotTotals": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      },
+      "protein": {
+        "type": "int"
+      },
+      "fat": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogSlotProteinOnTarget": "Protein {grams} g · on target",
+  "@mealLogSlotProteinOnTarget": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogSlotProteinBelow": "Protein {grams} g · below {range}",
+  "@mealLogSlotProteinBelow": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogSlotProteinAbove": "Protein {grams} g · above {range}",
+  "@mealLogSlotProteinAbove": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinOnTarget": "Protein on target ({range})",
+  "@mealLogMealProteinOnTarget": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinBelow": "Protein {grams} g below {range}",
+  "@mealLogMealProteinBelow": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogMealProteinAbove": "Protein {grams} g above {range}",
+  "@mealLogMealProteinAbove": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogDayRemaining": "{dayType, select, training{Left today after this meal (training day): {kcal} kcal · {carbs} g carbs} rest{Left today after this meal (rest day): {kcal} kcal · {carbs} g carbs} other{Left today after this meal: {kcal} kcal · {carbs} g carbs}}",
+  "@mealLogDayRemaining": {
+    "placeholders": {
+      "dayType": {
+        "type": "String"
+      },
+      "kcal": {
+        "type": "int"
+      },
+      "carbs": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogPantryEmpty": "Nothing left in the pantry.",
+  "mealLogPantryItemSubtitle": "{grams} g left · cooked {date}",
+  "@mealLogPantryItemSubtitle": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogProteinPerMealTitle": "Protein per meal",
+  "mealLogProteinBand": "Band {range}",
+  "@mealLogProteinBand": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogServingsTitle": "Fruit & vegetables",
+  "mealLogFruit": "Fruit",
+  "mealLogVegetables": "Vegetables",
+  "mealLogPortionsGoal": "Goal {range} portions",
+  "@mealLogPortionsGoal": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogRemovePortion": "Remove a portion of {label}",
+  "@mealLogRemovePortion": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogAddPortion": "Add a portion of {label}",
+  "@mealLogAddPortion": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogAddWaterTitle": "Add water",
+  "mealLogAmount": "Amount",
+  "mealLogAtMostMl": "At most {max} ml",
+  "@mealLogAtMostMl": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogCancel": "Cancel",
+  "mealLogAdd": "Add",
+  "mealLogRemove": "Remove",
+  "mealLogAllRemaining": "All remaining",
+  "mealLogComposerLoadError": "Could not load the composer: {error}",
+  "@mealLogComposerLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogComposeSetupHint": "Set up your nutrition targets in Settings to compose meals.",
+  "mealLogNoProteinToSuggest": "This item has no protein to suggest from.",
+  "mealLogOnlyLeftBelowTarget": "Only {grams} g left, so protein stays below the target.",
+  "@mealLogOnlyLeftBelowTarget": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogNotEnoughTitle": "Not enough in the pantry",
+  "mealLogNotEnoughMessage": "You entered more than what is left of {names}. Saving will leave the stock below zero.",
+  "@mealLogNotEnoughMessage": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogSaveAnyway": "Save anyway",
+  "mealLogSaveError": "Could not save meal: {error}",
+  "@mealLogSaveError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mealLogFromPantry": "From pantry · {grams} g available",
+  "@mealLogFromPantry": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogFreshIngredient": "Fresh ingredient",
+  "mealLogOnlyLeftInPantry": "Only {grams} g left in the pantry.",
+  "@mealLogOnlyLeftInPantry": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "mealLogAddAtLeastOne": "Add at least one component",
+  "mealLogAddFromPantry": "Add from pantry",
+  "mealLogAddFresh": "Add fresh ingredient",
+  "mealLogSuggestProtein": "Suggest to reach protein target",
+  "mealLogSuggestHint": "Add a protein-base item from the pantry to get a suggestion.",
+  "mealLogSaveMeal": "Save meal",
+  "targetsTitle": "Nutrition targets",
+  "targetsLoadError": "Could not load targets: {error}",
+  "@targetsLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintProteinPerKg": "Protein: {value} g/kg",
+  "@targetsHintProteinPerKg": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintFatPerKg": "Fat: {value} g/kg",
+  "@targetsHintFatPerKg": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsHintProteinPerMeal": "Protein per meal target: {value} g",
+  "@targetsHintProteinPerMeal": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsInvalidIncomplete": "Invalid input: Fill in all fields",
+  "targetsInvalidMeals": "Invalid input: Meals per day must be a whole number",
+  "targetsInvalidValues": "Invalid input: check the values and try again",
+  "targetsSaved": "Nutrition targets saved",
+  "targetsResetTitle": "Reset to example defaults?",
+  "targetsResetMessage": "This replaces the values in the form. Nothing changes until you save.",
+  "targetsCancel": "Cancel",
+  "targetsReset": "Reset",
+  "targetsSave": "Save",
+  "targetsResetToDefaults": "Reset to example defaults",
+  "targetsProfile": "Profile",
+  "targetsBodyWeight": "Body weight (optional)",
+  "targetsProtein": "Protein",
+  "targetsFat": "Fat",
+  "targetsMealsPerDay": "Meals per day",
+  "targetsProteinPerMeal": "Protein per meal",
+  "targetsFieldCalories": "Calories",
+  "targetsFieldCarbs": "Carbs",
+  "targetsFieldFiber": "Fiber",
+  "targetsFieldWater": "Water",
+  "targetsFieldFruit": "Fruit",
+  "targetsFieldVegetables": "Vegetables",
+  "targetsUnitPortions": "portions",
+  "targetsRangeMin": "{label} min",
+  "@targetsRangeMin": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsRangeMax": "{label} max",
+  "@targetsRangeMax": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "targetsMustBeAtLeastMin": "Must be at least min",
+  "targetsTrainingDay": "Training day",
+  "targetsRestDay": "Rest day",
+  "targetsDerivedCarbsNone": "Derived carbs: -",
+  "targetsDerivedCarbs": "Derived carbs at mid calories: {grams} g",
+  "@targetsDerivedCarbs": {
+    "placeholders": {
+      "grams": {
+        "type": "int"
+      }
+    }
+  },
+  "targetsCarbsOutsideRange": "Derived carbs are outside the configured range",
+  "targetsCarbsExplain": "Carbs are derived from calories left after protein and fat.",
+  "targetsWeeklySchedule": "Weekly schedule",
+  "targetsScheduleHint": "Selected chips are training days; the rest are rest days.",
+  "targetsScheduleTraining": "Training",
+  "targetsScheduleRest": "Rest",
+  "targetsWeeklyAverageNone": "Weekly average: -",
+  "targetsWeeklyAverage": "Weekly average: {kcal} kcal/day",
+  "@targetsWeeklyAverage": {
+    "placeholders": {
+      "kcal": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../../core/l10n/l10n.dart';
 import '../../../core/nutrition/range.dart';
 import '../../../core/widgets/number_fields.dart';
 import '../domain/day_type.dart';
@@ -7,16 +8,26 @@ import '../domain/nutrition_plan.dart';
 
 /// Range-valued targets edited per day type.
 enum TargetField {
-  kcal('Calories', 'kcal'),
-  carbs('Carbs', 'g'),
-  fiber('Fiber', 'g'),
-  water('Water', 'ml'),
-  fruit('Fruit', 'portions'),
-  veg('Vegetables', 'portions');
+  kcal('kcal'),
+  carbs('g'),
+  fiber('g'),
+  water('ml'),
+  fruit(null),
+  veg(null);
 
-  const TargetField(this.label, this.unit);
-  final String label;
-  final String unit;
+  const TargetField(this._unit);
+  final String? _unit;
+
+  String label(AppLocalizations l10n) => switch (this) {
+    kcal => l10n.targetsFieldCalories,
+    carbs => l10n.targetsFieldCarbs,
+    fiber => l10n.targetsFieldFiber,
+    water => l10n.targetsFieldWater,
+    fruit => l10n.targetsFieldFruit,
+    veg => l10n.targetsFieldVegetables,
+  };
+
+  String unit(AppLocalizations l10n) => _unit ?? l10n.targetsUnitPortions;
 
   Range pick(DayTypeTargets t) => switch (this) {
     kcal => t.kcal,
@@ -26,6 +37,15 @@ enum TargetField {
     fruit => t.fruitPortions,
     veg => t.vegPortions,
   };
+}
+
+/// Why [TargetsFormControllers.read] could not build a plan.
+enum TargetsInputError { incomplete, mealsNotInteger, invalid }
+
+/// Typed input failure; presentation maps [error] to localized text.
+class TargetsInputException implements Exception {
+  const TargetsInputException(this.error);
+  final TargetsInputError error;
 }
 
 class RangeControllers {
@@ -72,16 +92,29 @@ class TargetsFormControllers {
 
   double? get weightKg => parseNumber(weight.text);
 
-  /// Builds the plan from the current text. Throws [ArgumentError] when a
-  /// field is missing or the domain rejects the values.
+  /// Builds the plan from the current text. Throws [TargetsInputException]
+  /// when a field is missing or the domain rejects the values.
   NutritionPlan read() {
     double need(TextEditingController c) =>
-        parseNumber(c.text) ?? (throw ArgumentError('Fill in all fields'));
+        parseNumber(c.text) ??
+        (throw const TargetsInputException(TargetsInputError.incomplete));
     Range range(RangeControllers c) => Range(need(c.min), need(c.max));
     final mealCount = int.tryParse(meals.text.trim());
     if (mealCount == null) {
-      throw ArgumentError('Meals per day must be a whole number');
+      throw const TargetsInputException(TargetsInputError.mealsNotInteger);
     }
+    try {
+      return _build(need, range, mealCount);
+    } on ArgumentError {
+      throw const TargetsInputException(TargetsInputError.invalid);
+    }
+  }
+
+  NutritionPlan _build(
+    double Function(TextEditingController) need,
+    Range Function(RangeControllers) range,
+    int mealCount,
+  ) {
     return NutritionPlan(
       proteinGPerDay: need(protein),
       fatGPerDay: need(fat),
@@ -105,7 +138,7 @@ class TargetsFormControllers {
   NutritionPlan? tryRead() {
     try {
       return read();
-    } on ArgumentError {
+    } on TargetsInputException {
       return null;
     }
   }

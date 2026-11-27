@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/day_type.dart';
 import '../targets_form_controllers.dart';
 import 'range_fields.dart';
 
-String dayTypeLabel(DayType type) =>
-    type == DayType.training ? 'Training day' : 'Rest day';
+String dayTypeLabel(AppLocalizations l10n, DayType type) =>
+    type == DayType.training ? l10n.targetsTrainingDay : l10n.targetsRestDay;
 
 class DayTypeCard extends StatelessWidget {
   const DayTypeCard({
@@ -26,6 +27,7 @@ class DayTypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     return Card(
       child: Padding(
@@ -33,21 +35,20 @@ class DayTypeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(dayTypeLabel(type), style: text.titleMedium),
+            Text(dayTypeLabel(l10n, type), style: text.titleMedium),
             const SizedBox(height: 8),
             for (final field in TargetField.values)
               RangeFields(
                 keyPrefix: '${type.name}-${field.name}',
-                label: field.label,
-                unit: field.unit,
+                label: field.label(l10n),
+                unit: field.unit(l10n),
                 controllers: fields[field]!,
               ),
             const SizedBox(height: 4),
             Text(
               derivedCarbsG == null
-                  ? 'Derived carbs: -'
-                  : 'Derived carbs at mid calories: '
-                        '${derivedCarbsG!.round()} g',
+                  ? l10n.targetsDerivedCarbsNone
+                  : l10n.targetsDerivedCarbs(derivedCarbsG!.round()),
               key: Key('${type.name}-derived-carbs'),
               style: text.bodyMedium,
             ),
@@ -60,16 +61,13 @@ class DayTypeCard extends StatelessWidget {
                   color: AppColors.ink,
                 ),
                 backgroundColor: AppColors.statusAbove,
-                label: const Text(
-                  'Derived carbs are outside the configured range',
-                  style: TextStyle(color: AppColors.ink),
+                label: Text(
+                  l10n.targetsCarbsOutsideRange,
+                  style: const TextStyle(color: AppColors.ink),
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                'Carbs are derived from calories left after protein and fat.',
-                style: text.bodySmall,
-              ),
+              Text(l10n.targetsCarbsExplain, style: text.bodySmall),
             ],
           ],
         ),

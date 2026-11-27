@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../recipes/presentation/widgets/confirm_delete.dart';
 import '../data/meal_log_dao.dart';
 import '../domain/day_summary.dart';
@@ -11,6 +11,7 @@ import 'today_providers.dart';
 import 'widgets/custom_ml_dialog.dart';
 import 'widgets/day_header.dart';
 import 'widgets/hydration_card.dart';
+import 'widgets/localized_dates.dart';
 import 'widgets/macro_summary_card.dart';
 import 'widgets/meal_slot_card.dart';
 import 'widgets/protein_distribution_card.dart';
@@ -36,7 +37,7 @@ class TodayScreen extends ConsumerWidget {
               child: Image.asset('assets/branding/logo_duck.png', height: 32),
             ),
             const SizedBox(width: 8),
-            const Text('Today'),
+            Text(context.l10n.mealLogToday),
           ],
         ),
       ),
@@ -62,7 +63,7 @@ class TodayScreen extends ConsumerWidget {
             error: (e, _) => [
               Padding(
                 padding: const EdgeInsets.all(24),
-                child: Text('Could not load the day: $e'),
+                child: Text(context.l10n.mealLogLoadDayError('$e')),
               ),
             ],
             data: (s) => s == null
@@ -94,11 +95,11 @@ class TodayScreen extends ConsumerWidget {
                 openComposeMeal(context, ref, date: date, slot: slot.slot),
             onDelete: () => confirmAndDelete(
               context,
-              title: 'Delete meal ${slot.slot}?',
-              message:
-                  'This removes the meal from ${weekdayDate(date)} and gives '
-                  'its pantry stock back.',
-              blockedMessage: 'Could not delete the meal.',
+              title: context.l10n.mealLogDeleteMealTitle(slot.slot),
+              message: context.l10n.mealLogDeleteMealMessage(
+                localizedWeekdayDate(context, date),
+              ),
+              blockedMessage: context.l10n.mealLogDeleteMealFailed,
               inUse: () async => false,
               delete: () => dao.deleteMeal(date, slot.slot),
             ),
@@ -131,11 +132,11 @@ class _SetupTargetsHint extends StatelessWidget {
   const _SetupTargetsHint();
 
   @override
-  Widget build(BuildContext context) => const Padding(
-    padding: EdgeInsets.all(24),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(24),
     child: Text(
-      'Set up your nutrition targets in Settings to see your daily progress.',
-      key: Key('setup-targets-hint'),
+      context.l10n.mealLogSetupTargetsHint,
+      key: const Key('setup-targets-hint'),
       textAlign: TextAlign.center,
     ),
   );

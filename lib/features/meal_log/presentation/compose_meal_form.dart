@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/ingredient_nutrients.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../../core/nutrition/nutrients.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/number_fields.dart';
@@ -204,11 +205,10 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
       maxGrams: _floor1(available),
     );
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     if (grams == null) {
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text('This item has no protein to suggest from.'),
-        ),
+        SnackBar(content: Text(l10n.mealLogNoProteinToSuggest)),
       );
       return;
     }
@@ -216,9 +216,7 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
     if (mealTotals(_lines.map((l) => l.input)).proteinG < range.min) {
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            'Only ${available.round()} g left, so protein stays below the target.',
-          ),
+          content: Text(l10n.mealLogOnlyLeftBelowTarget(available.round())),
         ),
       );
     }
@@ -229,20 +227,17 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Not enough in the pantry'),
-        content: Text(
-          'You entered more than what is left of $names. '
-          'Saving will leave the stock below zero.',
-        ),
+        title: Text(context.l10n.mealLogNotEnoughTitle),
+        content: Text(context.l10n.mealLogNotEnoughMessage(names)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.mealLogCancel),
           ),
           FilledButton(
             key: const Key('confirm-override'),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Save anyway'),
+            child: Text(context.l10n.mealLogSaveAnyway),
           ),
         ],
       ),
@@ -253,6 +248,7 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
   Future<void> _save() async {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
+    final l10n = context.l10n;
     final valid = _formKey.currentState!.validate();
     setState(() => _linesError = _lines.isEmpty);
     if (!valid || _lines.isEmpty) return;
@@ -277,13 +273,14 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
       navigator.pop(true);
     } catch (e) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Could not save meal: $e')),
+        SnackBar(content: Text(l10n.mealLogSaveError('$e'))),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     final engine = widget.engine;
     final totals = _totals;
@@ -315,12 +312,14 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                     idKey: line.id,
                     label: line.label,
                     subtitle: line.stock != null
-                        ? 'From pantry · ${_availableG(line).round()} g available'
-                        : 'Fresh ingredient',
+                        ? l10n.mealLogFromPantry(_availableG(line).round())
+                        : l10n.mealLogFreshIngredient,
                     grams: line.grams,
                     nutrients: line.input.nutrients,
                     warning: _isOver(line)
-                        ? 'Only ${_availableG(line).round()} g left in the pantry.'
+                        ? l10n.mealLogOnlyLeftInPantry(
+                            _availableG(line).round(),
+                          )
                         : null,
                     onAdd: line.stock == null ? null : (d) => _bump(line, d),
                     onAll: line.stock == null
@@ -332,7 +331,7 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
-                      'Add at least one component',
+                      l10n.mealLogAddAtLeastOne,
                       key: const Key('lines-error'),
                       style: text.bodySmall?.copyWith(color: AppColors.error),
                     ),
@@ -345,13 +344,13 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                       key: const Key('add-from-pantry'),
                       onPressed: _addFromPantry,
                       icon: const Icon(Icons.kitchen_outlined),
-                      label: const Text('Add from pantry'),
+                      label: Text(l10n.mealLogAddFromPantry),
                     ),
                     OutlinedButton.icon(
                       key: const Key('add-fresh'),
                       onPressed: _addFresh,
                       icon: const Icon(Icons.egg_alt_outlined),
-                      label: const Text('Add fresh ingredient'),
+                      label: Text(l10n.mealLogAddFresh),
                     ),
                   ],
                 ),
@@ -360,13 +359,13 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                   key: const Key('suggest-protein'),
                   onPressed: hasProteinBase ? _suggest : null,
                   icon: const Icon(Icons.auto_fix_high),
-                  label: const Text('Suggest to reach protein target'),
+                  label: Text(l10n.mealLogSuggestProtein),
                 ),
                 if (!hasProteinBase)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      'Add a protein-base item from the pantry to get a suggestion.',
+                      l10n.mealLogSuggestHint,
                       key: const Key('suggest-hint'),
                       style: text.bodySmall,
                     ),
@@ -388,7 +387,7 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                   proteinRange: range,
                   proteinStatus: engine.checkMeal(totals).protein,
                   proteinOutsideG: proteinOutsideRangeG(range, totals.proteinG),
-                  dayTypeLabel: targets.dayType.name,
+                  dayType: targets.dayType,
                   remainingKcal: progress.remainingKcal,
                   remainingCarbsG: progress.remainingCarbsG,
                 ),
@@ -396,7 +395,7 @@ class _ComposeMealFormState extends ConsumerState<ComposeMealForm> {
                 FilledButton(
                   key: const Key('save-meal'),
                   onPressed: _save,
-                  child: const Text('Save meal'),
+                  child: Text(l10n.mealLogSaveMeal),
                 ),
               ],
             ),

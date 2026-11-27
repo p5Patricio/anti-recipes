@@ -1,5 +1,6 @@
 import 'package:anti_recipes/core/database/app_database.dart';
 import 'package:anti_recipes/core/database/database_provider.dart';
+import 'package:anti_recipes/core/l10n/l10n.dart';
 import 'package:anti_recipes/core/theme/app_theme.dart';
 import 'package:anti_recipes/features/nutrition_targets/presentation/nutrition_targets_screen.dart';
 import 'package:anti_recipes/features/nutrition_targets/presentation/targets_providers.dart';
@@ -23,6 +24,9 @@ void main() {
         overrides: [appDatabaseProvider.overrideWithValue(db)],
         child: MaterialApp(
           theme: AppTheme.dark(),
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: const NutritionTargetsScreen(),
         ),
       ),

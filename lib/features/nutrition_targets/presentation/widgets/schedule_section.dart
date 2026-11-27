@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../domain/day_type.dart';
 
-const _weekdayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+/// Abbreviated weekday name (1 = Monday) in the current locale.
+String _weekdayName(BuildContext context, int weekday) =>
+    // 2024-01-01 is a Monday.
+    DateFormat.E(Localizations.localeOf(context).toString())
+        .format(DateTime(2024, 1, weekday));
 
 class ScheduleSection extends StatelessWidget {
   const ScheduleSection({
@@ -19,6 +25,7 @@ class ScheduleSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     return Card(
       child: Padding(
@@ -26,12 +33,9 @@ class ScheduleSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Weekly schedule', style: text.titleMedium),
+            Text(l10n.targetsWeeklySchedule, style: text.titleMedium),
             const SizedBox(height: 4),
-            Text(
-              'Selected chips are training days; the rest are rest days.',
-              style: text.bodySmall,
-            ),
+            Text(l10n.targetsScheduleHint, style: text.bodySmall),
             const SizedBox(height: 12),
             Wrap(
               spacing: 8,
@@ -46,10 +50,10 @@ class ScheduleSection extends StatelessWidget {
                           : Icons.hotel_outlined,
                       size: 18,
                     ),
-                    label: Text(_weekdayNames[weekday - 1]),
+                    label: Text(_weekdayName(context, weekday)),
                     tooltip: days[weekday] == DayType.training
-                        ? 'Training'
-                        : 'Rest',
+                        ? l10n.targetsScheduleTraining
+                        : l10n.targetsScheduleRest,
                     selected: days[weekday] == DayType.training,
                     showCheckmark: false,
                     onSelected: (_) => onToggle(weekday),
@@ -59,8 +63,8 @@ class ScheduleSection extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               weeklyAverageKcal == null
-                  ? 'Weekly average: -'
-                  : 'Weekly average: ${weeklyAverageKcal!.round()} kcal/day',
+                  ? l10n.targetsWeeklyAverageNone
+                  : l10n.targetsWeeklyAverage(weeklyAverageKcal!.round()),
               key: const Key('weekly-average'),
               style: text.bodyMedium,
             ),
