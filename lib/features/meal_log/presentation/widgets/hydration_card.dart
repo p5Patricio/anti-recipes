@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../domain/day_summary.dart';
 import 'metric_bar.dart';
 import 'status_style.dart';
@@ -36,7 +37,12 @@ class HydrationCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text('Hydration', style: text.titleMedium)),
+                Expanded(
+                  child: Text(
+                    context.l10n.mealLogHydrationTitle,
+                    style: text.titleMedium,
+                  ),
+                ),
                 StatusChip(
                   key: const Key('status-water'),
                   status: water.status,
@@ -46,10 +52,10 @@ class HydrationCard extends StatelessWidget {
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-water'),
-              label: 'Water',
+              label: context.l10n.mealLogWater,
               progress: water,
               unit: 'ml',
-              detail: 'Goal ${rangeText(water, 'ml')}',
+              detail: context.l10n.mealLogGoalRange(rangeText(water, 'ml')),
             ),
             const SizedBox(height: 12),
             Wrap(
@@ -65,13 +71,13 @@ class HydrationCard extends StatelessWidget {
                 OutlinedButton(
                   key: const Key('hydration-custom'),
                   onPressed: onCustom,
-                  child: const Text('Custom'),
+                  child: Text(context.l10n.mealLogCustom),
                 ),
                 TextButton.icon(
                   key: const Key('hydration-undo'),
                   onPressed: onUndo,
                   icon: const Icon(Icons.undo),
-                  label: const Text('Undo last'),
+                  label: Text(context.l10n.mealLogUndoLast),
                 ),
               ],
             ),

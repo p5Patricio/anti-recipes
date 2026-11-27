@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/number_fields.dart';
 
 /// Largest single hydration entry accepted, in ml.
@@ -27,10 +28,11 @@ class _CustomMlDialogState extends State<_CustomMlDialog> {
   }
 
   String? _validate(String? value) {
+    final l10n = context.l10n;
     final base = numberValidator(positive: true)(value);
     if (base != null) return base;
     return parseNumber(value!)! > maxCustomMl
-        ? 'At most $maxCustomMl ml'
+        ? l10n.mealLogAtMostMl(maxCustomMl)
         : null;
   }
 
@@ -42,13 +44,13 @@ class _CustomMlDialogState extends State<_CustomMlDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add water'),
+      title: Text(context.l10n.mealLogAddWaterTitle),
       content: Form(
         key: _form,
         child: NumberField(
           key: const Key('custom-ml-field'),
           controller: _ml,
-          label: 'Amount',
+          label: context.l10n.mealLogAmount,
           suffix: 'ml',
           integerOnly: true,
           validator: _validate,
@@ -57,12 +59,12 @@ class _CustomMlDialogState extends State<_CustomMlDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.mealLogCancel),
         ),
         FilledButton(
           key: const Key('custom-ml-confirm'),
           onPressed: _submit,
-          child: const Text('Add'),
+          child: Text(context.l10n.mealLogAdd),
         ),
       ],
     );

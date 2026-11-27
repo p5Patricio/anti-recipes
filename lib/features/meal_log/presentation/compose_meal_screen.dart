@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
 import '../../../core/database/date_utils.dart';
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../inventory/presentation/inventory_providers.dart';
 import '../../nutrition_targets/presentation/targets_providers.dart';
 import '../../recipes/presentation/recipes_providers.dart';
 import 'compose_meal_form.dart';
 import 'meal_log_providers.dart';
+import 'widgets/localized_dates.dart';
 
 const _slots = [1, 2, 3];
 
@@ -55,7 +56,7 @@ class _ComposeMealScreenState extends State<ComposeMealScreen> {
   Widget build(BuildContext context) {
     final date = dateOnly(widget.date);
     return Scaffold(
-      appBar: AppBar(title: const Text('Compose meal')),
+      appBar: AppBar(title: Text(context.l10n.mealLogComposeMeal)),
       body: Column(
         children: [
           Padding(
@@ -63,7 +64,7 @@ class _ComposeMealScreenState extends State<ComposeMealScreen> {
             child: Row(
               children: [
                 Text(
-                  weekdayDate(date),
+                  localizedWeekdayDate(context, date),
                   key: const Key('compose-date'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -73,7 +74,7 @@ class _ComposeMealScreenState extends State<ComposeMealScreen> {
                     padding: const EdgeInsets.only(left: 6),
                     child: ChoiceChip(
                       key: Key('slot-$s'),
-                      label: Text('Meal $s'),
+                      label: Text(context.l10n.mealLogMealN(s)),
                       selected: _slot == s,
                       onSelected: (_) => setState(() => _slot = s),
                     ),
@@ -107,7 +108,7 @@ class _ComposeBody extends ConsumerWidget {
     final failed = all.where((v) => v.hasError).firstOrNull;
     if (failed != null) {
       return Center(
-        child: Text('Could not load the composer: ${failed.error}'),
+        child: Text(context.l10n.mealLogComposerLoadError('${failed.error}')),
       );
     }
     if (all.any((v) => !v.hasValue)) {
@@ -115,11 +116,11 @@ class _ComposeBody extends ConsumerWidget {
     }
     final e = engine.requireValue;
     if (e == null) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Text(
-            'Set up your nutrition targets in Settings to compose meals.',
+            context.l10n.mealLogComposeSetupHint,
             textAlign: TextAlign.center,
           ),
         ),

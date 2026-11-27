@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../domain/day_summary.dart';
 import 'metric_bar.dart';
 import 'status_style.dart';
@@ -10,14 +11,29 @@ class MacroSummaryCard extends StatelessWidget {
 
   final DaySummary summary;
 
-  String _left(MetricProgress p, String unit) => p.remaining >= 0
-      ? '${p.remaining.round()} $unit left'
-      : '${(-p.remaining).round()} $unit over';
+  String _left(AppLocalizations l10n, MetricProgress p, String unit) =>
+      l10n.mealLogRemaining(
+        p.remaining >= 0 ? 'left' : 'over',
+        p.remaining.abs().round(),
+        unit,
+      );
+
+  String _withRange(
+    String Function(String, String, int, String) build,
+    MetricProgress p,
+    String unit,
+  ) => build(
+    p.remaining >= 0 ? 'left' : 'over',
+    rangeText(p, unit),
+    p.remaining.abs().round(),
+    unit,
+  );
 
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final s = summary;
+    final l10n = context.l10n;
     return Card(
       key: const Key('macro-summary'),
       child: Padding(
@@ -25,48 +41,54 @@ class MacroSummaryCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Calories & macros', style: text.titleMedium),
+            Text(l10n.mealLogMacrosTitle, style: text.titleMedium),
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-kcal'),
-              label: 'Calories',
+              label: l10n.mealLogCalories,
               progress: s.kcal,
               unit: 'kcal',
-              detail:
-                  'Range ${rangeText(s.kcal, 'kcal')} · ${_left(s.kcal, 'kcal')}',
+              detail: _withRange(
+                l10n.mealLogRangeWithRemaining,
+                s.kcal,
+                'kcal',
+              ),
             ),
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-protein'),
-              label: 'Protein',
+              label: l10n.mealLogProtein,
               progress: s.protein,
               unit: 'g',
-              detail: _left(s.protein, 'g'),
+              detail: _left(l10n, s.protein, 'g'),
             ),
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-fat'),
-              label: 'Fat',
+              label: l10n.mealLogFat,
               progress: s.fat,
               unit: 'g',
-              detail: _left(s.fat, 'g'),
+              detail: _left(l10n, s.fat, 'g'),
             ),
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-carbs'),
-              label: 'Carbs',
+              label: l10n.mealLogCarbs,
               progress: s.carbs,
               unit: 'g',
-              detail:
-                  'Configured ${rangeText(s.carbs, 'g')} · ${_left(s.carbs, 'g')}',
+              detail: _withRange(
+                l10n.mealLogConfiguredWithRemaining,
+                s.carbs,
+                'g',
+              ),
             ),
             const SizedBox(height: 12),
             MetricBar(
               key: const Key('bar-fiber'),
-              label: 'Fiber',
+              label: l10n.mealLogFiber,
               progress: s.fiber,
               unit: 'g',
-              detail: 'Range ${rangeText(s.fiber, 'g')}',
+              detail: l10n.mealLogRangeOnly(rangeText(s.fiber, 'g')),
             ),
             if (s.carbsOutsideConfiguredRange) ...[
               const SizedBox(height: 12),
@@ -77,9 +99,7 @@ class MacroSummaryCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      'Carbs target ${s.carbs.target.round()} g '
-                      'is derived from calories and sits outside the configured '
-                      'range.',
+                      l10n.mealLogCarbsDerivedInfo(s.carbs.target.round()),
                       style: text.bodySmall,
                     ),
                   ),
@@ -94,12 +114,12 @@ class MacroSummaryCard extends StatelessWidget {
                 StatusChip(
                   key: const Key('status-kcal'),
                   status: s.kcal.status,
-                  prefix: 'Calories',
+                  label: l10n.mealLogCaloriesStatus(s.kcal.status.name),
                 ),
                 StatusChip(
                   key: const Key('status-fiber'),
                   status: s.fiber.status,
-                  prefix: 'Fiber',
+                  label: l10n.mealLogFiberStatus(s.fiber.status.name),
                 ),
               ],
             ),

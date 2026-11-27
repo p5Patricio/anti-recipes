@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/number_fields.dart';
 import '../targets_form_controllers.dart';
 import 'range_fields.dart';
@@ -18,6 +19,7 @@ class ProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     return Card(
       child: Padding(
@@ -25,12 +27,12 @@ class ProfileSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Profile', style: text.titleMedium),
+            Text(l10n.targetsProfile, style: text.titleMedium),
             const SizedBox(height: 12),
             NumberField(
               key: const Key('field-weight'),
               controller: controllers.weight,
-              label: 'Body weight (optional)',
+              label: l10n.targetsBodyWeight,
               suffix: 'kg',
               validator: (v) => (v ?? '').trim().isEmpty
                   ? null
@@ -44,7 +46,7 @@ class ProfileSection extends StatelessWidget {
                   child: NumberField(
                     key: const Key('field-protein'),
                     controller: controllers.protein,
-                    label: 'Protein',
+                    label: l10n.targetsProtein,
                     suffix: 'g/day',
                     validator: numberValidator(positive: true),
                   ),
@@ -54,7 +56,7 @@ class ProfileSection extends StatelessWidget {
                   child: NumberField(
                     key: const Key('field-fat'),
                     controller: controllers.fat,
-                    label: 'Fat',
+                    label: l10n.targetsFat,
                     suffix: 'g/day',
                     validator: numberValidator(positive: true),
                   ),
@@ -65,13 +67,13 @@ class ProfileSection extends StatelessWidget {
             NumberField(
               key: const Key('field-meals'),
               controller: controllers.meals,
-              label: 'Meals per day',
+              label: l10n.targetsMealsPerDay,
               integerOnly: true,
               validator: numberValidator(positive: true),
             ),
             RangeFields(
               keyPrefix: 'field-protein-per-meal',
-              label: 'Protein per meal',
+              label: l10n.targetsProteinPerMeal,
               unit: 'g',
               controllers: controllers.proteinPerMeal,
             ),

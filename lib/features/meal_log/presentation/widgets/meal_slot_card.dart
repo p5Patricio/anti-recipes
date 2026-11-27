@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/range.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/number_fields.dart';
@@ -29,19 +30,20 @@ class MealSlotCard extends StatelessWidget {
   final VoidCallback onCompose;
   final VoidCallback onDelete;
 
-  String get _proteinText {
+  String _proteinText(AppLocalizations l10n) {
     final range =
         '${formatNumber(proteinPerMeal.min)}-${formatNumber(proteinPerMeal.max)} g';
     final grams = slot.proteinG.round();
     return switch (slot.proteinStatus!) {
-      RangeStatus.within => 'Protein $grams g · on target',
-      RangeStatus.below => 'Protein $grams g · below $range',
-      RangeStatus.above => 'Protein $grams g · above $range',
+      RangeStatus.within => l10n.mealLogSlotProteinOnTarget(grams),
+      RangeStatus.below => l10n.mealLogSlotProteinBelow(grams, range),
+      RangeStatus.above => l10n.mealLogSlotProteinAbove(grams, range),
     };
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final text = Theme.of(context).textTheme;
     final nutrients = slot.nutrients;
     final m = meal;
@@ -55,18 +57,21 @@ class MealSlotCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Meal ${slot.slot}', style: text.titleMedium),
+                  child: Text(
+                    l10n.mealLogMealN(slot.slot),
+                    style: text.titleMedium,
+                  ),
                 ),
                 if (m != null) ...[
                   IconButton(
                     key: Key('edit-meal-${slot.slot}'),
-                    tooltip: 'Edit meal',
+                    tooltip: l10n.mealLogEditMeal,
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: onCompose,
                   ),
                   IconButton(
                     key: Key('delete-meal-${slot.slot}'),
-                    tooltip: 'Delete meal',
+                    tooltip: l10n.mealLogDeleteMeal,
                     icon: const Icon(Icons.delete_outline),
                     onPressed: onDelete,
                   ),
@@ -80,20 +85,24 @@ class MealSlotCard extends StatelessWidget {
                   key: Key('compose-slot-${slot.slot}'),
                   onPressed: onCompose,
                   icon: const Icon(Icons.restaurant_outlined),
-                  label: const Text('Compose meal'),
+                  label: Text(l10n.mealLogComposeMeal),
                 ),
               )
             else ...[
               Text(
-                '${nutrients.kcal.round()} kcal · P ${nutrients.proteinG.round()} '
-                '· F ${nutrients.fatG.round()} · C ${nutrients.carbsG.round()}',
+                l10n.mealLogSlotTotals(
+                  nutrients.kcal.round(),
+                  nutrients.proteinG.round(),
+                  nutrients.fatG.round(),
+                  nutrients.carbsG.round(),
+                ),
                 key: Key('slot-totals-${slot.slot}'),
                 style: text.titleSmall,
               ),
               const SizedBox(height: 8),
               TintedChip(
                 key: Key('slot-protein-${slot.slot}'),
-                label: _proteinText,
+                label: _proteinText(l10n),
                 color: slot.proteinStatus == RangeStatus.within
                     ? AppColors.statusWithin
                     : AppColors.statusAbove,

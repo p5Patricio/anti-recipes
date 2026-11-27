@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/range.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -10,11 +11,12 @@ Color statusColor(RangeStatus status) => switch (status) {
   RangeStatus.above => AppColors.statusAbove,
 };
 
-String statusLabel(RangeStatus status) => switch (status) {
-  RangeStatus.within => 'On target',
-  RangeStatus.below => 'Below',
-  RangeStatus.above => 'Above',
-};
+String statusLabel(AppLocalizations l10n, RangeStatus status) =>
+    switch (status) {
+      RangeStatus.within => l10n.mealLogStatusOnTarget,
+      RangeStatus.below => l10n.mealLogStatusBelow,
+      RangeStatus.above => l10n.mealLogStatusAbove,
+    };
 
 /// Small rounded label tinted with [color] and outlined in it.
 class TintedChip extends StatelessWidget {
@@ -39,18 +41,17 @@ class TintedChip extends StatelessWidget {
   );
 }
 
-/// Chip showing [status] with an optional [prefix], e.g. "Fiber · Below".
+/// Chip showing [status]; [label] overrides the plain status text, e.g.
+/// "Fiber · Below".
 class StatusChip extends StatelessWidget {
-  const StatusChip({super.key, required this.status, this.prefix});
+  const StatusChip({super.key, required this.status, this.label});
 
   final RangeStatus status;
-  final String? prefix;
+  final String? label;
 
   @override
   Widget build(BuildContext context) => TintedChip(
-    label: prefix == null
-        ? statusLabel(status)
-        : '$prefix · ${statusLabel(status)}',
+    label: label ?? statusLabel(context.l10n, status),
     color: statusColor(status),
   );
 }

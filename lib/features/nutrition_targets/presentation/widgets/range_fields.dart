@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/number_fields.dart';
 import '../targets_form_controllers.dart';
 
@@ -20,6 +21,7 @@ class RangeFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final base = numberValidator();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -30,7 +32,7 @@ class RangeFields extends StatelessWidget {
             child: NumberField(
               key: Key('$keyPrefix-min'),
               controller: controllers.min,
-              label: '$label min',
+              label: l10n.targetsRangeMin(label),
               suffix: unit,
               validator: base,
             ),
@@ -40,14 +42,14 @@ class RangeFields extends StatelessWidget {
             child: NumberField(
               key: Key('$keyPrefix-max'),
               controller: controllers.max,
-              label: '$label max',
+              label: l10n.targetsRangeMax(label),
               suffix: unit,
               validator: (value) {
                 final error = base(value);
                 if (error != null) return error;
                 final min = parseNumber(controllers.min.text);
                 if (min != null && parseNumber(value!)! < min) {
-                  return 'Must be at least min';
+                  return l10n.targetsMustBeAtLeastMin;
                 }
                 return null;
               },

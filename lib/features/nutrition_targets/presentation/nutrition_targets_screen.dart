@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
+import '../../../core/l10n/l10n.dart';
 import '../domain/nutrition_plan.dart';
 import 'targets_form.dart';
 
@@ -31,7 +32,7 @@ class NutritionTargetsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(_formDataProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Nutrition targets')),
+      appBar: AppBar(title: Text(context.l10n.targetsTitle)),
       body: data.when(
         data: (d) => TargetsForm(
           initialPlan: d.plan,
@@ -39,7 +40,8 @@ class NutritionTargetsScreen extends ConsumerWidget {
           initialWeightKg: d.weightKg,
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Could not load targets: $e')),
+        error: (e, _) =>
+            Center(child: Text(context.l10n.targetsLoadError('$e'))),
       ),
     );
   }
