@@ -63,9 +63,9 @@ Exit criteria: analyze and tests green in CI (met); the QA checklist passes on a
 
 Goal: the app feels finished and is pleasant on day one.
 
-- Launcher icon and native splash from the mascot logo.
+- ~~Launcher icon and native splash from the mascot logo.~~ Done in pull request #11 (duck logo).
 - First-run onboarding that asks for weight and targets and explains the day-type cycle.
-- Dark theme derived from the same tokens.
+- ~~Dark theme derived from the same tokens.~~ Done in pull request #11; an optional light variant and following the system theme remain open.
 - (Completed in Phase 1: Persist the planner selection and shopping ticks across restarts; remove the empty `shopping/` folder).
 - Optional: Spanish localization (UI copy is English today; the owner said English is fine).
 
