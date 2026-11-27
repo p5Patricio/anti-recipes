@@ -49,9 +49,9 @@ class StockCard extends StatelessWidget {
                   children: [
                     Expanded(child: Text(name, style: text.titleMedium)),
                     if (isEmpty)
-                      const _StatusChip('Empty', AppColors.graphite)
+                      const _StatusChip('Empty', AppColors.creamMuted)
                     else if (isLow)
-                      const _StatusChip('Low', AppColors.terracotta),
+                      const _StatusChip('Low', AppColors.statusAbove),
                   ],
                 ),
                 const SizedBox(height: 2),
@@ -63,7 +63,9 @@ class StockCard extends StatelessWidget {
                     value: remainingFraction,
                     minHeight: 8,
                     backgroundColor: AppColors.kraft.withValues(alpha: 0.3),
-                    color: isLow ? AppColors.terracotta : AppColors.sage,
+                    color: isLow
+                        ? AppColors.statusAbove
+                        : AppColors.statusWithin,
                   ),
                 ),
                 const SizedBox(height: 6),

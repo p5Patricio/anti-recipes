@@ -148,8 +148,8 @@ class PlanTotalsCard extends StatelessWidget {
       key: Key(key),
       label: '$label ${signed(residual)} g (${signed(percent)}%)',
       color: status == RangeStatus.within
-          ? AppColors.sage
-          : AppColors.terracotta,
+          ? AppColors.statusWithin
+          : AppColors.statusAbove,
     );
   }
 

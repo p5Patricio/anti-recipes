@@ -117,8 +117,8 @@ void main() {
     expect(find.text('Covered 854 kcal · P 160 g · C 0 g'), findsNWidgets(3));
     expect(find.text('Protein +0 g (+0%)'), findsOneWidget);
     expect(find.text('Carbs -841 g (-100%)'), findsOneWidget);
-    expect(chipColor(tester, 'residual-protein'), AppColors.sage);
-    expect(chipColor(tester, 'residual-carbs'), AppColors.terracotta);
+    expect(chipColor(tester, 'residual-protein'), AppColors.statusWithin);
+    expect(chipColor(tester, 'residual-carbs'), AppColors.statusAbove);
 
     await tapKey(tester, 'plan-days-2');
     expect(find.text('Mon, Oct 5 · Training'), findsOneWidget);
@@ -151,8 +151,8 @@ void main() {
     );
     expect(find.text('Protein 481 / 480 g'), findsOneWidget);
     expect(find.text('Carbs 844 / 841 g'), findsOneWidget);
-    expect(chipColor(tester, 'residual-protein'), AppColors.sage);
-    expect(chipColor(tester, 'residual-carbs'), AppColors.sage);
+    expect(chipColor(tester, 'residual-protein'), AppColors.statusWithin);
+    expect(chipColor(tester, 'residual-carbs'), AppColors.statusWithin);
   });
 
   uiTest('a vegetable side is sized in cooked grams per meal', (tester) async {

@@ -5,9 +5,9 @@ import '../../../../core/theme/app_colors.dart';
 
 /// Sage when within the range, kraft while still below it, terracotta above.
 Color statusColor(RangeStatus status) => switch (status) {
-  RangeStatus.within => AppColors.sage,
-  RangeStatus.below => AppColors.kraft,
-  RangeStatus.above => AppColors.terracotta,
+  RangeStatus.within => AppColors.statusWithin,
+  RangeStatus.below => AppColors.statusBelow,
+  RangeStatus.above => AppColors.statusAbove,
 };
 
 String statusLabel(RangeStatus status) => switch (status) {
@@ -34,7 +34,7 @@ class TintedChip extends StatelessWidget {
     child: Text(
       label,
       style: Theme.of(context).textTheme.labelMedium
-          ?.copyWith(color: AppColors.graphite),
+          ?.copyWith(color: AppColors.cream),
     ),
   );
 }

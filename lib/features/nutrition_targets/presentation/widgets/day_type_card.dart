@@ -57,11 +57,12 @@ class DayTypeCard extends StatelessWidget {
                 key: Key('${type.name}-carbs-warning'),
                 avatar: const Icon(
                   Icons.warning_amber_rounded,
-                  color: AppColors.graphite,
+                  color: AppColors.ink,
                 ),
-                backgroundColor: AppColors.terracotta,
+                backgroundColor: AppColors.statusAbove,
                 label: const Text(
                   'Derived carbs are outside the configured range',
+                  style: TextStyle(color: AppColors.ink),
                 ),
               ),
               const SizedBox(height: 4),

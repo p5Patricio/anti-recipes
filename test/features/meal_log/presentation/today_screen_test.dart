@@ -155,9 +155,9 @@ void main() {
     expect(find.text('Protein 53 g · on target'), findsOneWidget);
     expect(find.text('Protein 30 g · below 50-55 g'), findsOneWidget);
     expect(find.text('Protein 60 g · above 50-55 g'), findsOneWidget);
-    expect(chipColor(tester, 'slot-protein-1'), AppColors.sage);
-    expect(chipColor(tester, 'slot-protein-2'), AppColors.terracotta);
-    expect(chipColor(tester, 'slot-protein-3'), AppColors.terracotta);
+    expect(chipColor(tester, 'slot-protein-1'), AppColors.statusWithin);
+    expect(chipColor(tester, 'slot-protein-2'), AppColors.statusAbove);
+    expect(chipColor(tester, 'slot-protein-3'), AppColors.statusAbove);
     expect(find.text('Grilled chicken 175 g'), findsOneWidget);
     expect(find.byKey(const Key('compose-slot-1')), findsNothing);
 
@@ -224,7 +224,7 @@ void main() {
     await tapKey(tester, 'custom-ml-confirm');
     expect(find.text('3500 / 3875 ml'), findsOneWidget);
     expect(find.text('On target'), findsOneWidget);
-    expect(barColor(tester, 'bar-water'), AppColors.sage);
+    expect(barColor(tester, 'bar-water'), AppColors.statusWithin);
 
     await tapKey(tester, 'hydration-undo');
     expect(find.text('1500 / 3875 ml'), findsOneWidget);

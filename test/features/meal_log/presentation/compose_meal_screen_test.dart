@@ -52,7 +52,7 @@ void main() {
     expect(fieldText(tester, 'grams-b$chickenItem'), '150');
     // 150 g cooked chicken = 45 g protein, 240 kcal.
     expect(find.text('Protein 5 g below 50-55 g'), findsOneWidget);
-    expect(statusColor(tester), AppColors.terracotta);
+    expect(statusColor(tester), AppColors.statusAbove);
 
     final egg = await ingredientIdByName(db, 'Egg');
     await tapKey(tester, 'add-fresh');
@@ -60,7 +60,7 @@ void main() {
     await enterKey(tester, 'grams-i$egg', '50');
     // 45 + 6.3 g protein.
     expect(find.text('Protein on target (50-55 g)'), findsOneWidget);
-    expect(statusColor(tester), AppColors.sage);
+    expect(statusColor(tester), AppColors.statusWithin);
 
     await tapKey(tester, 'save-meal');
 
@@ -85,7 +85,7 @@ void main() {
 
     // 60 g protein.
     expect(find.text('Protein 5 g above 50-55 g'), findsOneWidget);
-    expect(statusColor(tester), AppColors.terracotta);
+    expect(statusColor(tester), AppColors.statusAbove);
   });
 
   uiTest('shows what is left of the day after this meal', (tester) async {

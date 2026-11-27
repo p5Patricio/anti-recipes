@@ -64,7 +64,7 @@ class DayRangeSelector extends StatelessWidget {
                     ? weekdayDate(date)
                     : '${weekdayDate(date)} · ${dayTypes[i]!.label}',
                 color: dayTypes[i] == DayType.training
-                    ? AppColors.sage
+                    ? AppColors.blossom
                     : AppColors.kraft,
               ),
           ],
