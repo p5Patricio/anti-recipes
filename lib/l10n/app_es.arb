@@ -1,0 +1,13 @@
+{
+  "@@locale": "es",
+  "appTitle": "anti-recipes",
+  "settingsTitle": "Ajustes",
+  "settingsNutritionTargetsTitle": "Objetivos nutricionales",
+  "settingsNutritionTargetsSubtitle": "Proteína, grasa, tipos de día y plan semanal",
+  "settingsBackupTitle": "Copia de seguridad",
+  "settingsBackupSubtitle": "Exporta o restaura todos tus datos como JSON",
+  "settingsLanguageTitle": "Idioma",
+  "settingsLanguageSystem": "Predeterminado del sistema",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageSpanish": "Español"
+}

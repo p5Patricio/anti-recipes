@@ -1,5 +1,6 @@
 import 'package:anti_recipes/core/database/app_database.dart';
 import 'package:anti_recipes/core/database/database_provider.dart';
+import 'package:anti_recipes/core/l10n/l10n.dart';
 import 'package:anti_recipes/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,13 @@ Future<void> pumpWithDb(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [appDatabaseProvider.overrideWithValue(db), ...overrides],
-      child: MaterialApp(theme: AppTheme.dark(), home: home),
+      child: MaterialApp(
+        theme: AppTheme.dark(),
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: home,
+      ),
     ),
   );
   await tester.pumpAndSettle();
