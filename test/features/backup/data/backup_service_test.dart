@@ -367,18 +367,36 @@ void main() {
       final doc = await exported();
       doc['schemaVersion'] = 1;
       (doc['data'] as Map).remove('day_logs');
+      (doc['data'] as Map).remove('app_settings');
 
       final result = await sourceService.importJson(jsonEncode(doc));
 
       expect(result.rowCounts['day_logs'], 0);
+      expect(result.rowCounts['app_settings'], 0);
       expect(await source.select(source.dayLogs).get(), isEmpty);
+      expect(await source.select(source.appSettings).get(), isEmpty);
       expect(await source.select(source.recipes).get(), isNotEmpty);
     });
 
+    test(
+      'a v2 backup without app_settings loads with the table empty',
+      () async {
+        final doc = await exported();
+        doc['schemaVersion'] = 2;
+        (doc['data'] as Map).remove('app_settings');
+
+        final result = await sourceService.importJson(jsonEncode(doc));
+
+        expect(result.rowCounts['app_settings'], 0);
+        expect(await source.select(source.appSettings).get(), isEmpty);
+        expect(await source.select(source.recipes).get(), isNotEmpty);
+      },
+    );
+
     test('a current-version backup must include every table', () async {
       final doc = await exported();
-      (doc['data'] as Map).remove('day_logs');
-      await expectRejected(doc, contains('missing the "day_logs" table'));
+      (doc['data'] as Map).remove('app_settings');
+      await expectRejected(doc, contains('missing the "app_settings" table'));
     });
   });
 

@@ -28,7 +28,7 @@ flutter pub get
 dart run build_runner build -d      # regenerate drift code after changing tables or DAOs
 dart format lib test
 flutter analyze
-flutter test                        # all 232 tests
+flutter test                        # all 264 tests
 flutter test test/features/backup   # a subset
 ```
 
@@ -54,14 +54,13 @@ The first debug launch shows the Flutter splash for about 15 seconds. The first 
 - Branch names: `feat/<topic>`, `fix/<topic>`, `docs/<topic>`.
 - Commit messages: **Conventional Commits** (`feat(recipes): ...`, `fix(data): ...`, `docs: ...`). **Never add `Co-Authored-By` or any AI attribution.**
 - Keep a commit to one reviewable unit with its tests and docs. About 400 authored changed lines (additions plus deletions, generated files excluded) is a planning guide, not a hard cap; never delete comments, blank lines or tests to fit it.
-- Do not push or open pull requests unless the owner asks. The owner has asked for pushes of the task branches in the past, but not for pull requests.
+- Work lands in `main` through pull requests; each pull request becomes one commit (squash). Push branches when asked and open or merge a pull request only when the owner asks.
+- CI (`.github/workflows/ci.yml`) runs `flutter analyze` and `flutter test` on pull requests to `main` and on pushes to `main`. Run the same two commands locally first.
+- Mention the size in the pull request and recommend a `size:exception` note when it exceeds 400 authored lines.
 
-### Landing the stacked branches
+### Stacked branches (how the MVP landed)
 
-The MVP branches form a chain (see [current-status.md](current-status.md)). Land them in order:
-
-1. Open a pull request for the first unmerged branch with base `main`. Mention the size and recommend `size:exception` when it exceeds 400 lines.
-2. After it merges, retarget the next branch onto `main`. If the merge was a squash, the history differs, so rebase explicitly:
+The MVP was a chain of stacked branches, each started from the previous one, landed in order with one pull request per branch. If you need the same pattern again, after a parent pull request is squash-merged the child's history differs, so rebase it explicitly and retarget the pull request to `main`:
 
 ```bash
 git fetch origin
@@ -69,9 +68,7 @@ git rebase --onto origin/main <old-parent-branch> <next-branch>
 git push --force-with-lease origin <next-branch>
 ```
 
-3. Repeat for each branch until `feat/export-import` lands.
-
-Use the `chained-pr` and `work-unit-commits` skills if your agent has them.
+The MVP task branches were deleted from `origin` after their pull requests merged, so start new work from an up-to-date `main`. Use the `chained-pr` and `work-unit-commits` skills if your agent has them.
 
 ## Writing tests
 

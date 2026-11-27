@@ -13,7 +13,7 @@ replace it from such a file. This document describes the file.
 {
   "format": "anti-recipes-backup",
   "version": 1,
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "exportedAt": "2026-10-06T15:30:12.481Z",
   "data": {
     "user_profiles": [
@@ -89,7 +89,8 @@ the database is missing from it.
 `user_profiles`, `day_type_target_rows`, `week_schedule_entries`,
 `ingredients`, `tools`, `recipes`, `recipe_ingredients`, `recipe_steps`,
 `recipe_tools`, `batch_sessions`, `batch_items`, `meal_logs`,
-`meal_components`, `hydration_logs`, `day_logs` (since schema 2).
+`meal_components`, `hydration_logs`, `day_logs` (since schema 2),
+`app_settings` (since schema 3).
 
 ## Import rules
 

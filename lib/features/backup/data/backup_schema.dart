@@ -35,6 +35,7 @@ const backupTables = <BackupTableSpec>[
   BackupTableSpec('meal_components', 'Meal components'),
   BackupTableSpec('hydration_logs', 'Hydration entries'),
   BackupTableSpec('day_logs', 'Fruit and vegetable days', since: 2),
+  BackupTableSpec('app_settings', 'App settings', since: 3),
 ];
 
 /// "Recipes: 3, Meals: 5" for the non-empty tables, in schema order.

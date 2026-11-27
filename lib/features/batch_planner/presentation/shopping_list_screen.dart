@@ -1,14 +1,59 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/database/database_provider.dart';
 import '../../../core/formatting/grams_format.dart';
 import '../domain/shopping_list.dart';
 
-/// Ingredient ids ticked off while shopping. Held in memory only.
+Set<int> deserializeShoppingChecked(String? raw) {
+  if (raw == null || raw.isEmpty) return {};
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is List) {
+      return {
+        for (final item in decoded)
+          if (item is num) item.toInt(),
+      };
+    }
+  } catch (_) {}
+  return {};
+}
+
+String serializeShoppingChecked(Set<int> checked) {
+  final list = checked.toList()..sort();
+  return jsonEncode(list);
+}
+
+/// Ingredient ids ticked off while shopping. Persisted in AppSettings.
 class ShoppingCheckedNotifier extends Notifier<Set<int>> {
+  static const settingKey = 'shopping_checked_ids';
+
   @override
-  Set<int> build() => {};
+  Set<int> build() {
+    _loadPersisted();
+    return {};
+  }
+
+  Future<void> _loadPersisted() async {
+    try {
+      final dao = ref.read(settingsDaoProvider);
+      final raw = await dao.getSetting(settingKey);
+      if (raw != null) {
+        state = deserializeShoppingChecked(raw);
+      }
+    } catch (_) {}
+  }
+
+  void _persist() {
+    try {
+      final dao = ref.read(settingsDaoProvider);
+      final encoded = serializeShoppingChecked(state);
+      dao.setSetting(settingKey, encoded).catchError((_) {});
+    } catch (_) {}
+  }
 
   void setChecked(int ingredientId, {required bool checked}) {
     final next = {...state};
@@ -18,9 +63,13 @@ class ShoppingCheckedNotifier extends Notifier<Set<int>> {
       next.remove(ingredientId);
     }
     state = next;
+    _persist();
   }
 
-  void clear() => state = {};
+  void clear() {
+    state = {};
+    _persist();
+  }
 }
 
 final shoppingCheckedProvider =

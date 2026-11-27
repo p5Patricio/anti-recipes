@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/formatting/date_format.dart';
 import '../../batch_planner/presentation/plan_providers.dart';
+import '../../batch_planner/presentation/shopping_list_screen.dart';
 import '../data/backup_schema.dart';
 import '../domain/backup_document.dart';
 import '../domain/backup_exception.dart';
@@ -63,9 +64,10 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       if (confirmed != true || !mounted) return;
 
       final result = await service.importJson(contents);
-      // Streams re-emit by themselves; the in-memory plan selection may point
-      // at rows that no longer exist.
+      // Streams re-emit by themselves; the plan selection and shopping checklist
+      // reload fresh state from the restored database.
       ref.invalidate(planSelectionProvider);
+      ref.invalidate(shoppingCheckedProvider);
       if (!mounted) return;
       await showDialog<void>(
         context: context,
