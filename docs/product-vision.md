@@ -71,7 +71,7 @@ With 160 g of protein (640 kcal) and 70 g of fat (630 kcal), a rest day of 2,230
 
 **Current defaults (Milestone 1):** the rest-day carb range was lowered to 245 to 305 g, so the derived value at the 2,275 kcal midpoint (251.25 g) is within range and no warning appears. Training days keep 270 to 305 g (295 g derived at 2,450 kcal).
 
-**Status:** this is an implementation-side resolution. The project records do not show the owner confirming it, so confirm it before treating the 245 g floor as a product decision. Alternatives the owner may prefer: raise the rest-day calories, or keep the 270 g floor and accept the warning on rest days.
+**Status:** the owner confirmed on 2026-11-26 that the 245 g floor stays as the current default ("for now"), so it is a product decision that may still be revisited. Alternatives the owner could choose later: raise the rest-day calories, or restore the 270 g floor and accept the warning on rest days.
 
 **Resolution:** calories remain the source of truth. Carbohydrates are derived as `(kcal - protein x 4 - fat x 9) / 4`. The rest-day carbohydrate range floor was adjusted to 245 g (`Range(245, 305)`), allowing the derived 251.25 g at the 2,275 kcal midpoint to evaluate cleanly within target with 0 warnings.
 

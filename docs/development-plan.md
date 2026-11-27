@@ -40,13 +40,13 @@ Everything below is a **proposal** until the owner confirms it. Phases are order
 
 Goal: the owner uses the app for real for a week and trusts the numbers.
 
-1. **Publish the work.** *Done for T2 to T9 (pull requests #1 to #8 merged).* Still pending: merge Milestone 1 (`feat/settings-persistence`) through a pull request once the owner approves it.
+1. **Publish the work.** *Done: T2 to T9 (pull requests #1 to #8) and Milestone 1 (pull request #10) are merged into `main`.*
 2. **Manual QA pass on the emulator or phone** using the checklist below. Fix what breaks, with a test per bug. *Not done.*
 3. **Review the risky areas** that skipped native review: backup import, planner math, migrations v1 to v2 to v3. *Not done.*
-4. **Confirm the rest-day carb decision** (see [product-vision.md](product-vision.md)). Milestone 1 lowered the default rest-day carb floor to 245 g; the owner has not confirmed it in the project records. *Pending owner confirmation.*
+4. **Rest-day carb decision** (see [product-vision.md](product-vision.md)). Milestone 1 lowered the default rest-day carb floor to 245 g. *Confirmed by the owner on 2026-11-26 as the current default; revisit if the owner changes it.*
 5. **Add CI**: a GitHub Actions workflow running `flutter analyze` and `flutter test` on pull requests. *Done (pull request #9).*
 
-Exit criteria: Milestone 1 merged into `main`; analyze and tests green in CI; the QA checklist passes on a physical device; the first real cooking week is logged without workarounds.
+Exit criteria: analyze and tests green in CI (met); the QA checklist passes on a physical device; the first real cooking week is logged without workarounds.
 
 **Manual QA checklist**
 

@@ -1,6 +1,6 @@
 # Current status
 
-Snapshot: **2026-11-26**. `main` (commit `1f19081`) holds the MVP and CI. The follow-up work described under "Follow-up work (Milestone 1)" lives on branch `feat/settings-persistence` and is **not yet merged into `main`**.
+Snapshot: **2026-11-26**. `main` holds the MVP, CI and the follow-up work described under "Follow-up work (Milestone 1)", merged by pull request #10.
 
 ## Summary
 
@@ -46,13 +46,13 @@ The MVP was built as a chain of stacked branches and landed in `main` through pu
 
 The task branches of those pull requests (`feat/*` and `ci/add-github-actions`) no longer exist on `origin`; only `main` and the branch of the open Milestone 1 pull request remain. The task logbook in `odd/tasks/anti-recipes-mvp.md` records the original size numbers.
 
-## Follow-up work (Milestone 1), pending merge
+## Follow-up work (Milestone 1), merged
 
-Branch `feat/settings-persistence` adds, on top of `main`:
+Pull request #10 (branch `feat/settings-persistence`) added, on top of the MVP:
 
 - **`app_settings` table (schema v3)** with `SettingsDao`: a key-value store, registered in the backup so it round-trips. Migration v2 to v3 creates it.
 - **Persistence of the planner selection and the shopping checklist** across app restarts, stored under the keys `active_plan_selection` and `shopping_checked_ids`. Importing a backup reloads both.
-- **Rest-day carb floor lowered to 245 g** (default rest range 245 to 305 g), so derived rest-day carbs (about 251 g) no longer raise a warning. This resolves the open question in [product-vision.md](product-vision.md) in the code. **The project records do not show the owner confirming this choice**, so treat it as pending owner approval; it is isolated in its own commit so it can be reverted.
+- **Rest-day carb floor lowered to 245 g** (default rest range 245 to 305 g), so derived rest-day carbs (about 251 g) no longer raise a warning. This resolves the open question in [product-vision.md](product-vision.md) in the code. **The owner confirmed it on 2026-11-26 as the current default** ("for now"), so it may be revisited; it is isolated in its own commit so it can be reverted.
 - Removal of the empty `lib/features/shopping/` placeholder folders.
 - New tests: persistence across a simulated restart, carb-boundary stress tests, and a migration test that upgrades a v1 database.
 
@@ -64,7 +64,7 @@ Native review (receipt-driven development) is enabled in this repository. T2 was
 
 Each item is verified unless marked otherwise.
 
-1. **Rest-day carb floor:** lowered to 245 g in Milestone 1 so derived carbs (about 251.25 g) evaluate within target. Owner confirmation is not recorded (see above).
+1. **Rest-day carb floor:** lowered to 245 g in Milestone 1 so derived carbs (about 251.25 g) evaluate within target. Confirmed by the owner on 2026-11-26 as the current default (see above).
 2. **No first-run onboarding.** The app starts with example defaults; the user edits them in Settings.
 3. **Default Flutter launcher icon and native splash.** The mascot logo is only used inside the app (Today header). The Android resources were never customized.
 4. **Light theme only.** `AppTheme` has a `light()` constructor and no dark variant.

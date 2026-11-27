@@ -105,7 +105,7 @@ Validation thresholds worth knowing: yield factor must be above 0 and at most 3;
 - Providers expose drift **streams** for data that changes while a screen is open (stock, a day's meals, hydration, servings, the plan).
 - Forms (recipe editor, targets, composer) load once through a one-shot provider and keep local state, so a database write never rewrites the fields while the user types.
 - The Today screen keeps a `selectedDateProvider`; the clock is injectable through `todayProvider` for tests.
-- The planner selection and the shopping checklist ticks are persisted in `app_settings` (keys `active_plan_selection` and `shopping_checked_ids`) once Milestone 1 is merged; on `main` they still live in memory only.
+- The planner selection and the shopping checklist ticks are persisted in `app_settings` (keys `active_plan_selection` and `shopping_checked_ids`) (Milestone 1, pull request #10), so they survive app restarts and are reloaded after a backup import.
 
 **Critical drift gotcha.** drift shares watch streams by SQL text and variables. Each `customSelect(...).watch()` used as a change trigger must therefore have **distinct SQL** (for example `SELECT 1 AS watch_stock`, `watch_day`, `watch_plan`). Identical SQL makes unrelated watchers collapse into one stream and stop refreshing. This bug existed between schema work and the dashboard task and was fixed with a regression test.
 
