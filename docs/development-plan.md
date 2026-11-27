@@ -21,7 +21,7 @@ Work was cut into tasks that each deliver one verifiable behavior with its tests
 
 ### Delivery approach used
 
-- One branch per task, stacked: each branch starts from the previous task's branch (`stacked-to-main` strategy chosen by the owner).
+- One branch per task, stacked: each branch started from the previous task's branch (`stacked-to-main` strategy chosen by the owner). Each branch landed in `main` through its own pull request (#1 to #8), followed by a CI workflow (#9).
 - Conventional Commits, tests and docs in the same unit of work, no AI attribution lines.
 - Tasks were implemented by a bounded writer working from the task logbook, then checked by re-running `flutter test` in the parent session.
 - Native review was offered for each candidate; the owner declined from T3 onward (see [current-status.md](current-status.md)).
@@ -40,13 +40,13 @@ Everything below is a **proposal** until the owner confirms it. Phases are order
 
 Goal: the owner uses the app for real for a week and trusts the numbers.
 
-1. **Publish the work.** Merge the stack in order, one pull request per branch, each retargeted to `main` after its parent merges (see the workflow in [development-guide.md](development-guide.md)). Record `size:exception` for oversized slices.
-2. **Manual QA pass on the emulator or phone** using the checklist below. Fix what breaks, with a test per bug.
-3. **Review the risky areas** that skipped native review: backup import, planner math, migration v1 to v2.
-4. **Decide the rest-day carb inconsistency** (see [product-vision.md](product-vision.md)) and encode the decision in the defaults.
-5. **Add CI**: a GitHub Actions workflow running `flutter analyze` and `flutter test` on pull requests.
+1. **Publish the work.** *Done for T2 to T9 (pull requests #1 to #8 merged).* Still pending: merge Milestone 1 (`feat/settings-persistence`) through a pull request once the owner approves it.
+2. **Manual QA pass on the emulator or phone** using the checklist below. Fix what breaks, with a test per bug. *Not done.*
+3. **Review the risky areas** that skipped native review: backup import, planner math, migrations v1 to v2 to v3. *Not done.*
+4. **Confirm the rest-day carb decision** (see [product-vision.md](product-vision.md)). Milestone 1 lowered the default rest-day carb floor to 245 g; the owner has not confirmed it in the project records. *Pending owner confirmation.*
+5. **Add CI**: a GitHub Actions workflow running `flutter analyze` and `flutter test` on pull requests. *Done (pull request #9).*
 
-Exit criteria: all branches merged into `main`; analyze and tests green in CI; the QA checklist passes on a physical device; the first real cooking week is logged without workarounds.
+Exit criteria: Milestone 1 merged into `main`; analyze and tests green in CI; the QA checklist passes on a physical device; the first real cooking week is logged without workarounds.
 
 **Manual QA checklist**
 
@@ -65,9 +65,8 @@ Goal: the app feels finished and is pleasant on day one.
 
 - Launcher icon and native splash from the mascot logo.
 - First-run onboarding that asks for weight and targets and explains the day-type cycle.
-- Persist the planner selection and shopping ticks across restarts.
 - Dark theme derived from the same tokens.
-- Remove the empty `shopping/` folder.
+- (Completed in Phase 1: Persist the planner selection and shopping ticks across restarts; remove the empty `shopping/` folder).
 - Optional: Spanish localization (UI copy is English today; the owner said English is fine).
 
 Exit criteria: a fresh install reaches a configured, usable state without opening Settings first.
@@ -92,7 +91,7 @@ These are not in scope and each needs a short product discussion before design.
 
 ## How to pick up work
 
-1. Read [current-status.md](current-status.md) for the branch chain and open issues.
+1. Read [current-status.md](current-status.md) for the delivery state and open issues.
 2. Read `odd/tasks/anti-recipes-mvp.md` for the original specs and evidence.
 3. Follow [development-guide.md](development-guide.md) to set up and branch.
 4. Keep tasks small: one behavior with its tests and docs per commit, about 400 authored lines as a planning guide.

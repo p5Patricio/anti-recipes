@@ -6,7 +6,7 @@
 |---------|--------|
 | Framework | Flutter 3.47 (Dart 3.13), Android only (`dev.antirecipes.anti_recipes`) |
 | State management | Riverpod 3 (`flutter_riverpod`) |
-| Storage | SQLite through drift (`drift`, `drift_flutter`), schema version 2 |
+| Storage | SQLite through drift (`drift`, `drift_flutter`), schema version 3 |
 | File access | `file_picker` 13 (Storage Access Framework, no storage permission) |
 | Backend / auth | None |
 | Tests | `flutter_test`, in-memory drift databases (`sqlite3` as dev dependency) |
@@ -47,7 +47,6 @@ lib/
     batch_planner/       # reverse planner, shopping list, plan screen
     backup/              # JSON export and import
     settings/            # settings screen (links to targets and backup)
-    shopping/            # empty placeholder folders (see current-status.md)
 test/                    # mirrors lib/; helpers/ holds shared fixtures
 docs/                    # this documentation
 odd/tasks/               # task logbook used during the build
@@ -59,7 +58,7 @@ odd/tasks/               # task logbook used during the build
 
 ## Data model
 
-Fifteen drift tables in `lib/core/database/tables.dart`. Foreign keys are enabled in `beforeOpen`.
+Sixteen drift tables in `lib/core/database/tables.dart`. Foreign keys are enabled in `beforeOpen`.
 
 | Table | Purpose |
 |-------|---------|
@@ -78,10 +77,11 @@ Fifteen drift tables in `lib/core/database/tables.dart`. Foreign keys are enable
 | `meal_components` | What a meal contains: grams of a batch item **or** of a fresh ingredient (database CHECK enforces exactly one) |
 | `hydration_logs` | Water entries in ml |
 | `day_logs` | Per date fruit and vegetable portion counters (added in schema version 2) |
+| `app_settings` | Key-value store for app settings, active plan selection, and shopping checklist (added in schema version 3) |
 
 On first creation the database is seeded from `NutritionPlan.exampleDefaults()` and `WeekSchedule.exampleDefaults()` (single source of truth for the numbers), plus 6 tools and 10 common ingredients.
 
-**Migrations.** Version 1 to 2 creates `day_logs`. The migration test builds the current schema, drops the table, sets `user_version` to 1 and reopens.
+**Migrations.** Version 1 to 2 creates `day_logs`. Version 2 to 3 creates `app_settings`. A migration test upgrades a v1 database and checks that existing data survives and both `day_logs` and `app_settings` are created.
 
 **Derived, never stored:** remaining stock of a batch item, derived carbohydrate targets, per-100 g cooked values, shopping lists, plan results.
 
@@ -105,7 +105,7 @@ Validation thresholds worth knowing: yield factor must be above 0 and at most 3;
 - Providers expose drift **streams** for data that changes while a screen is open (stock, a day's meals, hydration, servings, the plan).
 - Forms (recipe editor, targets, composer) load once through a one-shot provider and keep local state, so a database write never rewrites the fields while the user types.
 - The Today screen keeps a `selectedDateProvider`; the clock is injectable through `todayProvider` for tests.
-- Shopping checklist ticks and the planner selection live in memory only.
+- The planner selection and the shopping checklist ticks are persisted in `app_settings` (keys `active_plan_selection` and `shopping_checked_ids`) once Milestone 1 is merged; on `main` they still live in memory only.
 
 **Critical drift gotcha.** drift shares watch streams by SQL text and variables. Each `customSelect(...).watch()` used as a change trigger must therefore have **distinct SQL** (for example `SELECT 1 AS watch_stock`, `watch_day`, `watch_plan`). Identical SQL makes unrelated watchers collapse into one stream and stop refreshing. This bug existed between schema work and the dashboard task and was fixed with a regression test.
 
@@ -122,6 +122,6 @@ Validation thresholds worth knowing: yield factor must be above 0 and at most 3;
 - **Domain code:** plain unit tests with exact numbers (training day carbs 295 g at 2,450 kcal, rest day 251.25 g, planner Monday to Wednesday needs 480 g protein and 841.25 g carbs).
 - **Data layer:** in-memory `NativeDatabase` tests for DAOs, constraints, rollback and migration.
 - **Widgets:** screens mounted over an in-memory database through helpers in `test/helpers/`.
-- Current total: 232 tests, all passing, `flutter analyze` clean (as of the commit in [current-status.md](current-status.md)).
+- Current total: 264 tests, all passing, `flutter analyze` clean (as of the snapshot date in [current-status.md](current-status.md)).
 
 Details and gotchas for writing tests are in [development-guide.md](development-guide.md).

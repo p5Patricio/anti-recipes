@@ -55,7 +55,7 @@ These are the **example defaults** loaded on first run. Every value is editable 
 | Rest days (3 per week) | 2,230 to 2,320 kcal |
 | Protein | 160 g/day, fixed every day (about 2.0 g/kg) |
 | Fat | about 70 g/day (about 27% of calories) |
-| Carbohydrates | configured range 270 to 305 g, but **derived** from calories left after protein and fat |
+| Carbohydrates | configured range 270 to 305 g (training) / 245 to 305 g (rest), **derived** from calories left after protein and fat |
 | Fiber | 30 to 35 g/day |
 | Water | 3.0 to 3.5 L/day on rest days, 3.5 to 4.25 L on training days (+0.5 to +0.75 L) |
 | Fruit | 1 to 3 portions/day |
@@ -63,13 +63,17 @@ These are the **example defaults** loaded on first run. Every value is editable 
 | Meals | 3 main meals/day, 50 to 55 g of protein each |
 | Default week | Monday, Tuesday, Thursday, Friday training; Wednesday, Saturday, Sunday rest |
 
-### Known inconsistency in the original specification
+### Specification inconsistency and how the code treats it
 
-With 160 g of protein (640 kcal) and 70 g of fat (630 kcal), a rest day of 2,230 to 2,320 kcal leaves only about 240 to 262 g of carbohydrates. The specification also asks for 270 to 305 g. The two cannot both hold on a rest day.
+With 160 g of protein (640 kcal) and 70 g of fat (630 kcal), a rest day of 2,230 to 2,320 kcal leaves only about 240 to 262 g of carbohydrates. The original specification also asked for a carbohydrate range of 270 to 305 g. The two cannot both hold on a rest day.
 
-**How the app handles it today:** calories are the source of truth. Carbohydrates are derived as `(kcal - protein x 4 - fat x 9) / 4`. If the derived value falls outside the configured carb range, the app shows an informational warning instead of blocking anything. With the defaults, every rest day shows that warning (251.25 g at the 2,275 kcal midpoint).
+**Rule in the code:** calories are the source of truth. Carbohydrates are derived as `(kcal - protein x 4 - fat x 9) / 4`, and the configured carb range only produces an informational warning when the derived value falls outside it.
 
-**Open decision (owner: the user):** either raise the rest-day calories, lower the carb floor for rest days, or accept the warning as normal. Until decided, the defaults stay as specified and the warning is expected.
+**Current defaults (Milestone 1):** the rest-day carb range was lowered to 245 to 305 g, so the derived value at the 2,275 kcal midpoint (251.25 g) is within range and no warning appears. Training days keep 270 to 305 g (295 g derived at 2,450 kcal).
+
+**Status:** this is an implementation-side resolution. The project records do not show the owner confirming it, so confirm it before treating the 245 g floor as a product decision. Alternatives the owner may prefer: raise the rest-day calories, or keep the 270 g floor and accept the warning on rest days.
+
+**Resolution:** calories remain the source of truth. Carbohydrates are derived as `(kcal - protein x 4 - fat x 9) / 4`. The rest-day carbohydrate range floor was adjusted to 245 g (`Range(245, 305)`), allowing the derived 251.25 g at the 2,275 kcal midpoint to evaluate cleanly within target with 0 warnings.
 
 ## Visual identity
 

@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Context and rules for AI coding agents working on **anti-recipes**. Read this first, then follow the pointers. Everything here was verified against the repository on 2026-10-29 (HEAD `0ca084c`).
+Context and rules for AI coding agents working on **anti-recipes**. Read this first, then follow the pointers. Everything here was verified against the repository on 2026-11-26 (`main` at `1f19081` plus the Milestone 1 branch described below).
 
 ## What this project is
 
@@ -8,7 +8,7 @@ A local-first **Flutter (Android only)** app for modular batch cooking with calo
 
 ## Status in one paragraph
 
-The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. 232 tests pass and `flutter analyze` is clean. The app booted on an Android emulator, but a human has not walked through all flows. Work lives on **stacked branches** (`main` <- `feat/nutrition-engine` <- ... <- `feat/export-import`), all pushed, **no pull requests opened**. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
+The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) lives on branch `feat/settings-persistence` and is **not merged yet**. With it applied, 264 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
 
 ## Document map
 
@@ -42,7 +42,7 @@ Environment: Flutter 3.47.6 (`C:\src\flutter`), JDK 17, Android SDK `C:\Android\
 1. **Feature-first slices** under `lib/features/<name>/{domain,data,presentation}`; shared code in `lib/core`.
 2. **Domain is pure Dart.** No imports of Flutter, drift or Riverpod in `domain/` or `lib/core/nutrition`. Nutrition rules live there and are unit-tested with exact numbers.
 3. **Derive, do not store.** Stock remaining, derived carbs, per-100 g values, shopping lists and plan results are computed. Never add a column that caches them.
-4. **Carbs come from calories.** `carbs = (kcal - protein x 4 - fat x 9) / 4`. The configured carb range only produces a warning. Do not "fix" the rest-day warning without an owner decision (see vision doc).
+4. **Carbs come from calories.** `carbs = (kcal - protein x 4 - fat x 9) / 4`. The configured carb range only produces a warning. Do not change the configured ranges or the derivation without an owner decision (see vision doc); the rest-day floor of 245 g from Milestone 1 is itself awaiting owner confirmation.
 5. **Nutrients use raw weights spread over measured cooked weight.** Do not compute macros from cooked weight times a per-100 g raw value.
 6. **Every drift `watch` trigger needs distinct SQL text** (for example `SELECT 1 AS watch_stock`). drift shares streams by SQL, and identical SQL silently freezes unrelated streams.
 7. **Forms load once and keep local state.** Do not make form fields depend on a live stream.
@@ -55,7 +55,7 @@ Environment: Flutter 3.47.6 (`C:\src\flutter`), JDK 17, Android SDK `C:\Android\
 - **Language of artifacts: English** (code, comments, UI copy, tests, docs, commit messages). The maintainer talks to you in Spanish; reply in the language of their message, but never put Spanish or slang into files unless explicitly asked.
 - **Commits:** Conventional Commits. **Never add `Co-Authored-By` or any AI attribution** to commits or PR text (the maintainer's global rule overrides tool defaults).
 - **Branches:** `feat/...`, `fix/...`, `docs/...`. Keep commits to one reviewable unit with its tests and docs; about 400 authored changed lines is a planning guide, never a reason to delete tests, comments or blank lines.
-- **Do not push or open pull requests unless asked.** Pushing branches has been requested before; PRs have not.
+- **Land work through pull requests into `main`** (CI runs `flutter analyze` and `flutter test`). Push branches when asked; open or merge a pull request only when the owner asks.
 - **Formatting and lint:** `dart format` and `flutter analyze` must be clean before you report done.
 - **Theme:** use `AppColors` and `AppTheme` tokens (graphite `#1F2933`, sage `#7E9F82`, terracotta `#D9734E`, off-white `#F4F0E8`, kraft `#C9A27A`). No hardcoded colors in widgets. Status colors: sage within target, kraft below, terracotta above.
 
@@ -65,7 +65,7 @@ Never commit body weight, real nutrition targets, meal history, backups, `*.db`,
 
 ## Testing
 
-232 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
+264 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
 
 - Widget tests that mount drift streams must unmount the tree **inside the test body** (`await tester.pumpWidget(const SizedBox()); await tester.pump(const Duration(milliseconds: 10));`).
 - Never `await` a drift stream (`.first`) inside `testWidgets`; use `select(...).get()` or DAO `load*` methods.
@@ -93,9 +93,9 @@ More in [docs/development-guide.md](docs/development-guide.md).
 
 ## Known pitfalls and open items
 
-- **Open product decision:** rest days derive about 251 g carbs versus a configured 270 g floor, so every rest day shows an info warning. Ask the owner before changing defaults or logic.
+- **Product decision awaiting owner confirmation:** Milestone 1 lowered the rest-day carbohydrate floor to 245 g (`Range(245, 305)`), so derived rest-day carbs (about 251.25 g) are within target and raise no warning. The original specification said 270 to 305 g; ask the owner before relying on the new value. It is isolated in its own commit.
 - Single-value targets count as "within" at plus or minus 5%: an implementation assumption, not an owner decision.
-- Not done yet: onboarding, launcher icon and splash (still Flutter defaults), dark theme, persistence of planner selection and shopping ticks, CI, release signing. Empty `lib/features/shopping/` folder can be removed.
+- Not done yet: onboarding, launcher icon and splash (still Flutter defaults), dark theme, release build and signing (CI exists but only analyzes and tests). Planner selection and shopping checklist persistence are implemented in Milestone 1 via `app_settings` (schema v3), pending merge.
 - The file picker backup flow has only been tested through a fake gateway, never on a device.
 
 ## Review workflow used in this repo
