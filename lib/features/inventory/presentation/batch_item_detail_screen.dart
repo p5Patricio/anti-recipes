@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/database/database_provider.dart';
-import '../../../core/formatting/date_format.dart';
+import '../../../core/l10n/l10n.dart';
 import '../../recipes/presentation/widgets/confirm_delete.dart';
 import '../../recipes/presentation/widgets/macro_line.dart';
 import '../data/inventory_dao.dart';
 import 'inventory_providers.dart';
+import 'localized_dates.dart';
 
 /// Typical portion shown next to the per-100 g macros.
 const double typicalPortionG = 150;
@@ -19,13 +20,13 @@ class BatchItemDetailScreen extends ConsumerWidget {
 
   Future<void> _delete(BuildContext context, WidgetRef ref, String name) async {
     final navigator = Navigator.of(context);
+    final l10n = context.l10n;
     final dao = ref.read(inventoryDaoProvider);
     final done = await confirmAndDelete(
       context,
-      title: 'Delete "$name"?',
-      message: 'This batch item will be removed from your pantry.',
-      blockedMessage:
-          'This batch item was used in a meal, so it cannot be deleted.',
+      title: l10n.pantryDeleteTitle(name),
+      message: l10n.pantryDeleteMessage,
+      blockedMessage: l10n.pantryDeleteBlocked,
       inUse: () => dao.isBatchItemConsumed(batchItemId),
       delete: () async {
         if (!await dao.deleteBatchItemIfUnused(batchItemId)) {
@@ -39,21 +40,22 @@ class BatchItemDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final item = ref.watch(stockItemProvider(batchItemId)).value;
+    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(item?.recipeName ?? 'Batch item'),
+        title: Text(item?.recipeName ?? l10n.pantryBatchItemTitle),
         actions: [
           if (item != null)
             IconButton(
               key: const Key('delete-batch-item'),
-              tooltip: 'Delete',
+              tooltip: l10n.pantryDelete,
               icon: const Icon(Icons.delete_outline),
               onPressed: () => _delete(context, ref, item.recipeName),
             ),
         ],
       ),
       body: item == null
-          ? const Center(child: Text('This batch item no longer exists.'))
+          ? Center(child: Text(l10n.pantryItemGone))
           : _DetailBody(item),
     );
   }
@@ -67,13 +69,17 @@ class _DetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final history = ref.watch(batchConsumptionProvider(item.batchItemId));
     final left = item.remainingG < 0 ? 0 : item.remainingG;
     final perGram = item.nutrientsPerCookedGram;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text('Cooked ${weekdayDate(item.cookedOn)}', style: text.titleSmall),
+        Text(
+          l10n.pantryCooked(localizedWeekdayDate(context, item.cookedOn)),
+          style: text.titleSmall,
+        ),
         const SizedBox(height: 12),
         Card(
           child: Padding(
@@ -82,16 +88,16 @@ class _DetailBody extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${left.round()} g left of ${item.cookedTotalG.round()} g',
+                  l10n.pantryGramsLeft(left.round(), item.cookedTotalG.round()),
                   key: const Key('detail-remaining'),
                   style: text.titleMedium,
                 ),
                 const SizedBox(height: 12),
-                Text('Per 100 g cooked', style: text.labelMedium),
+                Text(l10n.pantryPer100Cooked, style: text.labelMedium),
                 MacroLine(perGram.scale(100)),
                 const SizedBox(height: 8),
                 Text(
-                  'Per typical ${typicalPortionG.round()} g portion',
+                  l10n.pantryPerTypicalPortion(typicalPortionG.round()),
                   style: text.labelMedium,
                 ),
                 MacroLine(
@@ -103,17 +109,17 @@ class _DetailBody extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Text('Consumption history', style: text.titleMedium),
+        Text(l10n.pantryConsumptionHistory, style: text.titleMedium),
         history.when(
           loading: () => const Padding(
             padding: EdgeInsets.all(16),
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (e, _) => Text('Could not load history: $e'),
+          error: (e, _) => Text(l10n.pantryHistoryError('$e')),
           data: (entries) => entries.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: Text('Not used in any meal yet.'),
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(l10n.pantryNotUsed),
                 )
               : Column(
                   children: [
@@ -121,7 +127,12 @@ class _DetailBody extends ConsumerWidget {
                       ListTile(
                         dense: true,
                         contentPadding: EdgeInsets.zero,
-                        title: Text('${weekdayDate(e.date)} · Meal ${e.slot}'),
+                        title: Text(
+                          l10n.pantryHistoryEntry(
+                            localizedWeekdayDate(context, e.date),
+                            e.slot,
+                          ),
+                        ),
                         trailing: Text('${e.grams.round()} g'),
                       ),
                   ],

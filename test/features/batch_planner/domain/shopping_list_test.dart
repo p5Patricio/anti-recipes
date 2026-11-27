@@ -1,4 +1,3 @@
-import 'package:anti_recipes/core/formatting/grams_format.dart';
 import 'package:anti_recipes/features/batch_planner/domain/batch_plan.dart';
 import 'package:anti_recipes/features/batch_planner/domain/batch_planner.dart';
 import 'package:anti_recipes/features/batch_planner/domain/plan_inputs.dart';
@@ -135,35 +134,6 @@ void main() {
       final empty = ShoppingList.fromPlan(plan());
 
       expect(empty.isEmpty, isTrue);
-      expect(empty.toText(), '');
-    });
-  });
-
-  group('text export', () {
-    test('writes a checklist grouped by category', () {
-      final list = ShoppingList.fromPlan(
-        plan(components: [protein(chickenRecipe())], fresh: [banana(100)]),
-      );
-
-      expect(
-        list.toText(title: 'Shopping list'),
-        'Shopping list\n'
-        '\n'
-        'Fruit\n'
-        '- [ ] 900 g Banana (about 8 x 118 g)\n'
-        '\n'
-        'Protein\n'
-        '- [ ] 2,090 g Chicken breast',
-      );
-    });
-
-    test('formats grams with thousands separators', () {
-      expect(formatGrams(0), '0');
-      expect(formatGrams(999.4), '999');
-      expect(formatGrams(1200), '1,200');
-      expect(formatGrams(1234567), '1,234,567');
-      expect(categoryLabel('protein'), 'Protein');
-      expect(categoryLabel(''), 'Other');
     });
   });
 }

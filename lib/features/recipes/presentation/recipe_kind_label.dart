@@ -10,14 +10,4 @@ extension RecipeKindLabel on RecipeKind {
     RecipeKind.vegetable => l10n.recipesKindVegetable,
     RecipeKind.complete => l10n.recipesKindComplete,
   };
-
-  /// English label without a context, kept for callers outside this feature
-  /// that have not moved to [localizedLabel] yet.
-  String get label => switch (this) {
-    RecipeKind.proteinBase => 'Protein base',
-    RecipeKind.carbBase => 'Carb base',
-    RecipeKind.sauce => 'Sauce',
-    RecipeKind.vegetable => 'Vegetable',
-    RecipeKind.complete => 'Complete',
-  };
 }

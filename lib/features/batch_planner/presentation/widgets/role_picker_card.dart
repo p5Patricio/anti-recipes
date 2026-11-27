@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../domain/plan_inputs.dart';
 import 'grams_per_meal_field.dart';
 
 extension PlanRoleLabel on PlanRole {
-  String get label => switch (this) {
-    PlanRole.proteinBase => 'Protein base',
-    PlanRole.carbBase => 'Carb base',
-    PlanRole.vegetable => 'Vegetable (optional)',
-    PlanRole.sauce => 'Sauce (optional)',
+  String label(AppLocalizations l10n) => switch (this) {
+    PlanRole.proteinBase => l10n.plannerRoleProteinBase,
+    PlanRole.carbBase => l10n.plannerRoleCarbBase,
+    PlanRole.vegetable => l10n.plannerRoleVegetable,
+    PlanRole.sauce => l10n.plannerRoleSauce,
   };
 
-  String get description => switch (this) {
-    PlanRole.proteinBase => 'Sized to reach the protein target',
-    PlanRole.carbBase => 'Sized to reach the carb target',
-    PlanRole.vegetable => 'Fixed cooked grams per meal',
-    PlanRole.sauce => 'Fixed cooked grams per meal',
+  String description(AppLocalizations l10n) => switch (this) {
+    PlanRole.proteinBase => l10n.plannerRoleProteinBaseHint,
+    PlanRole.carbBase => l10n.plannerRoleCarbBaseHint,
+    PlanRole.vegetable || PlanRole.sauce => l10n.plannerRoleSideHint,
   };
 }
 
@@ -46,6 +46,7 @@ class RolePickerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final name = recipeName;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -60,9 +61,9 @@ class RolePickerCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(role.label, style: text.titleSmall),
+                      Text(role.label(l10n), style: text.titleSmall),
                       Text(
-                        name ?? role.description,
+                        name ?? role.description(l10n),
                         key: Key('role-recipe-${role.name}'),
                         style: name == null ? text.bodySmall : text.bodyLarge,
                       ),
@@ -72,14 +73,16 @@ class RolePickerCard extends StatelessWidget {
                 if (name != null)
                   IconButton(
                     key: Key('clear-role-${role.name}'),
-                    tooltip: 'Remove',
+                    tooltip: l10n.plannerRemove,
                     icon: const Icon(Icons.close),
                     onPressed: onClear,
                   ),
                 OutlinedButton(
                   key: Key('pick-role-${role.name}'),
                   onPressed: onPick,
-                  child: Text(name == null ? 'Choose' : 'Change'),
+                  child: Text(
+                    name == null ? l10n.plannerChoose : l10n.plannerChange,
+                  ),
                 ),
               ],
             ),
@@ -90,7 +93,7 @@ class RolePickerCard extends StatelessWidget {
                 child: GramsPerMealField(
                   key: Key('side-grams-${role.name}'),
                   initial: gramsPerMeal!,
-                  label: 'Cooked grams per meal',
+                  label: l10n.plannerCookedGramsPerMeal,
                   onChanged: onGramsPerMeal ?? (_) {},
                 ),
               ),

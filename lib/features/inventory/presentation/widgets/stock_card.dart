@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/formatting/date_format.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/nutrition/nutrients.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../recipes/presentation/widgets/macro_line.dart';
+import '../localized_dates.dart';
 
 /// Presentational pantry card: recipe, remaining stock bar and per-100 g macros.
 class StockCard extends StatelessWidget {
@@ -33,6 +34,7 @@ class StockCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final shownRemaining = remainingG < 0 ? 0 : remainingG;
     return Opacity(
       opacity: isEmpty ? 0.55 : 1,
@@ -49,13 +51,16 @@ class StockCard extends StatelessWidget {
                   children: [
                     Expanded(child: Text(name, style: text.titleMedium)),
                     if (isEmpty)
-                      const _StatusChip('Empty', AppColors.creamMuted)
+                      _StatusChip(l10n.pantryStatusEmpty, AppColors.creamMuted)
                     else if (isLow)
-                      const _StatusChip('Low', AppColors.statusAbove),
+                      _StatusChip(l10n.pantryStatusLow, AppColors.statusAbove),
                   ],
                 ),
                 const SizedBox(height: 2),
-                Text('Cooked ${shortDate(cookedOn)}', style: text.bodySmall),
+                Text(
+                  l10n.pantryCooked(localizedShortDate(context, cookedOn)),
+                  style: text.bodySmall,
+                ),
                 const SizedBox(height: 10),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(6),
@@ -70,11 +75,14 @@ class StockCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '${shownRemaining.round()} g left of ${cookedTotalG.round()} g',
+                  l10n.pantryGramsLeft(
+                    shownRemaining.round(),
+                    cookedTotalG.round(),
+                  ),
                   style: text.bodyMedium,
                 ),
                 const SizedBox(height: 8),
-                Text('Per 100 g cooked', style: text.labelSmall),
+                Text(l10n.pantryPer100Cooked, style: text.labelSmall),
                 MacroLine(per100Cooked),
               ],
             ),

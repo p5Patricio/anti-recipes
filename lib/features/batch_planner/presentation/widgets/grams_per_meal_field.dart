@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/l10n/l10n.dart';
 import '../../../../core/widgets/number_fields.dart';
 
 /// Numeric "grams per meal" input that reports every valid, positive value.
@@ -8,11 +9,13 @@ class GramsPerMealField extends StatefulWidget {
     super.key,
     required this.initial,
     required this.onChanged,
-    this.label = 'Grams per meal',
+    this.label,
   });
 
   final double initial;
-  final String label;
+
+  /// Defaults to the localized "Grams per meal".
+  final String? label;
   final ValueChanged<double> onChanged;
 
   @override
@@ -41,6 +44,9 @@ class _GramsPerMealFieldState extends State<GramsPerMealField> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      NumberField(controller: _controller, label: widget.label, suffix: 'g');
+  Widget build(BuildContext context) => NumberField(
+    controller: _controller,
+    label: widget.label ?? context.l10n.plannerGramsPerMeal,
+    suffix: 'g',
+  );
 }
