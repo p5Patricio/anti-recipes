@@ -82,7 +82,11 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.kitchen_outlined, size: 48, color: AppColors.sage),
+            const Icon(
+              Icons.kitchen_outlined,
+              size: 48,
+              color: AppColors.blossom,
+            ),
             const SizedBox(height: 12),
             Text('Your pantry is empty', style: text.titleMedium),
             const SizedBox(height: 8),

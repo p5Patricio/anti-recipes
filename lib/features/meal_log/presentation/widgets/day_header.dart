@@ -85,7 +85,7 @@ class DayTypeBadge extends StatelessWidget {
     return TintedChip(
       key: const Key('day-type-badge'),
       label: training ? 'Training day' : 'Rest day',
-      color: training ? AppColors.sage : AppColors.kraft,
+      color: training ? AppColors.blossom : AppColors.kraft,
     );
   }
 }

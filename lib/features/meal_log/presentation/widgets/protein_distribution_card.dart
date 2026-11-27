@@ -20,8 +20,8 @@ class ProteinDistributionCard extends StatelessWidget {
   Color _color(MealSlotSummary s) {
     if (s.isEmpty) return AppColors.kraft;
     return s.proteinStatus == RangeStatus.within
-        ? AppColors.sage
-        : AppColors.terracotta;
+        ? AppColors.statusWithin
+        : AppColors.statusAbove;
   }
 
   @override
@@ -105,7 +105,9 @@ class _Bar extends StatelessWidget {
               width: (bandEnd - bandStart) * w,
               top: 0,
               bottom: 0,
-              child: ColoredBox(color: AppColors.sage.withValues(alpha: 0.25)),
+              child: ColoredBox(
+                color: AppColors.statusWithin.withValues(alpha: 0.25),
+              ),
             ),
             Positioned(
               left: 0,

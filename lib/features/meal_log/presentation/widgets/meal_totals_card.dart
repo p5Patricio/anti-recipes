@@ -47,8 +47,8 @@ class MealTotalsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
     final color = proteinStatus == RangeStatus.within
-        ? AppColors.sage
-        : AppColors.terracotta;
+        ? AppColors.statusWithin
+        : AppColors.statusAbove;
     return Card(
       key: const Key('meal-totals'),
       child: Padding(
@@ -68,7 +68,7 @@ class MealTotalsCard extends StatelessWidget {
               ),
               child: Text(
                 _proteinText,
-                style: text.labelLarge?.copyWith(color: AppColors.graphite),
+                style: text.labelLarge?.copyWith(color: AppColors.cream),
               ),
             ),
             const SizedBox(height: 8),

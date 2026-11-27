@@ -125,7 +125,7 @@ class _EmptyState extends StatelessWidget {
             const Icon(
               Icons.menu_book_outlined,
               size: 48,
-              color: AppColors.sage,
+              color: AppColors.blossom,
             ),
             const SizedBox(height: 12),
             Text(

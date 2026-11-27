@@ -10,7 +10,7 @@ class AntiRecipesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'anti-recipes',
-      theme: AppTheme.light(),
+      theme: AppTheme.dark(),
       debugShowCheckedModeBanner: false,
       home: const AppShell(),
     );

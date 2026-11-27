@@ -57,7 +57,7 @@ Environment: Flutter 3.47.6 (`C:\src\flutter`), JDK 17, Android SDK `C:\Android\
 - **Branches:** `feat/...`, `fix/...`, `docs/...`. Keep commits to one reviewable unit with its tests and docs; about 400 authored changed lines is a planning guide, never a reason to delete tests, comments or blank lines.
 - **Land work through pull requests into `main`** (CI runs `flutter analyze` and `flutter test`). Push branches when asked; open or merge a pull request only when the owner asks.
 - **Formatting and lint:** `dart format` and `flutter analyze` must be clean before you report done.
-- **Theme:** use `AppColors` and `AppTheme` tokens (graphite `#1F2933`, sage `#7E9F82`, terracotta `#D9734E`, off-white `#F4F0E8`, kraft `#C9A27A`). No hardcoded colors in widgets. Status colors: sage within target, kraft below, terracotta above.
+- **Theme:** use `AppColors` and `AppTheme` tokens (dark-first: ink `#0B0B0C`, cream `#F2E6CF`, ink red `#BF2D28`, blossom `#F2A0B0`, kraft `#C9A27A`). No hardcoded colors in widgets. Status colors: blossom within target, kraft below, light ink red above.
 
 ## Privacy: this repository is public
 

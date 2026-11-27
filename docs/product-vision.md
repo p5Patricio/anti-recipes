@@ -77,15 +77,15 @@ With 160 g of protein (640 kcal) and 70 g of fat (630 kcal), a rest day of 2,230
 
 ## Visual identity
 
-The design system comes from the project mascot: a smiling meal-prep container hugging two grocery bags. The logo is original artwork inspired by a scene the author liked, not a reproduction of any existing character, because the original is protected and this repository is public.
+The design system comes from the project logo: a duck wearing a chef hat, sitting in a bowl with chopsticks, drawn in Japanese ink-brush style over a red enso circle with cherry blossoms. The app is dark-first. Sources are in `assets/branding/` (`logo_original.png` is the reference the duck version was built from).
 
 | Token | Hex | Use |
 |-------|-----|-----|
-| Graphite | `#1F2933` | Text and outlines |
-| Sage | `#7E9F82` | Primary color; "within target" status |
-| Terracotta | `#D9734E` | Accent, floating action buttons; "above target" status (also used for out-of-band warnings) |
-| Off-white | `#F4F0E8` | Scaffold background |
-| Kraft | `#C9A27A` | Warm accent; "below target" status on the Today dashboard |
-| White | `#FFFFFF` | Card surfaces |
+| Ink | `#0B0B0C` | Scaffold; dark text on filled chips |
+| Surface / raised | `#161517` / `#211F21` | Cards, navigation bar / chips |
+| Cream | `#F2E6CF` | Body text |
+| Ink red | `#BF2D28` | Primary: buttons, FAB, selected navigation; light variant `#E8645B` is "above target" |
+| Blossom | `#F2A0B0` | Secondary highlight; "within target" status |
+| Kraft | `#C9A27A` | Tertiary; "below target" status |
 
-Cards use rounded corners with a thin outline that echoes the logo's thick contours. UI copy is in English.
+Full token list lives in `lib/core/theme/app_colors.dart`. Status chips always carry a text label because blossom and kraft are close in lightness. Cards use rounded corners with a thin outline that echoes the logo's thick contours. UI copy is in English.

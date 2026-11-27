@@ -95,8 +95,8 @@ class MealSlotCard extends StatelessWidget {
                 key: Key('slot-protein-${slot.slot}'),
                 label: _proteinText,
                 color: slot.proteinStatus == RangeStatus.within
-                    ? AppColors.sage
-                    : AppColors.terracotta,
+                    ? AppColors.statusWithin
+                    : AppColors.statusAbove,
               ),
               const SizedBox(height: 8),
               Text(

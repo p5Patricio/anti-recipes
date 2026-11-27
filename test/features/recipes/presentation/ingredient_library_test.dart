@@ -33,7 +33,7 @@ void main() {
       ProviderScope(
         overrides: [appDatabaseProvider.overrideWithValue(db)],
         child: MaterialApp(
-          theme: AppTheme.light(),
+          theme: AppTheme.dark(),
           home: const IngredientLibraryScreen(),
         ),
       ),

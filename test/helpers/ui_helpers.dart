@@ -30,7 +30,7 @@ Future<void> pumpWithDb(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [appDatabaseProvider.overrideWithValue(db), ...overrides],
-      child: MaterialApp(theme: AppTheme.light(), home: home),
+      child: MaterialApp(theme: AppTheme.dark(), home: home),
     ),
   );
   await tester.pumpAndSettle();
