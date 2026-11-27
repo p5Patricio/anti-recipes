@@ -8,7 +8,7 @@ A local-first **Flutter (Android only)** app for modular batch cooking with calo
 
 ## Status in one paragraph
 
-The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10. 264 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
+The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10, and a visual rebrand (dark-first theme, duck logo, launcher icon and splash) by pull request #11. 264 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
 
 ## Document map
 
@@ -95,7 +95,7 @@ More in [docs/development-guide.md](docs/development-guide.md).
 
 - **Product decision (owner-confirmed 2026-11-26, "for now"):** Milestone 1 lowered the rest-day carbohydrate floor to 245 g (`Range(245, 305)`), so derived rest-day carbs (about 251.25 g) are within target and raise no warning. The original specification said 270 to 305 g. The owner chose to keep 245 g as the current default; treat any further change as an owner decision.
 - Single-value targets count as "within" at plus or minus 5%: an implementation assumption, not an owner decision.
-- Not done yet: onboarding, launcher icon and splash (still Flutter defaults), dark theme, release build and signing (CI exists but only analyzes and tests). Planner selection and shopping checklist persistence are implemented in Milestone 1 via `app_settings` (schema v3), merged in pull request #10.
+- Not done yet: onboarding, light theme (the app is dark-only since pull request #11, which also added the duck logo, launcher icon and splash), release build and signing (CI exists but only analyzes and tests). Planner selection and shopping checklist persistence are implemented in Milestone 1 via `app_settings` (schema v3), merged in pull request #10.
 - The file picker backup flow has only been tested through a fake gateway, never on a device.
 
 ## Review workflow used in this repo

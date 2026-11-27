@@ -1,6 +1,6 @@
 # Current status
 
-Snapshot: **2026-11-26**. `main` holds the MVP, CI and the follow-up work described under "Follow-up work (Milestone 1)", merged by pull request #10.
+Snapshot: **2026-11-27**. `main` holds the MVP, CI, the follow-up work described under "Follow-up work (Milestone 1)" (pull request #10) and the visual rebrand described under "Branding and theme" (pull request #11).
 
 ## Summary
 
@@ -12,7 +12,7 @@ The MVP defined in [product-vision.md](product-vision.md) is **fully implemented
 | `flutter analyze` | No issues | Yes, on 2026-11-26 with Milestone 1 applied |
 | `flutter test` | 264 tests passing | Yes, on 2026-11-26 with Milestone 1 applied |
 | Debug APK build | Succeeds (first build about 6 minutes, includes Gradle and NDK downloads) | Yes |
-| Boot on Android 16 emulator | App starts and shows the Today dashboard | Yes (screenshot) |
+| Boot on Android 16 emulator | App starts and shows the Today dashboard in the dark theme; splash, app bar logo and launcher icon render correctly | Yes (screenshots, 2026-11-27) |
 | Manual walk-through of recipes, pantry, planner, backup | Not done | No |
 | File picker on a real or emulated device | Not done | No |
 
@@ -56,9 +56,20 @@ Pull request #10 (branch `feat/settings-persistence`) added, on top of the MVP:
 - Removal of the empty `lib/features/shopping/` placeholder folders.
 - New tests: persistence across a simulated restart, carb-boundary stress tests, and a migration test that upgrades a v1 database.
 
+## Branding and theme, merged
+
+Pull request #11 (branch `feat/duck-branding-dark-theme`) added:
+
+- **Dark-first theme.** `AppTheme.light()` was replaced by `AppTheme.dark()` and the tokens in `lib/core/theme/app_colors.dart` now follow the logo palette (ink, cream, ink red, blossom, kraft). Status colors: blossom within target, kraft below, light ink red above. The primary red was darkened to `#BF2D28` so cream text reaches about 4.7:1 (hand calculation, not a tool result).
+- **New logo**: a duck wearing a chef hat in a bowl, in ink-brush style, generated with an image model (the original reference stays in `assets/branding/logo_original.png`). The old container mascot (`logo.webp`) was removed.
+- **Android resources:** adaptive launcher icon, black splash screen (including the Android 12+ splash screen API) and the new logo in the Today app bar.
+- Tests only had token renames; the count is unchanged at 264.
+
+Not covered: the pull request had no native review (the owner did not request one), and contrast was not measured with a tool.
+
 ## Review status
 
-Native review (receipt-driven development) is enabled in this repository. T2 was reviewed and approved. For T3 to T9 the owner **declined review for each candidate**, so those slices were verified by tests, `flutter analyze` and a parent re-run only. Milestone 1 has not gone through native review. Highest-value areas to review: the backup import (replaces all data), the batch planner math, and the schema migrations (v1 to v2 to v3).
+Native review (receipt-driven development) is enabled in this repository. T2 was reviewed and approved. For T3 to T9 the owner **declined review for each candidate**, so those slices were verified by tests, `flutter analyze` and a parent re-run only. Milestone 1 and the branding pull request have not gone through native review. Highest-value areas to review: the backup import (replaces all data), the batch planner math, and the schema migrations (v1 to v2 to v3).
 
 ## Known limitations and technical debt
 
@@ -66,8 +77,8 @@ Each item is verified unless marked otherwise.
 
 1. **Rest-day carb floor:** lowered to 245 g in Milestone 1 so derived carbs (about 251.25 g) evaluate within target. Confirmed by the owner on 2026-11-26 as the current default (see above).
 2. **No first-run onboarding.** The app starts with example defaults; the user edits them in Settings.
-3. **Default Flutter launcher icon and native splash.** The mascot logo is only used inside the app (Today header). The Android resources were never customized.
-4. **Light theme only.** `AppTheme` has a `light()` constructor and no dark variant.
+3. **Dark theme only.** `AppTheme` has a `dark()` constructor and no light variant; the app ignores the system theme setting.
+4. **Logo is a raster image** (1024 px PNG from an image model) with no vector source, and the icon was checked only on one emulator.
 5. **CI exists but is minimal.** `.github/workflows/ci.yml` runs `flutter analyze` and `flutter test` on pull requests and pushes to `main` (Flutter 3.47.6, Ubuntu). There is no build, release or signing step.
 6. **Backups are unencrypted** and contain personal data. Restoring on a device in another time zone keeps the same instants for day-level dates, which can fall on a neighboring calendar day (documented in [backup-format.md](backup-format.md)).
 7. **Single-value target tolerance is a guess.** Protein, fat and derived carbs count as "within" at plus or minus 5%; that number was chosen by the implementation, not specified by the owner (**assumption**).
