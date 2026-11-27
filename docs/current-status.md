@@ -10,7 +10,7 @@ The MVP defined in [product-vision.md](product-vision.md) is **fully implemented
 |-------|--------|----------|
 | `dart format lib test` | No changes needed (138 files) | Yes, on 2026-11-26 with Milestone 1 applied |
 | `flutter analyze` | No issues | Yes, on 2026-11-26 with Milestone 1 applied |
-| `flutter test` | 277 tests passing | Yes, on 2026-11-27 with localization applied |
+| `flutter test` | 283 tests passing | Yes, on 2026-11-27 with localization applied |
 | Debug APK build | Succeeds (first build about 6 minutes, includes Gradle and NDK downloads) | Yes |
 | Boot on Android 16 emulator | App starts and shows the Today dashboard in the dark theme; splash, app bar logo and launcher icon render correctly | Yes (screenshots, 2026-11-27) |
 | Manual walk-through of recipes, pantry, planner, backup | Not done | No |
@@ -77,7 +77,7 @@ The UI is available in English and Spanish.
 - **Dates** use `intl` `DateFormat` with the current locale. Plural forms use ICU, which also fixes "1 portions" style output.
 - **Tests:** English assertions are unchanged; Spanish smoke tests exist for recipes, Today, targets, the planner and backup errors, plus ARB key parity and language switching/persistence tests.
 
-Not covered: user data (ingredient, recipe and tool names, including the seeded defaults stored in the database) stays as entered, so a Spanish user sees the seeded English names until they rename them. Number formatting keeps a dot as decimal separator in both languages. Spanish copy was written by an AI and has not been reviewed by a native speaker.
+Seeded data: the 10 starter ingredients and 6 starter tools are stored as English names, so `lib/core/database/seed_names.dart` holds their Spanish names and `syncSeedNames` renames the rows on startup and whenever the effective language changes (`SeedNamesSync` in `lib/core/l10n/`). A row is renamed only if its name is still exactly the seeded name and the target name is free, so names the user edited or created are never touched, ids do not change and the switch is reversible. After restoring a backup the names are re-synced at the next startup or language change. Other user data (recipes and anything the user typed) is never translated. Number formatting keeps a dot as decimal separator in both languages. Spanish copy was written by an AI and has not been reviewed by a native speaker.
 
 ## Review status
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_shell.dart';
 import 'core/l10n/l10n.dart';
 import 'core/l10n/locale_provider.dart';
+import 'core/l10n/seed_names_sync.dart';
 import 'core/theme/app_theme.dart';
 
 class AntiRecipesApp extends ConsumerWidget {
@@ -18,6 +19,7 @@ class AntiRecipesApp extends ConsumerWidget {
       locale: ref.watch(localeProvider),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) => SeedNamesSync(child: child!),
       home: const AppShell(),
     );
   }

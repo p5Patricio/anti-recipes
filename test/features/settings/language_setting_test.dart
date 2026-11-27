@@ -41,6 +41,10 @@ void main() {
     expect(find.text('Ajustes'), findsWidgets);
     expect(find.text('Idioma'), findsOneWidget);
     expect(await db.settingsDao.getSetting(appLocaleSettingKey), 'es');
+
+    final tools = {for (final t in await db.select(db.tools).get()) t.name};
+    expect(tools, contains('Horno'));
+    expect(tools, isNot(contains('Oven')));
   });
 
   uiTest('a stored language preference is applied on startup', (tester) async {
