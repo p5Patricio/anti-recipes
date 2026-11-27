@@ -1,4 +1,5 @@
 import 'package:anti_recipes/core/database/app_database.dart';
+import 'package:anti_recipes/core/database/database_provider.dart';
 import 'package:anti_recipes/core/theme/app_colors.dart';
 import 'package:anti_recipes/features/batch_planner/presentation/plan_screen.dart';
 import 'package:anti_recipes/features/meal_log/presentation/today_providers.dart';
@@ -7,6 +8,7 @@ import 'package:anti_recipes/features/recipes/domain/recipe_kind.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/db_seed.dart';
@@ -336,4 +338,63 @@ void main() {
     expect(find.byKey(const Key('plan-from')), findsOneWidget);
     expect(find.byKey(const Key('shopping-list')), findsNothing);
   });
+
+  uiTest(
+    'plan selection and shopping checklist persist across simulated app restart',
+    (tester) async {
+      final chickenBreast = await ingredientIdByName(db, 'Chicken breast');
+      await pumpPlan(tester);
+
+      // 1. Pick recipe and change days to 2
+      await pickRecipe(tester, 'proteinBase', chicken);
+      await tapKey(tester, 'plan-days-2');
+
+      // 2. Open shopping list and check chicken breast
+      await tapKey(tester, 'shopping-list');
+      await tapKey(tester, 'shop-item-$chickenBreast');
+      expect(find.text('1 of 1 checked'), findsOneWidget);
+
+      // 3. Verify SQLite DB row content
+      final planRaw = await db.settingsDao.getSetting('active_plan_selection');
+      expect(planRaw, contains('"dayCount":2'));
+      expect(planRaw, contains('"proteinBase":$chicken'));
+      final shopRaw = await db.settingsDao.getSetting('shopping_checked_ids');
+      expect(shopRaw, contains('$chickenBreast'));
+
+      // 4. Simulate app restart: unmount tree and re-pump with same db
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 10));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            appDatabaseProvider.overrideWithValue(db),
+            todayProvider.overrideWithValue(monday),
+          ],
+          child: const MaterialApp(home: PlanScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // 5. Verify restored Plan UI
+      expect(find.text('Grilled chicken'), findsWidgets);
+      expect(
+        tester
+            .widget<ChoiceChip>(find.byKey(const Key('plan-days-2')))
+            .selected,
+        isTrue,
+      );
+
+      // 6. Verify restored Shopping List UI
+      await tapKey(tester, 'shopping-list');
+      expect(find.text('1 of 1 checked'), findsOneWidget);
+      final box = tester.widget<Checkbox>(
+        find.descendant(
+          of: find.byKey(Key('shop-item-$chickenBreast')),
+          matching: find.byType(Checkbox),
+        ),
+      );
+      expect(box.value, isTrue);
+    },
+  );
 }

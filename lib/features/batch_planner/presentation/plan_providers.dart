@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/database/database_provider.dart';
 import '../../../core/database/date_utils.dart';
 import '../../../core/database/ingredient_nutrients.dart';
 import '../../inventory/presentation/inventory_providers.dart';
@@ -22,9 +25,29 @@ class FreshSelection {
 
   final int ingredientId;
   final double gramsPerMeal;
+
+  Map<String, dynamic> toJson() => {
+    'ingredientId': ingredientId,
+    'gramsPerMeal': gramsPerMeal,
+  };
+
+  factory FreshSelection.fromJson(Map<String, dynamic> json) => FreshSelection(
+    (json['ingredientId'] as num).toInt(),
+    (json['gramsPerMeal'] as num).toDouble(),
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FreshSelection &&
+          other.ingredientId == ingredientId &&
+          other.gramsPerMeal == gramsPerMeal;
+
+  @override
+  int get hashCode => Object.hash(ingredientId, gramsPerMeal);
 }
 
-/// What the user picked on the Plan tab. Kept in memory only.
+/// What the user picked on the Plan tab. Persisted in AppSettings.
 class PlanSelection {
   const PlanSelection({
     required this.from,
@@ -63,17 +86,132 @@ class PlanSelection {
     fresh: fresh ?? this.fresh,
     leftoverIds: leftoverIds ?? this.leftoverIds,
   );
+
+  Map<String, dynamic> toJson() => {
+    'from': dateOnly(from).toIso8601String(),
+    'dayCount': dayCount,
+    'recipeIds': {for (final e in recipeIds.entries) e.key.name: e.value},
+    'sideGramsPerMeal': {
+      for (final e in sideGramsPerMeal.entries) e.key.name: e.value,
+    },
+    'fresh': [for (final f in fresh) f.toJson()],
+    'leftoverIds': leftoverIds.toList()..sort(),
+  };
+
+  factory PlanSelection.fromJson(
+    Map<String, dynamic> json, {
+    DateTime? fallbackFrom,
+  }) {
+    DateTime parseDate(dynamic v) {
+      if (v is String) {
+        try {
+          return dateOnly(DateTime.parse(v));
+        } catch (_) {}
+      }
+      return fallbackFrom ?? dateOnly(DateTime.now());
+    }
+
+    final recipeIds = <PlanRole, int>{};
+    if (json['recipeIds'] is Map) {
+      for (final entry in (json['recipeIds'] as Map).entries) {
+        final role = PlanRole.values
+            .where((r) => r.name == entry.key)
+            .firstOrNull;
+        if (role != null && entry.value is num) {
+          recipeIds[role] = (entry.value as num).toInt();
+        }
+      }
+    }
+
+    final sideGrams = Map<PlanRole, double>.from(defaultSideGramsPerMeal);
+    if (json['sideGramsPerMeal'] is Map) {
+      for (final entry in (json['sideGramsPerMeal'] as Map).entries) {
+        final role = PlanRole.values
+            .where((r) => r.name == entry.key)
+            .firstOrNull;
+        if (role != null && entry.value is num) {
+          sideGrams[role] = (entry.value as num).toDouble();
+        }
+      }
+    }
+
+    final fresh = <FreshSelection>[];
+    if (json['fresh'] is List) {
+      for (final item in json['fresh'] as List) {
+        if (item is Map<String, dynamic>) {
+          try {
+            fresh.add(FreshSelection.fromJson(item));
+          } catch (_) {}
+        }
+      }
+    }
+
+    final leftoverIds = <int>{};
+    if (json['leftoverIds'] is List) {
+      for (final id in json['leftoverIds'] as List) {
+        if (id is num) leftoverIds.add(id.toInt());
+      }
+    }
+
+    final rawDayCount = json['dayCount'];
+    final dayCount = (rawDayCount is num ? rawDayCount.toInt() : 3).clamp(
+      1,
+      BatchPlanInput.maxPlanDays,
+    );
+
+    return PlanSelection(
+      from: parseDate(json['from']),
+      dayCount: dayCount,
+      recipeIds: recipeIds,
+      sideGramsPerMeal: sideGrams,
+      fresh: fresh,
+      leftoverIds: leftoverIds,
+    );
+  }
 }
 
 class PlanSelectionNotifier extends Notifier<PlanSelection> {
+  static const settingKey = 'active_plan_selection';
+
   @override
-  PlanSelection build() => PlanSelection(from: ref.read(todayProvider));
+  PlanSelection build() {
+    _loadPersisted();
+    return PlanSelection(from: ref.read(todayProvider));
+  }
 
-  void setFrom(DateTime date) => state = state.copyWith(from: dateOnly(date));
+  Future<void> _loadPersisted() async {
+    try {
+      final dao = ref.read(settingsDaoProvider);
+      final raw = await dao.getSetting(settingKey);
+      if (raw != null) {
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        state = PlanSelection.fromJson(
+          json,
+          fallbackFrom: ref.read(todayProvider),
+        );
+      }
+    } catch (_) {}
+  }
 
-  void setDayCount(int count) => state = state.copyWith(
-    dayCount: count.clamp(1, BatchPlanInput.maxPlanDays).toInt(),
-  );
+  void _persist() {
+    try {
+      final dao = ref.read(settingsDaoProvider);
+      final encoded = jsonEncode(state.toJson());
+      dao.setSetting(settingKey, encoded).catchError((_) {});
+    } catch (_) {}
+  }
+
+  void setFrom(DateTime date) {
+    state = state.copyWith(from: dateOnly(date));
+    _persist();
+  }
+
+  void setDayCount(int count) {
+    state = state.copyWith(
+      dayCount: count.clamp(1, BatchPlanInput.maxPlanDays).toInt(),
+    );
+    _persist();
+  }
 
   /// Picks [recipeId] for [role], or clears the role when null.
   void setRecipe(PlanRole role, int? recipeId) {
@@ -84,12 +222,15 @@ class PlanSelectionNotifier extends Notifier<PlanSelection> {
       next[role] = recipeId;
     }
     state = state.copyWith(recipeIds: next);
+    _persist();
   }
 
-  void setSideGrams(PlanRole role, double gramsPerMeal) =>
-      state = state.copyWith(
-        sideGramsPerMeal: {...state.sideGramsPerMeal, role: gramsPerMeal},
-      );
+  void setSideGrams(PlanRole role, double gramsPerMeal) {
+    state = state.copyWith(
+      sideGramsPerMeal: {...state.sideGramsPerMeal, role: gramsPerMeal},
+    );
+    _persist();
+  }
 
   /// Adds the ingredient, or updates its grams when already present.
   void setFresh(int ingredientId, double gramsPerMeal) {
@@ -103,14 +244,18 @@ class PlanSelectionNotifier extends Notifier<PlanSelection> {
             ]
           : [...state.fresh, entry],
     );
+    _persist();
   }
 
-  void removeFresh(int ingredientId) => state = state.copyWith(
-    fresh: [
-      for (final f in state.fresh)
-        if (f.ingredientId != ingredientId) f,
-    ],
-  );
+  void removeFresh(int ingredientId) {
+    state = state.copyWith(
+      fresh: [
+        for (final f in state.fresh)
+          if (f.ingredientId != ingredientId) f,
+      ],
+    );
+    _persist();
+  }
 
   void setLeftover(int batchItemId, {required bool use}) {
     final next = {...state.leftoverIds};
@@ -120,6 +265,7 @@ class PlanSelectionNotifier extends Notifier<PlanSelection> {
       next.remove(batchItemId);
     }
     state = state.copyWith(leftoverIds: next);
+    _persist();
   }
 }
 
