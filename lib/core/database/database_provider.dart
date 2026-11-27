@@ -5,6 +5,7 @@ import '../../features/meal_log/data/meal_log_dao.dart';
 import '../../features/nutrition_targets/data/targets_dao.dart';
 import '../../features/recipes/data/recipes_dao.dart';
 import 'app_database.dart';
+import 'settings_dao.dart';
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase.open();
@@ -26,4 +27,8 @@ final inventoryDaoProvider = Provider<InventoryDao>(
 
 final mealLogDaoProvider = Provider<MealLogDao>(
   (ref) => ref.watch(appDatabaseProvider).mealLogDao,
+);
+
+final settingsDaoProvider = Provider<SettingsDao>(
+  (ref) => ref.watch(appDatabaseProvider).settingsDao,
 );

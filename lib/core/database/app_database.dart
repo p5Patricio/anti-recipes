@@ -8,6 +8,7 @@ import '../../features/nutrition_targets/domain/day_type.dart';
 import '../../features/nutrition_targets/domain/nutrition_plan.dart';
 import '../../features/recipes/data/recipes_dao.dart';
 import '../../features/recipes/domain/recipe_kind.dart';
+import 'settings_dao.dart';
 import 'tables.dart';
 
 part 'app_database.g.dart';
@@ -29,8 +30,9 @@ part 'app_database.g.dart';
     MealComponents,
     HydrationLogs,
     DayLogs,
+    AppSettings,
   ],
-  daos: [TargetsDao, RecipesDao, InventoryDao, MealLogDao],
+  daos: [TargetsDao, RecipesDao, InventoryDao, MealLogDao, SettingsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
@@ -39,7 +41,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.open() : super(driftDatabase(name: 'anti_recipes'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -49,6 +51,7 @@ class AppDatabase extends _$AppDatabase {
     },
     onUpgrade: (m, from, to) async {
       if (from < 2) await m.createTable(dayLogs);
+      if (from < 3) await m.createTable(appSettings);
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

@@ -129,6 +129,8 @@ Future<void> populateRichDb(AppDatabase db) async {
     loggedAt: DateTime(2026, 10, 5, 13, 40),
   );
   await db.mealLogDao.adjustServings(monday, fruitDelta: 2, vegDelta: 3);
+  await db.settingsDao.setSetting('theme_mode', 'system');
+  await db.settingsDao.setSetting('shopping_checked_ids', '[1, 2]');
 }
 
 /// Parsed export with the volatile `exportedAt` removed, for comparisons.

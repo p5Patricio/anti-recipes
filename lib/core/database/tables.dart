@@ -183,3 +183,13 @@ class DayLogs extends Table {
   @override
   Set<Column> get primaryKey => {date};
 }
+
+/// Key-value store for app settings, user preferences, and UI session state
+/// (e.g. active plan selection, shopping checklist, onboarding status, theme mode).
+class AppSettings extends Table {
+  TextColumn get key => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
