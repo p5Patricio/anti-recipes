@@ -44,7 +44,7 @@ The MVP was built as a chain of stacked branches and landed in `main` through pu
 | #8 | T9 | JSON backup and restore |
 | #9 | CI | GitHub Actions workflow running `flutter analyze` and `flutter test` |
 
-The old `feat/*` task branches still exist on `origin` as leftovers of those pull requests; they are safe to delete once the owner agrees. The task logbook in `odd/tasks/anti-recipes-mvp.md` records the original size numbers.
+The task branches of those pull requests (`feat/*` and `ci/add-github-actions`) no longer exist on `origin`; only `main` and the branch of the open Milestone 1 pull request remain. The task logbook in `odd/tasks/anti-recipes-mvp.md` records the original size numbers.
 
 ## Follow-up work (Milestone 1), pending merge
 

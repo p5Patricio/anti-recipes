@@ -68,7 +68,7 @@ git rebase --onto origin/main <old-parent-branch> <next-branch>
 git push --force-with-lease origin <next-branch>
 ```
 
-The old `feat/*` branches of the MVP remain on `origin` as leftovers; do not build on them. Use the `chained-pr` and `work-unit-commits` skills if your agent has them.
+The MVP task branches were deleted from `origin` after their pull requests merged, so start new work from an up-to-date `main`. Use the `chained-pr` and `work-unit-commits` skills if your agent has them.
 
 ## Writing tests
 
