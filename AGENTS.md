@@ -8,7 +8,7 @@ A local-first **Flutter (Android only)** app for modular batch cooking with calo
 
 ## Status in one paragraph
 
-The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10, and a visual rebrand (dark-first theme, duck logo, launcher icon and splash) by pull request #11. The UI is available in English and Spanish (see "Localization" in docs/development-guide.md). 277 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
+The MVP (tasks T0 to T9) is implemented: targets, recipes, pantry and meal composer, Today dashboard, reverse batch planner with shopping list, and JSON backup. The MVP and a GitHub Actions CI workflow are merged into `main` (pull requests #1 to #9). On top of it, **Milestone 1** (schema v3 `app_settings` table, persistence of the planner selection and shopping checklist, rest-day carb floor lowered to 245 g, removal of the empty `shopping/` folders) was merged by pull request #10, and a visual rebrand (dark-first theme, duck logo, launcher icon and splash) by pull request #11. The UI is available in English and Spanish (see "Localization" in docs/development-guide.md). 283 tests pass, `flutter analyze` is clean and `dart format` needs no changes. The app booted on an Android emulator, but a human has not walked through all flows. Details: [docs/current-status.md](docs/current-status.md). What to do next: [docs/development-plan.md](docs/development-plan.md).
 
 ## Document map
 
@@ -65,7 +65,7 @@ Never commit body weight, real nutrition targets, meal history, backups, `*.db`,
 
 ## Testing
 
-277 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
+283 tests; mirror `lib/` under `test/`. Use in-memory `AppDatabase(NativeDatabase.memory())` and the helpers in `test/helpers/`. Hard-won rules:
 
 - Widget tests that mount drift streams must unmount the tree **inside the test body** (`await tester.pumpWidget(const SizedBox()); await tester.pump(const Duration(milliseconds: 10));`).
 - Never `await` a drift stream (`.first`) inside `testWidgets`; use `select(...).get()` or DAO `load*` methods.

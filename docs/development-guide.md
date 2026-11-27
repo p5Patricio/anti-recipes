@@ -28,7 +28,7 @@ flutter pub get
 dart run build_runner build -d      # regenerate drift code after changing tables or DAOs
 dart format lib test
 flutter analyze
-flutter test                        # all 277 tests
+flutter test                        # all 283 tests
 flutter test test/features/backup   # a subset
 ```
 
@@ -122,6 +122,7 @@ The app ships in English and Spanish with Flutter `gen_l10n`.
 - After editing an ARB file run `flutter gen-l10n` and commit the generated files in `lib/l10n/`.
 - Widget tests that build their own `MaterialApp` need `locale: const Locale('en')`, `localizationsDelegates: AppLocalizations.localizationsDelegates` and `supportedLocales: AppLocalizations.supportedLocales`; `pumpWithDb` already does this.
 - The language override is stored in `app_settings` under `app_locale` (`lib/core/l10n/locale_provider.dart`).
+- Seeded ingredient and tool names are data, not ARB strings: when you add or rename a starter row in `app_database.dart`, add its Spanish name to `lib/core/database/seed_names.dart` (a test fails if the maps and the seed drift apart).
 - Spanish style: neutral Latin American Spanish, no regional slang.
 
 ## Quality bar before saying "done"
