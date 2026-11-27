@@ -55,20 +55,28 @@ void main() {
       .controller!
       .text;
 
-  testWidgets('loads defaults and warns on rest-day carbs only', (
-    tester,
-  ) async {
+  testWidgets('loads defaults without carb warnings', (tester) async {
     await pumpScreen(tester);
 
     expect(fieldText(tester, 'field-protein'), '160');
     expect(fieldText(tester, 'field-fat'), '70');
-    expect(find.byKey(const Key('rest-carbs-warning')), findsOneWidget);
+    expect(find.byKey(const Key('rest-carbs-warning')), findsNothing);
     expect(find.byKey(const Key('training-carbs-warning')), findsNothing);
+    expect(find.text('Protein per meal target: 53.3 g'), findsOneWidget);
+  });
+
+  testWidgets('warns when derived carbs fall outside configured range', (
+    tester,
+  ) async {
+    await pumpScreen(tester);
+
+    // Increase rest-day min carbs to 270 so derived ~251 is outside range
+    await enter(tester, 'rest-carbs-min', '270');
+    expect(find.byKey(const Key('rest-carbs-warning')), findsOneWidget);
     expect(
       find.text('Carbs are derived from calories left after protein and fat.'),
       findsOneWidget,
     );
-    expect(find.text('Protein per meal target: 53.3 g'), findsOneWidget);
   });
 
   testWidgets('shows g/kg hints and weekly average when weight is set', (

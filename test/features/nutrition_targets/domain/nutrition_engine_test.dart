@@ -82,11 +82,47 @@ void main() {
       expect(t.warnings, isEmpty);
     });
 
-    test('rest day derives ~251 g carbs and flags the configured range', () {
-      final t = engine.targetsFor(wednesday);
-      expect(t.dayType, DayType.rest);
-      expect(t.kcal, 2275);
-      expect(t.carbsG, closeTo(251.25, 1e-9));
+    test(
+      'rest day derives ~251 g carbs, within configured range (no warnings)',
+      () {
+        final t = engine.targetsFor(wednesday);
+        expect(t.dayType, DayType.rest);
+        expect(t.kcal, 2275);
+        expect(t.carbsG, closeTo(251.25, 1e-9));
+        expect(t.warnings, isEmpty);
+      },
+    );
+
+    test('carbs outside configured range generates warning', () {
+      final customPlan = NutritionPlan(
+        proteinGPerDay: 160,
+        fatGPerDay: 70,
+        mealsPerDay: 3,
+        proteinPerMeal: Range(50, 55),
+        dayTypes: {
+          DayType.training: DayTypeTargets(
+            kcal: Range(2400, 2500),
+            carbs: Range(270, 305),
+            fiber: Range(30, 35),
+            waterMl: Range(3500, 4250),
+            fruitPortions: Range(1, 3),
+            vegPortions: Range(2, 3),
+          ),
+          DayType.rest: DayTypeTargets(
+            kcal: Range(2230, 2320),
+            carbs: Range(260, 305), // floor above 251.25
+            fiber: Range(30, 35),
+            waterMl: Range(3000, 3500),
+            fruitPortions: Range(1, 3),
+            vegPortions: Range(2, 3),
+          ),
+        },
+      );
+      final customEngine = NutritionEngine(
+        customPlan,
+        WeekSchedule.exampleDefaults(),
+      );
+      final t = customEngine.targetsFor(wednesday);
       expect(t.warnings, contains(TargetWarning.carbsOutsideConfiguredRange));
     });
 

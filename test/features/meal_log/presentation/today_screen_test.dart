@@ -90,8 +90,8 @@ void main() {
     expect(find.text('Goal 3000-3500 ml'), findsOneWidget);
     expect(find.text('0 / 3250 ml'), findsOneWidget);
     expect(find.byKey(const Key('jump-today')), findsOneWidget);
-    // Rest-day derived carbs fall below the configured range.
-    expect(find.byKey(const Key('carbs-info')), findsOneWidget);
+    // Rest-day derived carbs fall within the configured range (no warning).
+    expect(find.byKey(const Key('carbs-info')), findsNothing);
 
     await tapKey(tester, 'jump-today');
     expect(find.text('Mon, Oct 5'), findsOneWidget);

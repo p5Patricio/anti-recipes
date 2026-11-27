@@ -96,7 +96,7 @@ class NutritionPlan {
       ),
       DayType.rest: DayTypeTargets(
         kcal: Range(2230, 2320),
-        carbs: Range(270, 305),
+        carbs: Range(245, 305),
         fiber: Range(30, 35),
         waterMl: Range(3000, 3500),
         fruitPortions: Range(1, 3),

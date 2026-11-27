@@ -54,14 +54,14 @@ void main() {
     expect(s.proteinPerMeal, Range(50, 55));
   });
 
-  test('a rest day uses the smaller water range and flags derived carbs', () {
+  test('a rest day uses the smaller water range and derived carbs fall within range', () {
     final s = summarize(wednesday);
 
     expect(s.dayType, DayType.rest);
     expect(s.water.range, Range(3000, 3500));
     expect(s.water.target, 3250);
     expect(s.kcal.target, 2275);
-    expect(s.carbsOutsideConfiguredRange, isTrue);
+    expect(s.carbsOutsideConfiguredRange, isFalse);
   });
 
   test('sums meals, derives remaining amounts and per-slot protein status', () {
