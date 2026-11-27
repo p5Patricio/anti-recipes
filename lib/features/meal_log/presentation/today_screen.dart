@@ -31,7 +31,10 @@ class TodayScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset('assets/branding/logo.webp', height: 32),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset('assets/branding/logo_duck.png', height: 32),
+            ),
             const SizedBox(width: 8),
             const Text('Today'),
           ],
